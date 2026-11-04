@@ -16,7 +16,10 @@ Everything below assumes the local work in this repo is already green.
 ## Hour 0–2 — access and smoke test
 
 1. Confirm access method, skill install procedure, and observable logs.
-2. Record platform versions (kit, capability catalog, model info if shown).
+2. Record platform versions (kit, capability catalog, and which model
+   actually runs the Skill — press reports a 4B-class on-device model with
+   cloud APIs possible; confirm fixed-label compliance on the observed
+   model before trusting verdicts).
 3. Install the Skill; run one minimal prompt on `core-c` (expect no
    blocker). If install fails, escalate immediately — do not burn hours.
 

@@ -26,6 +26,23 @@ Every dependency is labeled `FOUND`, `CONFLICTING`, `NOT FOUND IN SCOPE`,
 SOURCES`, or `INSUFFICIENT EVIDENCE` — never a recovery percentage, never a
 "restored" claim.
 
+## Why PHOENIX fits this hackathon
+
+Mapped to the official judging criteria:
+
+- **Usefulness** — answers a real question small teams ask after any
+  disruption: "do our saved files actually let us resume?" with a cited,
+  actionable report.
+- **AI NAS Fit** — built for on-device private AI: every check runs inside a
+  user-authorized NAS scope through `ug-filesystem`, `ug-document`, and
+  `ug-knowledge`; no external APIs, no data leaves the NAS.
+- **Creativity** — reframes recovery as documentary evidence: fixed evidence
+  labels, abstention on incomplete data, and an explicit refusal to confuse
+  "files found" with "restored".
+- **Technical Execution** — `static-pass` (0 errors, 0 warnings) on the
+  official checker, 24/24 local workflow-logic checks, a measured baseline
+  comparison, and a validation plan ready for the NAS test day.
+
 ## Repository contents
 
 | Path | Description |
