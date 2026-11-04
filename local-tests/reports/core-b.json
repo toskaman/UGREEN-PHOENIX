@@ -1,0 +1,36 @@
+{
+  "verdict": "DOCUMENTARY BLOCKER IDENTIFIED",
+  "evidence": [
+    {
+      "subject": "config/runtime.yaml",
+      "op": null,
+      "version": null,
+      "source": "docs/deployment-guide.md",
+      "line": 4,
+      "truncated_source": false,
+      "status": "FOUND",
+      "detail": "'config/runtime.yaml' verified present in scope."
+    },
+    {
+      "subject": "runtime",
+      "op": ">=",
+      "version": "3.0",
+      "source": "docs/deployment-guide.md",
+      "line": 5,
+      "truncated_source": false,
+      "status": "CONFLICTING",
+      "detail": "Observed config/runtime.yaml:2 (2.4.1) contradicts required >= 3.0."
+    }
+  ],
+  "coverage": {
+    "reviewed": [
+      "config/runtime.yaml",
+      "docs/deployment-guide.md",
+      "docs/release-notes.md"
+    ],
+    "skipped": [],
+    "inaccessible": [],
+    "truncated": []
+  },
+  "report": "# PHOENIX local simulation report\nScope: core-b (local synthetic corpus, NOT a NAS runtime result)\nDocuments reviewed: 3, skipped non-documents: 0, inaccessible: 0, truncated: 0\n\n## Evidence\n- config/runtime.yaml: FOUND (required by docs/deployment-guide.md:4) \u2014 'config/runtime.yaml' verified present in scope.\n- runtime: CONFLICTING (required by docs/deployment-guide.md:5) \u2014 Observed config/runtime.yaml:2 (2.4.1) contradicts required >= 3.0.\n\n## Next verification actions\n- Confirm the intended 'runtime' version with the document owners.\n\n## Verdict: DOCUMENTARY BLOCKER IDENTIFIED\nDocument-level assessment only \u2014 not a verified restore."
+}

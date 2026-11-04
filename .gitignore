@@ -1,0 +1,4 @@
+# Third-party UGREEN kit: local use only, never committed.
+dev-kit/
+# Generated Python artifacts.
+__pycache__/

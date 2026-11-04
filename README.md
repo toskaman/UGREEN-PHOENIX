@@ -34,6 +34,10 @@ SOURCES`, or `INSUFFICIENT EVIDENCE` — never a recovery percentage, never a
 | `references/decision-protocol.md` | Evidence states, output contract, anti-misleading rules |
 | `references/validation-plan.md` | Planned tests (missing artifact, incompatible version, hostile evidence) |
 | `references/disclosures.md` | Authorship, AI assistance, third-party and platform disclosures |
+| `local-tests/` | Local workflow-logic simulation (synthetic corpora, harness, checker evidence) — supporting evidence, not part of the Skill package |
+
+The submittable Skill package is `SKILL.md` + `references/` only, in a
+directory named `phoenix-recovery-intelligence` (required by the checker).
 
 ## Requirements
 
@@ -78,17 +82,20 @@ requires a separate user request plus platform approval.
 
 | Check | Status |
 |---|---|
-| Static checker (Skill Developer Package) | ✅ Passed, zero diagnostics |
-| Core test A — required config absent from corpus | ⏳ Planned, not executed ([plan](references/validation-plan.md)) |
-| Core test B — present but version-incompatible config | ⏳ Planned, not executed |
-| Edge case — denied access / prompt-injection document | ⏳ Planned, not executed |
+| Static checker (kit 0.7.3, catalog 2.0.0) | ✅ `static-pass`, 0 errors, 0 warnings ([evidence](local-tests/evidence-check-result.json)) |
+| Core test A — required config absent from corpus | ✅ Logic validated locally (`NOT FOUND IN SCOPE`, no global claim) · NAS runtime ⏳ ([plan](references/validation-plan.md)) |
+| Core test B — present but version-incompatible config | ✅ Logic validated locally (`CONFLICTING`, both sources cited) · NAS runtime ⏳ |
+| Edge case — denied access / prompt-injection document | ✅ Logic validated locally (denied, truncated, injection handled) · NAS runtime ⏳ |
 | Baseline comparison (filename search vs. generic QA vs. PHOENIX) | ⏳ Planned, not executed |
 | Runtime execution on UGREEN AI NAS | ⏳ Untested — no NAS access in Round 1 |
 
-No local or NAS runtime results are claimed. Static checker success is not a
-runtime pass. If selected as a finalist, the planned tests will run during the
-assigned remote NAS session and this section will be updated with real
-evidence, logs, and a demo video.
+Local simulation: 13/13 checks green (`python local-tests/run-tests.py`).
+This validates the workflow logic only. No NAS runtime results are claimed;
+static checker success is not a runtime pass. If selected as a finalist, the
+planned tests will run during the assigned remote NAS session and this
+section will be updated with real evidence, logs, and a demo video. Open
+platform questions for UGREEN support are listed in
+[local-tests/open-questions-for-ugreen.md](local-tests/open-questions-for-ugreen.md).
 
 ## Limitations
 
