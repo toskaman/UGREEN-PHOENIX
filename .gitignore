@@ -1,4 +1,6 @@
 # Third-party UGREEN kit: local use only, never committed.
 dev-kit/
+# Devpost submission binaries: regenerated, never committed.
+A SOUMETTRE/
 # Generated Python artifacts.
 __pycache__/
