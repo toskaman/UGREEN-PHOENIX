@@ -32,6 +32,8 @@ NAS permissions, or model quality on a real device.
 - `wave1/` — generated wave-1 artifacts (regenerate with `rehearse-wave1.py`).
 - `finalist-runbook.md` — hour-by-hour 24-hour NAS session plan.
 - `demo-script.md` — timed 3-minute demo narration and recording checklist.
+- `wave1-support-request.md` — send-ready support message with the 11 questions.
+- `wave1-session-checklist.md` — one-page session tick list.
 - `open-questions-for-ugreen.md` — platform questions for the support team.
 - `reports/` — generated reports (regenerate with `run-tests.py` and
   `run-baseline.py`).
@@ -41,7 +43,9 @@ NAS permissions, or model quality on a real device.
 ## Run
 
 ```sh
-python run-tests.py
+python run-tests.py       # 31 acceptance checks (must be ALL GREEN)
+python run-baseline.py    # baseline comparison → reports/baseline-comparison.md
+python rehearse-wave1.py  # validate prompts, regenerate wave1/ artifacts
 ```
 
 ## Honesty rules

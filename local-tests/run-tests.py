@@ -143,6 +143,17 @@ def main():
                 lab.get("config/missing.yaml") == "NOT FOUND IN SCOPE"
                 and lab.get("worker") == "UNKNOWN", str(lab))
 
+    print("report contract (8 sections):")
+    for case in ("core-a", "core-b", "edge", "core-c", "core-d", "edge-2",
+                 "scale"):
+        text = (REPORTS / f"{case}.md").read_text(encoding="utf-8")
+        want = ["## 1. Scenario", "## 2. Coverage", "## 3. Requirements",
+                "## 4. Evidence table", "## 5. Priority blockers",
+                "## 6. Contradictions and alternatives",
+                "## 7. Next verification actions", "## 8. Verdict: "]
+        ok &= check(f"{case} has all 8 sections",
+                    all(h in text for h in want))
+
     print(f"\n{CHECKS_PASSED} checks passed, "
           f"{'ALL GREEN' if ok else 'FAILURES PRESENT'} "
           f"(local simulation only — not NAS runtime evidence).")

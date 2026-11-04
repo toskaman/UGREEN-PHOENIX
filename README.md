@@ -40,7 +40,7 @@ Mapped to the official judging criteria:
   labels, abstention on incomplete data, and an explicit refusal to confuse
   "files found" with "restored".
 - **Technical Execution** — `static-pass` (0 errors, 0 warnings) on the
-  official checker, 24/24 local workflow-logic checks, a measured baseline
+  official checker, 31/31 local workflow-logic checks, a measured baseline
   comparison, and a validation plan ready for the NAS test day.
 
 ## Repository contents
@@ -106,7 +106,7 @@ requires a separate user request plus platform approval.
 | Baseline comparison (filename search vs. generic QA vs. PHOENIX) | ✅ Measured locally (PHOENIX 7/7, filename 3/7, generic QA 1/7) · NAS runtime ⏳ ([report](local-tests/reports/baseline-comparison.md)) |
 | Runtime execution on UGREEN AI NAS | ⏳ Untested — no NAS access in Round 1 |
 
-Local simulation: 24/24 checks green (`python local-tests/run-tests.py`)
+Local simulation: 31/31 checks green (`python local-tests/run-tests.py`)
 plus the measured baseline comparison. This validates the workflow logic
 only. The 24-hour finalist session plan is in
 [local-tests/finalist-runbook.md](local-tests/finalist-runbook.md).

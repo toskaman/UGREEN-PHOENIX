@@ -162,23 +162,36 @@ def run(scope: Path) -> dict:
             next_steps.append(f"Resolve the '{e['subject']}' evidence gap "
                               f"(access or clearer source needed).")
 
-    lines = ["# PHOENIX local simulation report",
+    blockers = [e for e in evidence
+                if e["status"] in (NOT_FOUND, CONFLICTING)]
+    conflicts = [e for e in evidence if e["status"] == CONFLICTING]
+    lines = ["# PHOENIX local simulation report", "",
+             "## 1. Scenario",
              f"Scope: {scope.name} (local synthetic corpus, "
-             "NOT a NAS runtime result)",
+             "NOT a NAS runtime result).", "",
+             "## 2. Coverage",
              f"Documents reviewed: {len(discovered)}, skipped "
              f"non-documents: {len(skipped)}, inaccessible: "
-             f"{len(inaccessible_files)}, truncated: {len(truncated_docs)}",
-             "", "## Evidence"]
+             f"{len(inaccessible_files)}, truncated: {len(truncated_docs)}."]
+    if inaccessible_files:
+        lines.append("Inaccessible sources (content never read): "
+                     + ", ".join(inaccessible_files))
+    lines += ["", "## 3. Requirements"]
+    lines += [f"- {e['subject']} (required by {e['source']}:{e['line']})"
+              for e in evidence] or ["- none extracted"]
+    lines += ["", "## 4. Evidence table"]
     for e in evidence:
         lines.append(f"- {e['subject']}: {e['status']} "
                      f"(required by {e['source']}:{e['line']}) — {e['detail']}")
-    if inaccessible_files:
-        lines.extend(["", "## Inaccessible sources (content never read)"])
-        lines.extend(f"- {p}" for p in inaccessible_files)
-    if next_steps:
-        lines.extend(["", "## Next verification actions"])
-        lines.extend(f"- {s}" for s in next_steps)
-    lines += ["", f"## Verdict: {verdict}",
+    lines += ["", "## 5. Priority blockers"]
+    lines += [f"- {e['subject']}: {e['status']} — {e['detail']}"
+              for e in blockers] or ["- none"]
+    lines += ["", "## 6. Contradictions and alternatives"]
+    lines += [f"- {e['subject']} — {e['detail']}"
+              for e in conflicts] or ["- none observed"]
+    lines += ["", "## 7. Next verification actions"]
+    lines += [f"- {s}" for s in next_steps] or ["- none"]
+    lines += ["", f"## 8. Verdict: {verdict}",
               "Document-level assessment only — not a verified restore."]
 
     return {"verdict": verdict, "evidence": evidence,
