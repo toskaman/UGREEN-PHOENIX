@@ -26,6 +26,13 @@ NAS permissions, or model quality on a real device.
   labels required by `references/validation-plan.md`.
 - `baselines.py` + `run-baseline.py` — naive filename search and generic QA
   compared against PHOENIX on predeclared `labels.json` ground truth.
+- `prompts.json` + `rehearse-wave1.py` — validated wave-1 prompt pack and
+  session-artifact generator (prompt pack, predicted reports, run log,
+  scoring sheet, upload ZIP).
+- `wave1/` — generated wave-1 artifacts (regenerate with `rehearse-wave1.py`).
+- `finalist-runbook.md` — hour-by-hour 24-hour NAS session plan.
+- `demo-script.md` — timed 3-minute demo narration and recording checklist.
+- `open-questions-for-ugreen.md` — platform questions for the support team.
 - `reports/` — generated reports (regenerate with `run-tests.py` and
   `run-baseline.py`).
 - `evidence-check-result.json` — real output of the official static checker

@@ -51,7 +51,7 @@ Mapped to the official judging criteria:
 | `references/decision-protocol.md` | Evidence states, output contract, anti-misleading rules |
 | `references/validation-plan.md` | Planned tests (missing artifact, incompatible version, hostile evidence) |
 | `references/disclosures.md` | Authorship, AI assistance, third-party and platform disclosures |
-| `local-tests/` | Local workflow-logic simulation (synthetic corpora, harness, checker evidence) — supporting evidence, not part of the Skill package |
+| `local-tests/` | Local workflow-logic simulation and wave-1 rehearsal kit (synthetic corpora, harness, checker evidence, prompt pack, runbook, demo script) — supporting evidence, not part of the Skill package |
 
 The submittable Skill package is `SKILL.md` + `references/` only, in a
 directory named `phoenix-recovery-intelligence` (required by the checker).
