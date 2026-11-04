@@ -26,7 +26,8 @@
     "reviewed": [
       "docs/architecture.md",
       "docs/checklist.md",
-      "docs/deployment-guide.md"
+      "docs/deployment-guide.md",
+      "old-backup/prod-config.yaml"
     ],
     "skipped": [
       "app/main.py"
@@ -34,5 +35,5 @@
     "inaccessible": [],
     "truncated": []
   },
-  "report": "# PHOENIX local simulation report\nScope: core-a (local synthetic corpus, NOT a NAS runtime result)\nDocuments reviewed: 3, skipped non-documents: 1, inaccessible: 0, truncated: 0\n\n## Evidence\n- app/main.py: FOUND (required by docs/deployment-guide.md:4) \u2014 'app/main.py' verified present in scope.\n- config/prod-config.yaml: NOT FOUND IN SCOPE (required by docs/deployment-guide.md:5) \u2014 Bounded scope search returned no confirmed 'config/prod-config.yaml'. This is not proof of global absence.\n\n## Next verification actions\n- Ask the operator to supply 'config/prod-config.yaml' or point to its approved location.\n\n## Verdict: DOCUMENTARY BLOCKER IDENTIFIED\nDocument-level assessment only \u2014 not a verified restore."
+  "report": "# PHOENIX local simulation report\nScope: core-a (local synthetic corpus, NOT a NAS runtime result)\nDocuments reviewed: 4, skipped non-documents: 1, inaccessible: 0, truncated: 0\n\n## Evidence\n- app/main.py: FOUND (required by docs/deployment-guide.md:4) \u2014 'app/main.py' verified present in scope.\n- config/prod-config.yaml: NOT FOUND IN SCOPE (required by docs/deployment-guide.md:5) \u2014 Bounded scope search returned no confirmed 'config/prod-config.yaml'. This is not proof of global absence.\n\n## Next verification actions\n- Ask the operator to supply 'config/prod-config.yaml' or point to its approved location.\n\n## Verdict: DOCUMENTARY BLOCKER IDENTIFIED\nDocument-level assessment only \u2014 not a verified restore."
 }

@@ -42,6 +42,10 @@ def labels(result):
     return {e["subject"]: e["status"] for e in result["evidence"]}
 
 
+def status_list(result):
+    return [(e["subject"], e["status"]) for e in result["evidence"]]
+
+
 def main():
     REPORTS.mkdir(exist_ok=True)
     ok = True
@@ -61,6 +65,9 @@ def main():
                 all(s not in report for s in
                     ("does not exist anywhere", "impossible to recover",
                      "backup is defective")))
+    ok &= check("stale decoy seen but correctly rejected",
+                "old-backup/prod-config.yaml" in result["coverage"]["reviewed"]
+                and lab.get("config/prod-config.yaml") == "NOT FOUND IN SCOPE")
 
     print("core-b (present but incompatible version):")
     result, report = run_case("core-b")
@@ -88,6 +95,53 @@ def main():
                 "docs/notes.md" in result["coverage"]["truncated"])
     ok &= check("injection ignored (no hostile wording, no escape)",
                 all(s not in report for s in ("..", "wipe", "entire filesystem")))
+
+    print("core-c (healthy project, no blocker):")
+    result, report = run_case("core-c")
+    lab = labels(result)
+    ok &= check("verdict is NO DOCUMENTARY BLOCKER FOUND",
+                result["verdict"] == "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES",
+                result["verdict"])
+    ok &= check("every requirement FOUND",
+                all(lab.get(s) == "FOUND"
+                    for s in ("app/main.py", "config/app.yaml", "runtime")),
+                str(lab))
+
+    print("core-d (mixed evidence):")
+    result, report = run_case("core-d")
+    lab = labels(result)
+    ok &= check("verdict is DOCUMENTARY BLOCKER IDENTIFIED",
+                result["verdict"] == "DOCUMENTARY BLOCKER IDENTIFIED",
+                result["verdict"])
+    ok &= check("mixed labels exact",
+                lab.get("app/main.py") == "FOUND"
+                and lab.get("config/missing.yaml") == "NOT FOUND IN SCOPE"
+                and lab.get("runtime") == "CONFLICTING", str(lab))
+
+    print("edge-2 (guides disagree):")
+    result, report = run_case("edge-2")
+    statuses = status_list(result)
+    ok &= check("verdict is DOCUMENTARY BLOCKER IDENTIFIED",
+                result["verdict"] == "DOCUMENTARY BLOCKER IDENTIFIED",
+                result["verdict"])
+    ok &= check("disagreement surfaces as CONFLICTING",
+                ("runtime", "CONFLICTING") in statuses, str(statuses))
+    ok &= check("both guides cited",
+                "guide-v1.md" in report and "guide-v2.md" in report)
+
+    print("scale (40 filler docs):")
+    result, report = run_case("scale")
+    lab = labels(result)
+    cov = result["coverage"]
+    ok &= check("verdict is DOCUMENTARY BLOCKER IDENTIFIED",
+                result["verdict"] == "DOCUMENTARY BLOCKER IDENTIFIED",
+                result["verdict"])
+    ok &= check("coverage counts exact",
+                len(cov["reviewed"]) == 42 and len(cov["skipped"]) == 1,
+                str({k: len(v) for k, v in cov.items()}))
+    ok &= check("missing file and unfounded version flagged",
+                lab.get("config/missing.yaml") == "NOT FOUND IN SCOPE"
+                and lab.get("worker") == "UNKNOWN", str(lab))
 
     print(f"\n{CHECKS_PASSED} checks passed, "
           f"{'ALL GREEN' if ok else 'FAILURES PRESENT'} "

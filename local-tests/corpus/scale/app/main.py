@@ -1,0 +1,1 @@
+print("scale (synthetic)")

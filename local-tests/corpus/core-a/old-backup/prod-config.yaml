@@ -1,0 +1,4 @@
+# STALE backup copy (synthetic decoy — wrong location).
+# Must NOT satisfy 'config/prod-config.yaml': a filename match alone
+# is insufficient evidence (see references/decision-protocol.md).
+endpoint: https://stale.example.invalid

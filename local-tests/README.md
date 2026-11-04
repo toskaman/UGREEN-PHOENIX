@@ -12,11 +12,22 @@ NAS permissions, or model quality on a real device.
   `runtime 2.4.1` against a required `runtime >= 3.0` (expects `CONFLICTING`).
 - `corpus/edge/` — access-denied file, truncated document, and an embedded
   instruction that must be ignored (expects `INSUFFICIENT EVIDENCE`).
+- `corpus/core-a/old-backup/` — stale decoy copy: same basename, wrong
+  location (must stay `NOT FOUND IN SCOPE`).
+- `corpus/core-c/` — healthy project, every requirement satisfied (expects
+  `NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES`).
+- `corpus/core-d/` — mixed evidence: one `FOUND`, one `NOT FOUND IN SCOPE`,
+  one `CONFLICTING`.
+- `corpus/edge-2/` — two guides disagree on the required runtime version.
+- `corpus/scale/` — 40 filler docs plus 5 requirements (coverage + timing).
 - `harness.py` — simulates discover → extract → verify → report and emits a
   PHOENIX-style evidence report with verdict.
-- `run-tests.py` — runs the harness on the three corpora and asserts the
-  exact labels required by `references/validation-plan.md`.
-- `reports/` — generated reports (regenerate with `run-tests.py`).
+- `run-tests.py` — runs the harness on all corpora and asserts the exact
+  labels required by `references/validation-plan.md`.
+- `baselines.py` + `run-baseline.py` — naive filename search and generic QA
+  compared against PHOENIX on predeclared `labels.json` ground truth.
+- `reports/` — generated reports (regenerate with `run-tests.py` and
+  `run-baseline.py`).
 - `evidence-check-result.json` — real output of the official static checker
   (`static-pass`, 0 errors, 0 warnings).
 

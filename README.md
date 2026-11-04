@@ -86,11 +86,14 @@ requires a separate user request plus platform approval.
 | Core test A — required config absent from corpus | ✅ Logic validated locally (`NOT FOUND IN SCOPE`, no global claim) · NAS runtime ⏳ ([plan](references/validation-plan.md)) |
 | Core test B — present but version-incompatible config | ✅ Logic validated locally (`CONFLICTING`, both sources cited) · NAS runtime ⏳ |
 | Edge case — denied access / prompt-injection document | ✅ Logic validated locally (denied, truncated, injection handled) · NAS runtime ⏳ |
-| Baseline comparison (filename search vs. generic QA vs. PHOENIX) | ⏳ Planned, not executed |
+| Baseline comparison (filename search vs. generic QA vs. PHOENIX) | ✅ Measured locally (PHOENIX 7/7, filename 3/7, generic QA 1/7) · NAS runtime ⏳ ([report](local-tests/reports/baseline-comparison.md)) |
 | Runtime execution on UGREEN AI NAS | ⏳ Untested — no NAS access in Round 1 |
 
-Local simulation: 13/13 checks green (`python local-tests/run-tests.py`).
-This validates the workflow logic only. No NAS runtime results are claimed;
+Local simulation: 24/24 checks green (`python local-tests/run-tests.py`)
+plus the measured baseline comparison. This validates the workflow logic
+only. The 24-hour finalist session plan is in
+[local-tests/finalist-runbook.md](local-tests/finalist-runbook.md).
+No NAS runtime results are claimed;
 static checker success is not a runtime pass. If selected as a finalist, the
 planned tests will run during the assigned remote NAS session and this
 section will be updated with real evidence, logs, and a demo video. Open

@@ -1,0 +1,3 @@
+# Application configuration (synthetic)
+PROVIDES: runtime 2.9.0
+endpoint: https://api.example.invalid

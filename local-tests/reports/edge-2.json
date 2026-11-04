@@ -1,0 +1,36 @@
+{
+  "verdict": "DOCUMENTARY BLOCKER IDENTIFIED",
+  "evidence": [
+    {
+      "subject": "runtime",
+      "op": ">=",
+      "version": "3.0",
+      "source": "docs/guide-v1.md",
+      "line": 4,
+      "truncated_source": false,
+      "status": "CONFLICTING",
+      "detail": "Observed config/runtime.yaml:2 (2.4.1) contradicts required >= 3.0."
+    },
+    {
+      "subject": "runtime",
+      "op": "==",
+      "version": "2.4.1",
+      "source": "docs/guide-v2.md",
+      "line": 4,
+      "truncated_source": false,
+      "status": "FOUND",
+      "detail": "Version fact satisfies requirement."
+    }
+  ],
+  "coverage": {
+    "reviewed": [
+      "config/runtime.yaml",
+      "docs/guide-v1.md",
+      "docs/guide-v2.md"
+    ],
+    "skipped": [],
+    "inaccessible": [],
+    "truncated": []
+  },
+  "report": "# PHOENIX local simulation report\nScope: edge-2 (local synthetic corpus, NOT a NAS runtime result)\nDocuments reviewed: 3, skipped non-documents: 0, inaccessible: 0, truncated: 0\n\n## Evidence\n- runtime: CONFLICTING (required by docs/guide-v1.md:4) \u2014 Observed config/runtime.yaml:2 (2.4.1) contradicts required >= 3.0.\n- runtime: FOUND (required by docs/guide-v2.md:4) \u2014 Version fact satisfies requirement.\n\n## Next verification actions\n- Confirm the intended 'runtime' version with the document owners.\n\n## Verdict: DOCUMENTARY BLOCKER IDENTIFIED\nDocument-level assessment only \u2014 not a verified restore."
+}

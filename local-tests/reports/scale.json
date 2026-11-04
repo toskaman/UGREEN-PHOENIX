@@ -1,0 +1,107 @@
+{
+  "verdict": "DOCUMENTARY BLOCKER IDENTIFIED",
+  "evidence": [
+    {
+      "subject": "app/main.py",
+      "op": null,
+      "version": null,
+      "source": "docs/guide.md",
+      "line": 4,
+      "truncated_source": false,
+      "status": "FOUND",
+      "detail": "'app/main.py' verified present in scope."
+    },
+    {
+      "subject": "config/app.yaml",
+      "op": null,
+      "version": null,
+      "source": "docs/guide.md",
+      "line": 5,
+      "truncated_source": false,
+      "status": "FOUND",
+      "detail": "'config/app.yaml' verified present in scope."
+    },
+    {
+      "subject": "config/missing.yaml",
+      "op": null,
+      "version": null,
+      "source": "docs/guide.md",
+      "line": 6,
+      "truncated_source": false,
+      "status": "NOT FOUND IN SCOPE",
+      "detail": "Bounded scope search returned no confirmed 'config/missing.yaml'. This is not proof of global absence."
+    },
+    {
+      "subject": "runtime",
+      "op": ">=",
+      "version": "3.0",
+      "source": "docs/guide.md",
+      "line": 7,
+      "truncated_source": false,
+      "status": "FOUND",
+      "detail": "Version fact satisfies requirement."
+    },
+    {
+      "subject": "worker",
+      "op": ">=",
+      "version": "2.0",
+      "source": "docs/guide.md",
+      "line": 8,
+      "truncated_source": false,
+      "status": "UNKNOWN",
+      "detail": "No observed version fact for 'worker'."
+    }
+  ],
+  "coverage": {
+    "reviewed": [
+      "config/app.yaml",
+      "docs/filler-00.md",
+      "docs/filler-01.md",
+      "docs/filler-02.md",
+      "docs/filler-03.md",
+      "docs/filler-04.md",
+      "docs/filler-05.md",
+      "docs/filler-06.md",
+      "docs/filler-07.md",
+      "docs/filler-08.md",
+      "docs/filler-09.md",
+      "docs/filler-10.md",
+      "docs/filler-11.md",
+      "docs/filler-12.md",
+      "docs/filler-13.md",
+      "docs/filler-14.md",
+      "docs/filler-15.md",
+      "docs/filler-16.md",
+      "docs/filler-17.md",
+      "docs/filler-18.md",
+      "docs/filler-19.md",
+      "docs/filler-20.md",
+      "docs/filler-21.md",
+      "docs/filler-22.md",
+      "docs/filler-23.md",
+      "docs/filler-24.md",
+      "docs/filler-25.md",
+      "docs/filler-26.md",
+      "docs/filler-27.md",
+      "docs/filler-28.md",
+      "docs/filler-29.md",
+      "docs/filler-30.md",
+      "docs/filler-31.md",
+      "docs/filler-32.md",
+      "docs/filler-33.md",
+      "docs/filler-34.md",
+      "docs/filler-35.md",
+      "docs/filler-36.md",
+      "docs/filler-37.md",
+      "docs/filler-38.md",
+      "docs/filler-39.md",
+      "docs/guide.md"
+    ],
+    "skipped": [
+      "app/main.py"
+    ],
+    "inaccessible": [],
+    "truncated": []
+  },
+  "report": "# PHOENIX local simulation report\nScope: scale (local synthetic corpus, NOT a NAS runtime result)\nDocuments reviewed: 42, skipped non-documents: 1, inaccessible: 0, truncated: 0\n\n## Evidence\n- app/main.py: FOUND (required by docs/guide.md:4) \u2014 'app/main.py' verified present in scope.\n- config/app.yaml: FOUND (required by docs/guide.md:5) \u2014 'config/app.yaml' verified present in scope.\n- config/missing.yaml: NOT FOUND IN SCOPE (required by docs/guide.md:6) \u2014 Bounded scope search returned no confirmed 'config/missing.yaml'. This is not proof of global absence.\n- runtime: FOUND (required by docs/guide.md:7) \u2014 Version fact satisfies requirement.\n- worker: UNKNOWN (required by docs/guide.md:8) \u2014 No observed version fact for 'worker'.\n\n## Next verification actions\n- Ask the operator to supply 'config/missing.yaml' or point to its approved location.\n- Resolve the 'worker' evidence gap (access or clearer source needed).\n\n## Verdict: DOCUMENTARY BLOCKER IDENTIFIED\nDocument-level assessment only \u2014 not a verified restore."
+}

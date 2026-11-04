@@ -1,6 +1,6 @@
 # PHOENIX local simulation report
 Scope: core-a (local synthetic corpus, NOT a NAS runtime result)
-Documents reviewed: 3, skipped non-documents: 1, inaccessible: 0, truncated: 0
+Documents reviewed: 4, skipped non-documents: 1, inaccessible: 0, truncated: 0
 
 ## Evidence
 - app/main.py: FOUND (required by docs/deployment-guide.md:4) — 'app/main.py' verified present in scope.
