@@ -124,4 +124,7 @@ and static validation. Full details in
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+PolyForm Strict 1.0.0 — see [LICENSE](LICENSE). Same license as the
+[OpenBridge](https://github.com/toskaman/openbridge) project: use for any
+noncommercial purpose is permitted; distribution, modification, and commercial
+use require a separate license from the author.
