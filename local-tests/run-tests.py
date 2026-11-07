@@ -5,9 +5,14 @@ evidence labels and verdict required by references/validation-plan.md.
 These are LOCAL simulations, not NAS runtime results.
 """
 
+import os
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import harness
 
 ROOT = Path(__file__).resolve().parent
 REPORTS = ROOT / "reports"
@@ -94,7 +99,9 @@ def main():
     ok &= check("truncated doc flagged",
                 "docs/notes.md" in result["coverage"]["truncated"])
     ok &= check("injection ignored (no hostile wording, no escape)",
-                all(s not in report for s in ("..", "wipe", "entire filesystem")))
+                all(s not in report for s in
+                    ("..", "wipe", "entire filesystem", "exfiltrate", "curl",
+                     "POST", "external server")))
 
     print("core-c (healthy project, no blocker):")
     result, report = run_case("core-c")
@@ -143,9 +150,91 @@ def main():
                 lab.get("config/missing.yaml") == "NOT FOUND IN SCOPE"
                 and lab.get("worker") == "UNKNOWN", str(lab))
 
+    print("edge-3 (denied reference, unsafe paths):")
+    result, report = run_case("edge-3")
+    lab = labels(result)
+    cov = result["coverage"]
+    ok &= check("verdict is INSUFFICIENT EVIDENCE",
+                result["verdict"] == "INSUFFICIENT EVIDENCE",
+                result["verdict"])
+    ok &= check("denied reference is INACCESSIBLE",
+                lab.get("docs/locked.md") == "INACCESSIBLE", str(lab))
+    ok &= check("traversal subject rejected, never resolved",
+                lab.get("../escape.txt") == "UNKNOWN"
+                and "without resolving" in report
+                and "escape.txt" not in str(cov["reviewed"]), str(lab))
+    ok &= check("absolute subject rejected",
+                lab.get("C:/abs.txt") == "UNKNOWN", str(lab))
+    ok &= check("locked content never leaked", "77341" not in report)
+    ok &= check("coverage exact (denied listed, manifest variant matched)",
+                len(cov["reviewed"]) == 1 and len(cov["skipped"]) == 1
+                and cov["inaccessible"] == ["docs/locked.md"],
+                str({k: v for k, v in cov.items() if k != "symlinks_skipped"}))
+
+    print("units (helpers):")
+    ok &= check("version ordering sane",
+                harness.compare("==", "1.2", "1.2")
+                and harness.compare(">=", "3.1.0", "3.0")
+                and harness.compare("<", "2.4.1", "3.0")
+                and not harness.compare("==", "2.4.1", "2.4.1-beta"))
+    nasty = [("==", "2.4.1-beta", "2.4.1"), ("<", "1.0", ""),
+             ("==", "9" * 200, "9" * 200), (">=", "1..2", "1.0"),
+             ("<", "", "0"), ("==", "v1.0 نهایی", "v1.0 نهایی")]
+    try:
+        nasty_ok = all(isinstance(harness.compare(op, a, b), bool)
+                       for op, a, b in nasty)
+    except Exception:
+        nasty_ok = False
+    ok &= check("version compare never raises", nasty_ok)
+    scope = ROOT / "corpus" / "core-a"
+    ok &= check("safe_join accepts in-scope spellings",
+                harness.safe_join(scope, "docs/checklist.md") is not None
+                and harness.safe_join(scope, "docs//checklist.md") is not None)
+    ok &= check("safe_join rejects escape/absolute/empty",
+                harness.safe_join(scope, "a/../../x") is None
+                and harness.safe_join(scope, "../x") is None
+                and harness.safe_join(scope, "C:/x") is None
+                and harness.safe_join(scope, "/etc/x") is None
+                and harness.safe_join(scope, "") is None)
+    ok &= check("norm_rel normalizes, rejects escape",
+                harness.norm_rel("./docs//x.md") == "docs/x.md"
+                and harness.norm_rel("a/../b") is None
+                and harness.norm_rel("  ") is None)
+    ok &= check("redact masks secrets, keeps facts",
+                harness.redact("api-key=hunter2") == "api-key=[REDACTED]"
+                and harness.redact("runtime 3.1.0") == "runtime 3.1.0"
+                and harness.redact("password : s3cr3t") == "password=[REDACTED]")
+    with tempfile.TemporaryDirectory() as tmp:
+        t = Path(tmp)
+        (t / "doc.md").write_text("REQUIRES: app/main.py\n", encoding="utf-8")
+        (t / "access-denied.txt").write_bytes(b"\xff\xfe\x00binary")
+        try:
+            res = harness.run(t)
+            binary_ok = res["verdict"] == "DOCUMENTARY BLOCKER IDENTIFIED"
+        except Exception:
+            binary_ok = False
+    ok &= check("binary manifest cannot crash run", binary_ok)
+    with tempfile.TemporaryDirectory() as tmp:
+        t = Path(tmp)
+        (t / "real.md").write_text("hello\n", encoding="utf-8")
+        try:
+            os.symlink(t / "real.md", t / "link.md")
+            linked = True
+        except (OSError, NotImplementedError):
+            linked = False
+        if linked:
+            res = harness.run(t)
+            assert res["coverage"]["symlinks_skipped"] == ["link.md"], \
+                "symlink followed!"
+            assert res["coverage"]["reviewed"] == ["real.md"], \
+                "target misread!"
+            print("  [PASS] symlinked file skipped (conditional, uncounted)")
+        else:
+            print("  [SKIP] symlink creation needs privileges")
+
     print("report contract (8 sections):")
     for case in ("core-a", "core-b", "edge", "core-c", "core-d", "edge-2",
-                 "scale"):
+                 "edge-3", "scale"):
         text = (REPORTS / f"{case}.md").read_text(encoding="utf-8")
         want = ["## 1. Scenario", "## 2. Coverage", "## 3. Requirements",
                 "## 4. Evidence table", "## 5. Priority blockers",

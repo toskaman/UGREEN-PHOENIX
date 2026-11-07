@@ -1,0 +1,1 @@
+print("locked project (synthetic)")

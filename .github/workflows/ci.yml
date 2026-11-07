@@ -1,0 +1,60 @@
+name: PHOENIX CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  tests:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Acceptance tests (must be ALL GREEN)
+        run: python local-tests/run-tests.py
+      - name: Baseline comparison (measurement)
+        run: python local-tests/run-baseline.py
+      - name: Wave-1 rehearsal validations
+        run: python local-tests/rehearse-wave1.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reports-${{ matrix.os }}
+          path: local-tests/reports/
+
+  checker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Download official Uliya skill kit
+        run: |
+          curl -sSL -o kit.zip "https://cdn.shopify.com/s/files/1/0630/9416/1602/files/uliya-skill-kit-0.7.3-en.zip?v=1790578898"
+          unzip -q kit.zip -d kit
+      - name: Assemble package and run static checker
+        run: |
+          mkdir -p pkg/phoenix-recovery-intelligence
+          cp SKILL.md pkg/phoenix-recovery-intelligence/
+          cp -r references pkg/phoenix-recovery-intelligence/
+          node kit/uliya-skill-kit/scripts/check-skill.mjs pkg/phoenix-recovery-intelligence
+      - name: Verify package contents
+        run: |
+          cd pkg && zip -qr ../skill.zip phoenix-recovery-intelligence && cd ..
+          python - <<'EOF'
+          import zipfile
+          names = zipfile.ZipFile('skill.zip').namelist()
+          files = [n for n in names if not n.endswith('/')]
+          assert files and all(
+              n == 'phoenix-recovery-intelligence/SKILL.md' or
+              (n.startswith('phoenix-recovery-intelligence/references/')
+               and n.endswith('.md')) for n in files), names
+          print('package contents OK:', len(files), 'files')
+          EOF

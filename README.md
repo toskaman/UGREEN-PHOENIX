@@ -28,20 +28,24 @@ SOURCES`, or `INSUFFICIENT EVIDENCE` — never a recovery percentage, never a
 
 ## Why PHOENIX fits this hackathon
 
-Mapped to the official judging criteria:
+Mapped to the official judging criteria (equally weighted, per the
+[official rules](https://ugreenhackathon.devpost.com/rules)):
 
-- **Usefulness** — answers a real question small teams ask after any
-  disruption: "do our saved files actually let us resume?" with a cited,
-  actionable report.
-- **AI NAS Fit** — built for on-device private AI: every check runs inside a
-  user-authorized NAS scope through `ug-filesystem`, `ug-document`, and
-  `ug-knowledge`; no external APIs, no data leaves the NAS.
-- **Creativity** — reframes recovery as documentary evidence: fixed evidence
-  labels, abstention on incomplete data, and an explicit refusal to confuse
-  "files found" with "restored".
-- **Technical Execution** — `static-pass` (0 errors, 0 warnings) on the
-  official checker, 31/31 local workflow-logic checks, a measured baseline
-  comparison, and a validation plan ready for the NAS test day.
+- **User Value** — answers a real question small teams ask after any
+  disruption: "do our saved files actually let us resume?" with a clear
+  workflow and a cited, actionable report.
+- **Innovation & Differentiation** — reframes recovery as documentary
+  evidence: fixed evidence labels, abstention on incomplete data, and an
+  explicit refusal to confuse "files found" with "restored" — a function
+  conventional file search and backup dashboards do not offer.
+- **Technical Quality** — sound orchestration through registered experts and
+  supported CLI capabilities, with permission and approval handling:
+  `static-pass` (0 errors, 0 warnings), 45/45 local workflow-logic checks,
+  and a measured baseline comparison.
+- **AI NAS Fit & Validation** — every check runs inside a user-authorized
+  NAS scope through `ug-filesystem`, `ug-document`, and `ug-knowledge`;
+  the Skill itself calls no external APIs. Model and data residency depend
+  on the UGREEN deployment and are unverified (see Limitations).
 
 ## Repository contents
 
@@ -73,13 +77,15 @@ instructions.
 
 1. Download or clone this repository:
    `git clone https://github.com/toskaman/UGREEN-PHOENIX.git`
-2. Copy the `SKILL.md` file together with the `references/` folder into your
+2. Name the Skill folder exactly `phoenix-recovery-intelligence` — the
+   checker requires the directory name to match the Skill name.
+3. Copy the `SKILL.md` file together with the `references/` folder into your
    Skills directory, following the official starter-kit layout
    (see the [hackathon starter kit](https://ai.ugreen.com/pages/hackathon-starter-kit)).
-3. Keep the relative structure intact — `SKILL.md` references
+4. Keep the relative structure intact — `SKILL.md` references
    `references/decision-protocol.md`, `references/validation-plan.md`, and
    `references/disclosures.md` by relative path.
-4. Run the provided static checker from the Skill Developer Package against
+5. Run the provided static checker from the Skill Developer Package against
    the Skill folder; proceed only with zero diagnostics.
 
 ## Usage
@@ -103,10 +109,10 @@ requires a separate user request plus platform approval.
 | Core test A — required config absent from corpus | ✅ Logic validated locally (`NOT FOUND IN SCOPE`, no global claim) · NAS runtime ⏳ ([plan](references/validation-plan.md)) |
 | Core test B — present but version-incompatible config | ✅ Logic validated locally (`CONFLICTING`, both sources cited) · NAS runtime ⏳ |
 | Edge case — denied access / prompt-injection document | ✅ Logic validated locally (denied, truncated, injection handled) · NAS runtime ⏳ |
-| Baseline comparison (filename search vs. generic QA vs. PHOENIX) | ✅ Measured locally (PHOENIX 7/7, filename 3/7, generic QA 1/7) · NAS runtime ⏳ ([report](local-tests/reports/baseline-comparison.md)) |
+| Baseline comparison (filename search vs. generic QA vs. PHOENIX) | ✅ Measured locally (PHOENIX 8/8, filename 3/8, generic QA 1/8) · NAS runtime ⏳ ([report](local-tests/reports/baseline-comparison.md)) |
 | Runtime execution on UGREEN AI NAS | ⏳ Untested — no NAS access in Round 1 |
 
-Local simulation: 31/31 checks green (`python local-tests/run-tests.py`)
+Local simulation: 45/45 checks green (`python local-tests/run-tests.py`)
 plus the measured baseline comparison. This validates the workflow logic
 only. The 24-hour finalist session plan is in
 [local-tests/finalist-runbook.md](local-tests/finalist-runbook.md).
@@ -132,14 +138,19 @@ platform questions for UGREEN support are listed in
   it is never generalized to global absence or impossibility of recovery.
 - Secrets are never exposed in reports; credential dependencies are described
   by type only.
+- Model and data residency unverified: the Skill calls no external APIs
+  itself, but whether inference runs on-device or in the cloud depends on
+  the UGREEN deployment; the published capability catalog contains no
+  network or residency statement.
 
 ## Disclosures
 
 PHOENIX was newly authored for this hackathon (November 2026); no earlier
 Skill or external code is bundled. OpenAI ChatGPT (GPT-6) assisted with
 reviewing the Developer Package, designing the orchestration, drafting text,
-and static validation. Full details in
-[references/disclosures.md](references/disclosures.md).
+and static validation; Muse Code (Meta Muse Spark) assisted afterwards with
+local verification tooling, submission packaging, and instruction review.
+Full details in [references/disclosures.md](references/disclosures.md).
 
 ## Links
 

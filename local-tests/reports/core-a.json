@@ -33,7 +33,8 @@
       "app/main.py"
     ],
     "inaccessible": [],
-    "truncated": []
+    "truncated": [],
+    "symlinks_skipped": []
   },
   "report": "# PHOENIX local simulation report\n\n## 1. Scenario\nScope: core-a (local synthetic corpus, NOT a NAS runtime result).\n\n## 2. Coverage\nDocuments reviewed: 4, skipped non-documents: 1, inaccessible: 0, truncated: 0.\n\n## 3. Requirements\n- app/main.py (required by docs/deployment-guide.md:4)\n- config/prod-config.yaml (required by docs/deployment-guide.md:5)\n\n## 4. Evidence table\n- app/main.py: FOUND (required by docs/deployment-guide.md:4) \u2014 'app/main.py' verified present in scope.\n- config/prod-config.yaml: NOT FOUND IN SCOPE (required by docs/deployment-guide.md:5) \u2014 Bounded scope search returned no confirmed 'config/prod-config.yaml'. This is not proof of global absence.\n\n## 5. Priority blockers\n- config/prod-config.yaml: NOT FOUND IN SCOPE \u2014 Bounded scope search returned no confirmed 'config/prod-config.yaml'. This is not proof of global absence.\n\n## 6. Contradictions and alternatives\n- none observed\n\n## 7. Next verification actions\n- Ask the operator to supply 'config/prod-config.yaml' or point to its approved location.\n\n## 8. Verdict: DOCUMENTARY BLOCKER IDENTIFIED\nDocument-level assessment only \u2014 not a verified restore."
 }

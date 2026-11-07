@@ -10,7 +10,7 @@ Hello,
 My project PHOENIX (`phoenix-recovery-intelligence`, a document-level
 recovery-readiness Skill) was selected as a finalist. The package passes
 the official static checker with zero errors and zero warnings
-(`uliya-skill-kit` 0.7.3, capability catalog 2.0.0), and my seven test
+(`uliya-skill-kit` 0.7.3, capability catalog 2.0.0), and my eight test
 corpora plus an hour-by-hour runbook are ready for the NAS session.
 
 To use the 24-hour session for execution rather than discovery, could you

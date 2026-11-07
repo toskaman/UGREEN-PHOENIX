@@ -10,9 +10,9 @@ verdicts below are the stable result.
 
 | method | verdict accuracy | blocker recall | false allegations | abstention | citation precision | repeatability | mean ms/case |
 |---|---|---|---|---|---|---|
-| phoenix | 7/7 | 5/5 | 0 | 1/1 | 18/18 rows cited | 7/7 stable | 2.1 |
-| filename_search | 3/7 | 2/5 | 0 | 0/1 | 0/18 rows cited | 7/7 stable | 2.1 |
-| generic_qa | 1/7 | 0/5 | 0 | 0/1 | 0/18 rows cited | 7/7 stable | 1.3 |
+| phoenix | 8/8 | 5/5 | 0 | 2/2 | 22/22 rows cited | 8/8 stable | 2.5 |
+| filename_search | 3/8 | 2/5 | 0 | 0/2 | 0/22 rows cited | 8/8 stable | 1.8 |
+| generic_qa | 1/8 | 0/5 | 0 | 0/2 | 0/22 rows cited | 8/8 stable | 1.2 |
 
 ## Per-case verdicts
 
@@ -24,6 +24,7 @@ verdicts below are the stable result.
 | core-d | DOCUMENTARY BLOCKER IDENTIFIED | DOCUMENTARY BLOCKER IDENTIFIED | DOCUMENTARY BLOCKER IDENTIFIED | NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES |
 | edge | INSUFFICIENT EVIDENCE | INSUFFICIENT EVIDENCE | NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES | NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES |
 | edge-2 | DOCUMENTARY BLOCKER IDENTIFIED | DOCUMENTARY BLOCKER IDENTIFIED | NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES | NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES |
+| edge-3 | INSUFFICIENT EVIDENCE | INSUFFICIENT EVIDENCE | DOCUMENTARY BLOCKER IDENTIFIED | NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES |
 | scale | DOCUMENTARY BLOCKER IDENTIFIED | DOCUMENTARY BLOCKER IDENTIFIED | DOCUMENTARY BLOCKER IDENTIFIED | NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES |
 
 Local simulation only — not NAS runtime evidence. Ground truth:

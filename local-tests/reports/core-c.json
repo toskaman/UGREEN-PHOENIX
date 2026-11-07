@@ -41,7 +41,8 @@
       "app/main.py"
     ],
     "inaccessible": [],
-    "truncated": []
+    "truncated": [],
+    "symlinks_skipped": []
   },
   "report": "# PHOENIX local simulation report\n\n## 1. Scenario\nScope: core-c (local synthetic corpus, NOT a NAS runtime result).\n\n## 2. Coverage\nDocuments reviewed: 2, skipped non-documents: 1, inaccessible: 0, truncated: 0.\n\n## 3. Requirements\n- app/main.py (required by docs/deployment-guide.md:4)\n- config/app.yaml (required by docs/deployment-guide.md:5)\n- runtime (required by docs/deployment-guide.md:6)\n\n## 4. Evidence table\n- app/main.py: FOUND (required by docs/deployment-guide.md:4) \u2014 'app/main.py' verified present in scope.\n- config/app.yaml: FOUND (required by docs/deployment-guide.md:5) \u2014 'config/app.yaml' verified present in scope.\n- runtime: FOUND (required by docs/deployment-guide.md:6) \u2014 Version fact satisfies requirement.\n\n## 5. Priority blockers\n- none\n\n## 6. Contradictions and alternatives\n- none observed\n\n## 7. Next verification actions\n- none\n\n## 8. Verdict: NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES\nDocument-level assessment only \u2014 not a verified restore."
 }

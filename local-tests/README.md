@@ -19,6 +19,8 @@ NAS permissions, or model quality on a real device.
 - `corpus/core-d/` — mixed evidence: one `FOUND`, one `NOT FOUND IN SCOPE`,
   one `CONFLICTING`.
 - `corpus/edge-2/` — two guides disagree on the required runtime version.
+- `corpus/edge-3/` — denied file referenced by `REQUIRES`, plus traversal
+  and absolute subjects that must be rejected without resolving.
 - `corpus/scale/` — 40 filler docs plus 5 requirements (coverage + timing).
 - `harness.py` — simulates discover → extract → verify → report and emits a
   PHOENIX-style evidence report with verdict.
@@ -43,7 +45,7 @@ NAS permissions, or model quality on a real device.
 ## Run
 
 ```sh
-python run-tests.py       # 31 acceptance checks (must be ALL GREEN)
+python run-tests.py       # 45 acceptance checks (must be ALL GREEN)
 python run-baseline.py    # baseline comparison → reports/baseline-comparison.md
 python rehearse-wave1.py  # validate prompts, regenerate wave1/ artifacts
 ```

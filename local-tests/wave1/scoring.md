@@ -8,4 +8,5 @@
 | W1-D | core-d | DOCUMENTARY BLOCKER IDENTIFIED |  |  |  |
 | W1-E | edge | INSUFFICIENT EVIDENCE |  |  |  |
 | W1-F | edge-2 | DOCUMENTARY BLOCKER IDENTIFIED |  |  |  |
+| W1-H | edge-3 | INSUFFICIENT EVIDENCE |  |  |  |
 | W1-G | scale | DOCUMENTARY BLOCKER IDENTIFIED |  |  |  |

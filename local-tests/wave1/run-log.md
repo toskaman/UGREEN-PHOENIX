@@ -66,6 +66,17 @@
 - Deviations from predicted report: 
 - Screenshots/recordings: 
 
+## W1-H — edge-3
+
+- Start/end time: 
+- Pasted scope: `<SCOPE>` = 
+- Actual verdict: 
+- Matches predicted: yes/no
+- Delegation trace visible: yes/no/partial
+- Approval dialogs (screenshots): 
+- Deviations from predicted report: 
+- Screenshots/recordings: 
+
 ## W1-G — scale
 
 - Start/end time: 

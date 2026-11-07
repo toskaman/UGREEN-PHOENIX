@@ -1,0 +1,59 @@
+{
+  "verdict": "INSUFFICIENT EVIDENCE",
+  "evidence": [
+    {
+      "subject": "docs/locked.md",
+      "op": null,
+      "version": null,
+      "source": "docs/guide.md",
+      "line": 4,
+      "truncated_source": false,
+      "status": "INACCESSIBLE",
+      "detail": "'docs/locked.md' cannot be read (access denied)."
+    },
+    {
+      "subject": "../escape.txt",
+      "op": null,
+      "version": null,
+      "source": "docs/guide.md",
+      "line": 5,
+      "truncated_source": false,
+      "status": "UNKNOWN",
+      "detail": "'../escape.txt' is not a safe in-scope path; rejected without resolving outside the scope."
+    },
+    {
+      "subject": "C:/abs.txt",
+      "op": null,
+      "version": null,
+      "source": "docs/guide.md",
+      "line": 6,
+      "truncated_source": false,
+      "status": "UNKNOWN",
+      "detail": "'C:/abs.txt' is not a safe in-scope path; rejected without resolving outside the scope."
+    },
+    {
+      "subject": "app/main.py",
+      "op": null,
+      "version": null,
+      "source": "docs/guide.md",
+      "line": 7,
+      "truncated_source": false,
+      "status": "FOUND",
+      "detail": "'app/main.py' verified present in scope."
+    }
+  ],
+  "coverage": {
+    "reviewed": [
+      "docs/guide.md"
+    ],
+    "skipped": [
+      "app/main.py"
+    ],
+    "inaccessible": [
+      "docs/locked.md"
+    ],
+    "truncated": [],
+    "symlinks_skipped": []
+  },
+  "report": "# PHOENIX local simulation report\n\n## 1. Scenario\nScope: edge-3 (local synthetic corpus, NOT a NAS runtime result).\n\n## 2. Coverage\nDocuments reviewed: 1, skipped non-documents: 1, inaccessible: 1, truncated: 0.\nInaccessible sources (content never read): docs/locked.md\n\n## 3. Requirements\n- docs/locked.md (required by docs/guide.md:4)\n- ../escape.txt (required by docs/guide.md:5)\n- C:/abs.txt (required by docs/guide.md:6)\n- app/main.py (required by docs/guide.md:7)\n\n## 4. Evidence table\n- docs/locked.md: INACCESSIBLE (required by docs/guide.md:4) \u2014 'docs/locked.md' cannot be read (access denied).\n- ../escape.txt: UNKNOWN (required by docs/guide.md:5) \u2014 '../escape.txt' is not a safe in-scope path; rejected without resolving outside the scope.\n- C:/abs.txt: UNKNOWN (required by docs/guide.md:6) \u2014 'C:/abs.txt' is not a safe in-scope path; rejected without resolving outside the scope.\n- app/main.py: FOUND (required by docs/guide.md:7) \u2014 'app/main.py' verified present in scope.\n\n## 5. Priority blockers\n- none\n\n## 6. Contradictions and alternatives\n- none observed\n\n## 7. Next verification actions\n- Resolve the 'docs/locked.md' evidence gap (access or clearer source needed).\n- Resolve the '../escape.txt' evidence gap (access or clearer source needed).\n- Resolve the 'C:/abs.txt' evidence gap (access or clearer source needed).\n\n## 8. Verdict: INSUFFICIENT EVIDENCE\nDocument-level assessment only \u2014 not a verified restore."
+}

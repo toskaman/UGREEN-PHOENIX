@@ -10,6 +10,12 @@ Marker spec (parsed from .md/.yaml/.txt documents, never from free text):
   PROVIDES: <name> <version>
   EXTRACTION TRUNCATED            -> marks the whole document as partial
   access-denied.txt (manifest)    -> listed paths are INACCESSIBLE, never read
+
+Scope safety (all enforced, all tested):
+  symlinks are never followed; traversal/absolute subjects are rejected as
+  UNKNOWN and never resolved outside the scope; manifest entries are
+  normalized before comparison; version strings are length-capped and
+  compared with a total ordering that cannot raise.
 """
 
 import hashlib
@@ -29,6 +35,41 @@ NOT_FOUND = "NOT FOUND IN SCOPE"
 INACCESSIBLE = "INACCESSIBLE"
 UNKNOWN = "UNKNOWN"
 
+MAX_VERSION_LENGTH = 64
+MAX_VERSION_SEGMENTS = 16
+SECRET_RE = re.compile(r"(?i)\b(password|passwd|secret|api[_-]?key|"
+                       r"access[_-]?token|private[_-]?key)\s*[:=]\s*\S+")
+
+
+def redact(text: str) -> str:
+    """Mask obvious secret assignments in human-readable report output."""
+    def _mask(match):
+        head = re.sub(r"\s*[:=]\s*\S+$", "", match.group(0))
+        return head + "=[REDACTED]"
+    return SECRET_RE.sub(_mask, text)
+
+
+def norm_rel(entry: str):
+    """Normalize a manifest/relative path; return None if it escapes."""
+    parts = [q for q in entry.strip().replace("\\", "/").split("/")
+             if q not in ("", ".")]
+    if not parts or any(q == ".." for q in parts):
+        return None
+    return "/".join(parts)
+
+
+def safe_join(scope: Path, user_path: str):
+    """Resolve user_path inside scope; return None if unsafe/out-of-scope."""
+    text = user_path.replace("\\", "/")
+    if not text or text.startswith("/") or re.match(r"^[A-Za-z]:", text):
+        return None
+    candidate = (scope / text).resolve()
+    try:
+        candidate.relative_to(scope)
+    except ValueError:
+        return None
+    return candidate
+
 
 def sha256_of(path: Path) -> str:
     h = hashlib.sha256()
@@ -39,7 +80,10 @@ def sha256_of(path: Path) -> str:
 
 
 def ver_key(version: str):
-    return tuple(int(p) if p.isdigit() else p for p in version.split("."))
+    key = []
+    for part in version[:MAX_VERSION_LENGTH].split(".")[:MAX_VERSION_SEGMENTS]:
+        key.append((0, int(part)) if part.isdigit() else (1, part[:32]))
+    return tuple(key)
 
 
 def compare(op: str, actual: str, wanted: str) -> bool:
@@ -53,17 +97,21 @@ def run(scope: Path) -> dict:
     manifest = scope / "access-denied.txt"
     denied = set()
     if manifest.exists():
-        denied = {l.strip().replace("\\", "/") for l in
-                  manifest.read_text(encoding="utf-8").splitlines()
-                  if l.strip()}
+        denied = {n for n in
+                  (norm_rel(line) for line in manifest.read_text(
+                      encoding="utf-8", errors="replace").splitlines())
+                  if n}
 
     # Step 1 — discovery (simulates file-agent find/ls/stat/sha256sum).
-    discovered, inaccessible_files, skipped = [], [], []
-    for path in sorted(scope.rglob("*")):
+    discovered, inaccessible_files, skipped, symlinks = [], [], [], []
+    for path in sorted(scope.rglob("*", recurse_symlinks=False)):
         if path.is_dir() or path.name == "access-denied.txt":
             continue
+        if path.is_symlink():
+            symlinks.append(path.relative_to(scope).as_posix())
+            continue  # never followed, never opened
         rel = path.relative_to(scope).as_posix()
-        if rel in denied:
+        if norm_rel(rel) in denied:
             inaccessible_files.append(rel)  # never opened, never read
             continue
         if path.suffix.lower() in PARSED_SUFFIXES:
@@ -106,12 +154,19 @@ def run(scope: Path) -> dict:
                                        "requirement cannot be confirmed."})
             continue
         if "/" in subj or "." in subj:  # file reference
-            norm = subj.replace("\\", "/").lstrip("./")
-            if norm in denied or subj in denied:
+            norm = norm_rel(subj)
+            if norm is not None and norm in denied:
                 evidence.append({**req, "status": INACCESSIBLE,
                                  "detail": f"'{subj}' cannot be read "
                                            f"(access denied)."})
-            elif (scope / norm).exists():
+                continue
+            target = safe_join(scope, subj)
+            if target is None:
+                evidence.append({**req, "status": UNKNOWN,
+                                 "detail": f"'{subj}' is not a safe in-scope "
+                                           f"path; rejected without resolving "
+                                           f"outside the scope."})
+            elif target.exists():
                 evidence.append({**req, "status": FOUND,
                                  "detail": f"'{subj}' verified present in "
                                            f"scope."})
@@ -152,14 +207,15 @@ def run(scope: Path) -> dict:
 
     next_steps = []
     for e in evidence:
+        subject = redact(e["subject"])
         if e["status"] == NOT_FOUND:
-            next_steps.append(f"Ask the operator to supply '{e['subject']}' "
+            next_steps.append(f"Ask the operator to supply '{subject}' "
                               f"or point to its approved location.")
         elif e["status"] == CONFLICTING:
-            next_steps.append(f"Confirm the intended '{e['subject']}' "
+            next_steps.append(f"Confirm the intended '{subject}' "
                               f"version with the document owners.")
         elif e["status"] in (INACCESSIBLE, UNKNOWN):
-            next_steps.append(f"Resolve the '{e['subject']}' evidence gap "
+            next_steps.append(f"Resolve the '{subject}' evidence gap "
                               f"(access or clearer source needed).")
 
     blockers = [e for e in evidence
@@ -176,18 +232,24 @@ def run(scope: Path) -> dict:
     if inaccessible_files:
         lines.append("Inaccessible sources (content never read): "
                      + ", ".join(inaccessible_files))
+    if symlinks:
+        lines.append("Symlinked entries skipped (never followed): "
+                     + ", ".join(symlinks))
     lines += ["", "## 3. Requirements"]
-    lines += [f"- {e['subject']} (required by {e['source']}:{e['line']})"
+    lines += [f"- {redact(e['subject'])} "
+              f"(required by {e['source']}:{e['line']})"
               for e in evidence] or ["- none extracted"]
     lines += ["", "## 4. Evidence table"]
     for e in evidence:
-        lines.append(f"- {e['subject']}: {e['status']} "
-                     f"(required by {e['source']}:{e['line']}) — {e['detail']}")
+        lines.append(f"- {redact(e['subject'])}: {e['status']} "
+                     f"(required by {e['source']}:{e['line']}) — "
+                     f"{redact(e['detail'])}")
     lines += ["", "## 5. Priority blockers"]
-    lines += [f"- {e['subject']}: {e['status']} — {e['detail']}"
+    lines += [f"- {redact(e['subject'])}: {e['status']} — "
+              f"{redact(e['detail'])}"
               for e in blockers] or ["- none"]
     lines += ["", "## 6. Contradictions and alternatives"]
-    lines += [f"- {e['subject']} — {e['detail']}"
+    lines += [f"- {redact(e['subject'])} — {redact(e['detail'])}"
               for e in conflicts] or ["- none observed"]
     lines += ["", "## 7. Next verification actions"]
     lines += [f"- {s}" for s in next_steps] or ["- none"]
@@ -198,7 +260,8 @@ def run(scope: Path) -> dict:
             "coverage": {"reviewed": [d["path"] for d in discovered],
                          "skipped": skipped,
                          "inaccessible": inaccessible_files,
-                         "truncated": truncated_docs},
+                         "truncated": truncated_docs,
+                         "symlinks_skipped": symlinks},
             "report": "\n".join(lines)}
 
 

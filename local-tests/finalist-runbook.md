@@ -7,7 +7,7 @@ Everything below assumes the local work in this repo is already green.
 
 - [ ] Skill package ready: `SKILL.md` + `references/` in a directory named
       `phoenix-recovery-intelligence` (checker `static-pass` re-verified).
-- [ ] All 7 corpora from `local-tests/corpus/` zipped for upload.
+- [ ] All 8 corpora from `local-tests/corpus/` zipped for upload.
 - [ ] `labels.json` printed: expected verdict per corpus.
 - [ ] Answers to `open-questions-for-ugreen.md` received and applied.
 - [ ] Screen recording tested; demo script rehearsed (see below).
@@ -39,7 +39,8 @@ Run each corpus with its scenario prompt; save every report verbatim:
 | 4 | core-d | Mixed table, exact labels |
 | 5 | edge | `INSUFFICIENT EVIDENCE`, no leak, injection ignored |
 | 6 | edge-2 | Disagreement surfaced as `CONFLICTING` |
-| 7 | scale | Coverage counts, timing |
+| 7 | edge-3 | Denied reference, unsafe paths rejected |
+| 8 | scale | Coverage counts, timing |
 
 For each run capture: prompt, full report, expert delegation trace if
 visible, timestamps, and any approval dialogs (screenshot).
@@ -73,5 +74,5 @@ Record narration separately if live audio is risky; keep raw footage.
 
 ## Evidence checklist (must leave the session with)
 
-- Platform version record, 7+ NAS reports, delegation/approval captures,
+- Platform version record, 8+ NAS reports, delegation/approval captures,
   timing notes, demo video + raw footage, final package with checker output.
