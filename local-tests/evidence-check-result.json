@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "references/decision-protocol.md",
-      "sha256": "d5e582f0211cc642119ffb9f3c0bd7a0de662cb5d40d04c7c5624f57cc2dff58"
+      "sha256": "296c731b361e371304818e84456c225a448d96f88f18f2b5b8b68de5e933b281"
     },
     {
       "path": "references/disclosures.md",
@@ -18,11 +18,11 @@
     },
     {
       "path": "references/validation-plan.md",
-      "sha256": "7174f27fbaa95dd8f132b488e90f95cc0d71addb9884f3afd8d8524c4c9fc0e5"
+      "sha256": "e0d825d4991866508a69fa54a44585814b8cd2326bbafd8c0f988d34f6b423ca"
     },
     {
       "path": "SKILL.md",
-      "sha256": "b039c7853d4cad5697cc7f161b555563ed167d6fad8df16216f4b435443947b0"
+      "sha256": "fc5a6ac030904144bc08e194d077c209ef922bdf6334ac20d6516f124412c1b6"
     }
   ],
   "summary": {
