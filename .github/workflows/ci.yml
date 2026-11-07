@@ -9,7 +9,7 @@ jobs:
   tests:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
         python-version: ['3.13', '3.14']
     runs-on: ${{ matrix.os }}
     steps:
@@ -41,6 +41,7 @@ jobs:
       - name: Download official Uliya skill kit
         run: |
           curl -sSL -o kit.zip "https://cdn.shopify.com/s/files/1/0630/9416/1602/files/uliya-skill-kit-0.7.3-en.zip?v=1790578898"
+          echo "cf557e5a022e4297892f39768132855154232efdede726b2845450ccd70e1b3  kit.zip" | sha256sum -c -
           unzip -q kit.zip -d kit
       - name: Assemble package and run static checker
         run: |

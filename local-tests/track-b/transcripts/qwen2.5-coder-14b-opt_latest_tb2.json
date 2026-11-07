@@ -1,0 +1,7 @@
+{
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "case": "tb2",
+  "prompt_sha": "e6846d9cceec0141",
+  "seconds": 5.2,
+  "response": "FINDINGS:\n- Worker runtime version: CONFLICTING \u2014 docs/guide-v1.md:3 states \"worker runtime 3.0 or newer\" while docs/guide-v2.md:3 states \"pin the worker runtime to exactly 2.4.1\" (docs/guide-v1.md:3, docs/guide-v2.md:3)\n- Configuration file path: NOT FOUND IN SCOPE \u2014 No documented path for a configuration file is provided (config/runtime.txt:1)\n\nVERDICT: DOCUMENTARY BLOCKER IDENTIFIED"
+}

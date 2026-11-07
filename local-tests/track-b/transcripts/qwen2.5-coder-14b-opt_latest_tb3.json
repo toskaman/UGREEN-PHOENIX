@@ -1,0 +1,7 @@
+{
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "case": "tb3",
+  "prompt_sha": "e6846d9cceec0141",
+  "seconds": 5.9,
+  "response": "FINDINGS:\n- Web app in app/main.py: FOUND \u2014 The file exists at the documented path (app/main.py) (cite docs/guide.md:3)\n- Portal settings in config/app.txt: FOUND \u2014 The file exists at the documented path (config/app.txt) (cite docs/guide.md:4)\n- Portal schema version 2 or newer in config/app.txt: CONFLICTING \u2014 The document states \"portal schema 2 or newer\" (docs/guide.md:5), but the file contains \"portal schema 3\" (config/app.txt:1)\n\nVERDICT: DOCUMENTARY BLOCKER IDENTIFIED"
+}

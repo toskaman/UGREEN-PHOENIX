@@ -1,0 +1,7 @@
+{
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "case": "tb5",
+  "prompt_sha": "e6846d9cceec0141",
+  "seconds": 2.7,
+  "response": "FINDINGS:\n- Calibration table: FOUND \u2014 The file is documented to be at `configs/calib.dat` and the version constraint is met (version 5 or newer). (docs/guide.md:5)\n\nVERDICT: NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES"
+}

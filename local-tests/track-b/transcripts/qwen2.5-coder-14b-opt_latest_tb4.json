@@ -1,0 +1,7 @@
+{
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "case": "tb4",
+  "prompt_sha": "e6846d9cceec0141",
+  "seconds": 2.9,
+  "response": "FINDINGS:\n- app/main.py: FOUND \u2014 The file exists at the documented path (docs/guide.md:3).\n- creds/sheet.txt: INACCESSIBLE \u2014 The file is unreadable due to access denial by manifest (creds/sheet.txt).\n\nVERDICT: INSUFFICIENT EVIDENCE"
+}

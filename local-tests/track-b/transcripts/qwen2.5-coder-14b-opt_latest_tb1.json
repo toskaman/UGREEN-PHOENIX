@@ -1,0 +1,7 @@
+{
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "case": "tb1",
+  "prompt_sha": "e6846d9cceec0141",
+  "seconds": 31.2,
+  "response": "FINDINGS:\n- Render node restore notes: FOUND \u2014 The document provides clear instructions on how to restore the render node (docs/restore-guide.md:3-7).\n- Scene file from scenes/shot01.blend: FOUND \u2014 The document specifies the scene file to be installed (docs/restore-guide.md:4).\n- Plates folder: NOT FOUND IN SCOPE \u2014 The document mentions mounting the plates folder next to the scene file, but does not specify the path or version (docs/restore-guide.md:5).\n- Render preset at render/preset.yaml: CONFLICTING \u2014 The document specifies the preset file location (docs/restore-guide.md:6), but the file at that location is marked as stale and superseded (old/preset.yaml:1).\n\nVERDICT: DOCUMENTARY BLOCKER IDENTIFIED"
+}

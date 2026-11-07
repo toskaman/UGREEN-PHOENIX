@@ -1,0 +1,7 @@
+{
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "case": "tb6",
+  "prompt_sha": "e6846d9cceec0141",
+  "seconds": 3.3,
+  "response": "FINDINGS:\n- Backup of the database using pg_dump before Friday: UNKNOWN \u2014 No evidence provided about the backup status (cite docs/guide.md:3)\n- Current SQLite snapshot in db/snapshot.sqlite: FOUND \u2014 The file exists and matches the documented path (cite db/snapshot.sqlite:1)\n\nVERDICT: INSUFFICIENT EVIDENCE"
+}

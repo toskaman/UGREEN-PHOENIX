@@ -9,6 +9,14 @@ PHOENIX Recovery Intelligence identifies documentary blockers to resuming a proj
 
 This is a document-level readiness assessment, not a NAS snapshot inspector, system backup verification service, operating-system restorer, or continuously running monitor.
 
+# What you get (plain English)
+
+- PHOENIX checks whether your project folder contains what your own documents say is needed to rebuild the project: files, versions, and setup instructions.
+- You authorize one folder. Nothing outside it is read. Your files are only read, never moved, changed, or restored.
+- A "blocker" means one required thing cannot be documented as ready: a missing file, a version clash, or evidence too thin to judge. Each blocker cites the exact file and line.
+- You get prioritized next actions (fix blockers first), and after you fix something you can ask for a recheck: PHOENIX re-inspects and shows a before/after comparison.
+- PHOENIX never claims your project is restored. Only a real restoration test proves that.
+
 # Required input
 
 - A project or activity to assess, a defined failure scenario, and explicit authorized NAS file/folder scope. Ask for a scope when missing; do not assume blanket access.

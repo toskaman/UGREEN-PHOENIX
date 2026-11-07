@@ -115,3 +115,29 @@ consistent with an OEM path, but any partner needs a commercial license.
   Done (local).
 - P2.4 recovery capsule: the report is the capsule; NAS-side save stays
   approval-gated and unexecuted. Designed, BLOCKED-NAS.
+
+## 13. v4 addendum: Recovery Closure as the commercial wedge
+
+Why Closure adds value: one-shot reports create follow-up labor ("did
+the fix work?"); Closure closes the loop inside the product, which is
+the difference between a diagnostic and a workflow. Measurable in
+pilot: fraction of flagged blockers that reach RESOLVED with cited
+new evidence, and time from first report to resolved delta.
+Why UGREEN NAS fits: the recheck loop needs tool access to the stored
+files (existence, metadata, re-read after change) — capabilities a
+cloud chatbot cannot offer without equivalent file-system tool access; the loop is
+the retention hook for UGOS, complementing (not replacing) backup:
+backups preserve bytes, PHOENIX verifies the bytes can rebuild the
+documented project.
+OEM integration sketch: UGOS backup/sync completion triggers a
+PHOENIX readiness pass; Recovery Delta history per project becomes a
+dashboard; SMB add-on licenses the history + scheduled passes.
+Segments: SMB studios first (high-stakes restores), IT/compliance
+second (evidence trail), consumer excluded.
+PHOENIX Enterprise (future, NOT the hackathon Skill): scheduled
+passes, delta history, connectors (issue trackers, CI manifests),
+multi-scope rollups — all require separate development and APIs.
+Defensibility update: still no hard moat; new potentially defensible
+assets are the graded verdict-quality dataset (Track B transcripts +
+rubric) and the closure-state evaluation harness. No UGREEN interest
+claimed; nothing production-ready claimed.
