@@ -1,0 +1,20 @@
+{
+  "request_id": "archb-b1-9089cf89",
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "model_returned": "qwen2.5-coder-14b-opt:latest",
+  "identity_ok": true,
+  "status": "ok",
+  "case": "tb4",
+  "tag": "archb-b1",
+  "prompt_sha": "7968426e7df3eda4",
+  "max_out": 1536,
+  "reasoning_budget": null,
+  "prompt_tokens": 580,
+  "completion_tokens": 64,
+  "reasoning_tokens": 0,
+  "finish_reason": "stop",
+  "latency_s": 2.65,
+  "cost_usd": 0.0,
+  "verdict_line": "NO-VERDICT-LINE",
+  "response": "SUBJECT | REQUIRED_PATH | REQUIRED_CONSTRAINT | OBSERVED_PATH | OBSERVED_VALUE | SOURCE_LINES | NOTES\noffsite (synthetic) | app/main.py | - | app/main.py | print(\"offsite (synthetic)\") | docs/guide.md:3, app/main.py:1 | OK"
+}

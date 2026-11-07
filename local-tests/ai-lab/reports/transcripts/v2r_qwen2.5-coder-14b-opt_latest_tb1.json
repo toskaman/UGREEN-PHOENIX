@@ -1,0 +1,20 @@
+{
+  "request_id": "v2r-5ea9a507",
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "model_returned": "qwen2.5-coder-14b-opt:latest",
+  "identity_ok": true,
+  "status": "ok",
+  "case": "tb1",
+  "tag": "v2r",
+  "prompt_sha": "23ef722df7931a8f",
+  "max_out": 1536,
+  "reasoning_budget": null,
+  "prompt_tokens": 785,
+  "completion_tokens": 94,
+  "reasoning_tokens": 0,
+  "finish_reason": "stop",
+  "latency_s": 4.01,
+  "cost_usd": 0.0,
+  "verdict_line": "INSUFFICIENT EVIDENCE",
+  "response": "FINDINGS:\n- render preset: INACCESSIBLE \u2014 preset.yaml is marked as stale and superseded (cite docs/restore-guide.md:6)\n- scene file: FOUND \u2014 scenes/shot01.blend exists (cite docs/restore-guide.md:4)\n- plates folder: NOT FOUND IN SCOPE \u2014 no mention of plates folder path or existence (cite docs/restore-guide.md:5)\n\nVERDICT: INSUFFICIENT EVIDENCE"
+}

@@ -1,0 +1,20 @@
+{
+  "request_id": "v3-69550192",
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "model_returned": "qwen2.5-coder-14b-opt:latest",
+  "identity_ok": true,
+  "status": "ok",
+  "case": "tb6",
+  "tag": "v3",
+  "prompt_sha": "83333eb512a89d7b",
+  "max_out": 1536,
+  "reasoning_budget": null,
+  "prompt_tokens": 767,
+  "completion_tokens": 68,
+  "reasoning_tokens": 0,
+  "finish_reason": "stop",
+  "latency_s": 2.89,
+  "cost_usd": 0.0,
+  "verdict_line": "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES",
+  "response": "FINDINGS:\n- Backup with pg_dump: UNKNOWN \u2014 Truncation note at line 3 (cite docs/guide.md:3)\n- SQLite snapshot in db/snapshot.sqlite: FOUND \u2014 Version constraint met (cite docs/guide.md:4)\n\nVERDICT: NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES"
+}

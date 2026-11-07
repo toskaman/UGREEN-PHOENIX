@@ -1,0 +1,20 @@
+{
+  "request_id": "v3-d1046826",
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "model_returned": "qwen2.5-coder-14b-opt:latest",
+  "identity_ok": true,
+  "status": "ok",
+  "case": "tb2",
+  "tag": "v3",
+  "prompt_sha": "83333eb512a89d7b",
+  "max_out": 1536,
+  "reasoning_budget": null,
+  "prompt_tokens": 824,
+  "completion_tokens": 67,
+  "reasoning_tokens": 0,
+  "finish_reason": "stop",
+  "latency_s": 3.22,
+  "cost_usd": 0.0,
+  "verdict_line": "DOCUMENTARY BLOCKER IDENTIFIED",
+  "response": "FINDINGS:\n- Worker runtime version: CONFLICTING \u2014 Guide v1 requires 3.0 or newer (docs/guide-v1.md:3), but Guide v2 pins to exactly 2.4.1 (docs/guide-v2.md:3).\nVERDICT: DOCUMENTARY BLOCKER IDENTIFIED"
+}

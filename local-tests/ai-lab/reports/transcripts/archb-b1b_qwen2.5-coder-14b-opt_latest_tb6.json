@@ -1,0 +1,20 @@
+{
+  "request_id": "archb-b1b-8ca7681a",
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "model_returned": "qwen2.5-coder-14b-opt:latest",
+  "identity_ok": true,
+  "status": "ok",
+  "case": "tb6",
+  "tag": "archb-b1b",
+  "prompt_sha": "3c67b7c8088ae51c",
+  "max_out": 1536,
+  "reasoning_budget": null,
+  "prompt_tokens": 646,
+  "completion_tokens": 113,
+  "reasoning_tokens": 0,
+  "finish_reason": "stop",
+  "latency_s": 4.62,
+  "cost_usd": 0.0,
+  "verdict_line": "NO-VERDICT-LINE",
+  "response": "BACKUP | - | - | UNREADABLE | - | docs/guide.md:3 | UNREADABLE: [UNREADABLE: backup file not provided]\nSNAPSHOT | db/snapshot.sqlite | - | db/snapshot.sqlite | SQLite format 3 (synthetic snapshot) | docs/guide.md:4, db/snapshot.sqlite:1 | OK\n\nALT | BACKUP | - | db/snapshot.sqlite | SQLite format 3 (synthetic snapshot) | docs/guide.md:3, db/snapshot.sqlite:1 | OK"
+}

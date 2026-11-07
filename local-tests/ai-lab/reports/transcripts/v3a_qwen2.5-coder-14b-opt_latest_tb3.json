@@ -1,0 +1,20 @@
+{
+  "request_id": "v3a-c64caf0f",
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "model_returned": "qwen2.5-coder-14b-opt:latest",
+  "identity_ok": true,
+  "status": "ok",
+  "case": "tb3",
+  "tag": "v3a",
+  "prompt_sha": "2886e153e68c9429",
+  "max_out": 1536,
+  "reasoning_budget": null,
+  "prompt_tokens": 808,
+  "completion_tokens": 88,
+  "reasoning_tokens": 0,
+  "finish_reason": "stop",
+  "latency_s": 3.7,
+  "cost_usd": 0.0,
+  "verdict_line": "DOCUMENTARY BLOCKER IDENTIFIED",
+  "response": "FINDINGS:\n- app/main.py: FOUND \u2014 The file exists at the documented path (docs/guide.md:3)\n- config/app.txt: CONFLICTING \u2014 The file exists but declares portal schema 3, which is newer than required (docs/guide.md:5), but it conflicts with the requirement for schema 2 or newer (config/app.txt:1)\n\nVERDICT: DOCUMENTARY BLOCKER IDENTIFIED"
+}

@@ -1,0 +1,20 @@
+{
+  "request_id": "v2-a6830942",
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "model_returned": "qwen2.5-coder-14b-opt:latest",
+  "identity_ok": true,
+  "status": "ok",
+  "case": "tb5",
+  "tag": "v2",
+  "prompt_sha": "23ef722df7931a8f",
+  "max_out": 1536,
+  "reasoning_budget": null,
+  "prompt_tokens": 682,
+  "completion_tokens": 40,
+  "reasoning_tokens": 0,
+  "finish_reason": "stop",
+  "latency_s": 1.66,
+  "cost_usd": 0.0,
+  "verdict_line": "INSUFFICIENT EVIDENCE",
+  "response": "FINDINGS:\n- Calibration table: UNKNOWN \u2014 Page 2 is missing, truncating the requirement (cite docs/guide.md:6)\nVERDICT: INSUFFICIENT EVIDENCE"
+}

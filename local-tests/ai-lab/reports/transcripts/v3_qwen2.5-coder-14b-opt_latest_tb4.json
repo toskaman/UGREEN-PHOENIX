@@ -1,0 +1,20 @@
+{
+  "request_id": "v3-363699d8",
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "model_returned": "qwen2.5-coder-14b-opt:latest",
+  "identity_ok": true,
+  "status": "ok",
+  "case": "tb4",
+  "tag": "v3",
+  "prompt_sha": "83333eb512a89d7b",
+  "max_out": 1536,
+  "reasoning_budget": null,
+  "prompt_tokens": 779,
+  "completion_tokens": 58,
+  "reasoning_tokens": 0,
+  "finish_reason": "stop",
+  "latency_s": 2.45,
+  "cost_usd": 0.0,
+  "verdict_line": "INSUFFICIENT EVIDENCE",
+  "response": "FINDINGS:\n- app/main.py: FOUND \u2014 The file exists and matches the required path (docs/guide.md:3).\n- creds/sheet.txt: INACCESSIBLE \u2014 Access denied by manifest (creds/sheet.txt).\n\nVERDICT: INSUFFICIENT EVIDENCE"
+}

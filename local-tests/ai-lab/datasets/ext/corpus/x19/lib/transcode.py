@@ -1,0 +1,1 @@
+print("transcode (synthetic)")

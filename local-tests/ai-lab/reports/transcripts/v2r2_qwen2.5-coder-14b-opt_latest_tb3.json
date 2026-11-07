@@ -1,0 +1,20 @@
+{
+  "request_id": "v2r2-7f901c25",
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "model_returned": "qwen2.5-coder-14b-opt:latest",
+  "identity_ok": true,
+  "status": "ok",
+  "case": "tb3",
+  "tag": "v2r2",
+  "prompt_sha": "23ef722df7931a8f",
+  "max_out": 1536,
+  "reasoning_budget": null,
+  "prompt_tokens": 713,
+  "completion_tokens": 83,
+  "reasoning_tokens": 0,
+  "finish_reason": "stop",
+  "latency_s": 3.89,
+  "cost_usd": 0.0,
+  "verdict_line": "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES",
+  "response": "FINDINGS:\n- app/main.py: FOUND \u2014 The file exists and contains the required content (cite docs/guide.md:3)\n- config/app.txt: FOUND \u2014 The file exists and declares portal schema 3, which satisfies \"2 or newer\" (3 >= 2) (cite docs/guide.md:5)\n\nVERDICT: NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES"
+}

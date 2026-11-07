@@ -1,0 +1,20 @@
+{
+  "request_id": "v3a-4d6d0c21",
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "model_returned": "qwen2.5-coder-14b-opt:latest",
+  "identity_ok": true,
+  "status": "ok",
+  "case": "tb1",
+  "tag": "v3a",
+  "prompt_sha": "2886e153e68c9429",
+  "max_out": 1536,
+  "reasoning_budget": null,
+  "prompt_tokens": 880,
+  "completion_tokens": 105,
+  "reasoning_tokens": 0,
+  "finish_reason": "stop",
+  "latency_s": 5.17,
+  "cost_usd": 0.0,
+  "verdict_line": "DOCUMENTARY BLOCKER IDENTIFIED",
+  "response": "FINDINGS:\n- render/preset.yaml: CONFLICTING \u2014 The guide requires version \"N or newer\" but only a stale file exists at old/preset.yaml (do not use) (cite docs/restore-guide.md:6, old/preset.yaml:1)\n- scenes/shot01.blend: FOUND \u2014 The file exists at the documented path (cite docs/restore-guide.md:4, scenes/shot01.blend:1)\n\nVERDICT: DOCUMENTARY BLOCKER IDENTIFIED"
+}

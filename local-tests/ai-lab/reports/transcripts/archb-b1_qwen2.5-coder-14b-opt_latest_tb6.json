@@ -1,0 +1,20 @@
+{
+  "request_id": "archb-b1-00762bb6",
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "model_returned": "qwen2.5-coder-14b-opt:latest",
+  "identity_ok": true,
+  "status": "ok",
+  "case": "tb6",
+  "tag": "archb-b1",
+  "prompt_sha": "7968426e7df3eda4",
+  "max_out": 1536,
+  "reasoning_budget": null,
+  "prompt_tokens": 568,
+  "completion_tokens": 13,
+  "reasoning_tokens": 0,
+  "finish_reason": "stop",
+  "latency_s": 0.59,
+  "cost_usd": 0.0,
+  "verdict_line": "NO-VERDICT-LINE",
+  "response": "ALT | backup database | pg_dump | db/snapshot.sqlite"
+}
