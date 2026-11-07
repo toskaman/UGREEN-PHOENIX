@@ -108,7 +108,8 @@ tool access (finalist-day ablation), or a defensible reasoning asset.
 
 Evidence: 71/71 checks, 16/16 mutation kills including delta mutants,
 stable 8/8 vs 6/8 vs 3/8 vs 1/8 baseline, two-model Track B with
-committed transcripts and strict rubric grading (9B 2/6, 14B 4/6),
+committed transcripts and strict rubric grading (9B 3/6, 14B 3/6,
+corrected same-day after a grading-frame error — see results.md),
 a real runner bug found and fixed during grading (last-match verdict
 parsing), CI with pinned actions, kit checksum, and macOS coverage.
 Strongest remaining objection: the Skill's core (delegation, approval,
