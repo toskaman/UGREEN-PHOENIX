@@ -1,0 +1,20 @@
+{
+  "request_id": "locked-984764a6",
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "model_returned": "qwen2.5-coder-14b-opt:latest",
+  "identity_ok": true,
+  "status": "ok",
+  "case": "x27",
+  "tag": "locked",
+  "prompt_sha": "486b7262fc213581",
+  "max_out": 1536,
+  "reasoning_budget": null,
+  "prompt_tokens": 557,
+  "completion_tokens": 48,
+  "reasoning_tokens": 0,
+  "finish_reason": "stop",
+  "latency_s": 2.08,
+  "cost_usd": 0.0,
+  "verdict_line": "NO-VERDICT-LINE",
+  "response": "SUBJECT | REQUIRED_PATH | REQUIRED_CONSTRAINT | OBSERVED_PATH | OBSERVED_VALUE | SOURCE_LINES | NOTES\nrestore cluster | appendix.md | - | UNREADABLE | - | docs/guide.md:3 | UNREADABLE"
+}

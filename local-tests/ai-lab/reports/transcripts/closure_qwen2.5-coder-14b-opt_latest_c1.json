@@ -1,0 +1,20 @@
+{
+  "request_id": "closure-98d5292a",
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "model_returned": "qwen2.5-coder-14b-opt:latest",
+  "identity_ok": true,
+  "status": "ok",
+  "case": "c1",
+  "tag": "closure",
+  "prompt_sha": "7f5f5f87967d6d83",
+  "max_out": 1536,
+  "reasoning_budget": null,
+  "prompt_tokens": 893,
+  "completion_tokens": 45,
+  "reasoning_tokens": 0,
+  "finish_reason": "stop",
+  "latency_s": 2.84,
+  "cost_usd": 0.0,
+  "verdict_line": "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES",
+  "response": "FINDINGS:\n- license file config/license.txt: FOUND \u2014 The file exists at the specified path (cite docs/guide.md:3)\nVERDICT: NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES"
+}

@@ -1,0 +1,20 @@
+{
+  "request_id": "locked-70142ddb",
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "model_returned": "qwen2.5-coder-14b-opt:latest",
+  "identity_ok": true,
+  "status": "ok",
+  "case": "x29",
+  "tag": "locked",
+  "prompt_sha": "486b7262fc213581",
+  "max_out": 1536,
+  "reasoning_budget": null,
+  "prompt_tokens": 672,
+  "completion_tokens": 59,
+  "reasoning_tokens": 0,
+  "finish_reason": "stop",
+  "latency_s": 2.62,
+  "cost_usd": 0.0,
+  "verdict_line": "NO-VERDICT-LINE",
+  "response": "SUBJECT | REQUIRED_PATH | REQUIRED_CONSTRAINT | OBSERVED_PATH | OBSERVED_VALUE | SOURCE_LINES | NOTES  \napi token file | config/token.txt | - | config/token.txt | token present (synthetic) | docs/guide.md:3, config/token.txt:1 | OK"
+}

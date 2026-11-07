@@ -1,0 +1,4 @@
+{"c1": [{"subject": "license file", "path": "config/license.txt"}],
+ "c2": [{"subject": "seed file", "path": "config/seed.txt"}],
+ "x29": [{"subject": "token file", "path": "config/token.txt"}],
+ "x30": [{"subject": "image config", "path": "config/image.txt"}]}

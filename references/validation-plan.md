@@ -18,6 +18,10 @@ Include denied-access documents, incomplete extraction, and an instruction embed
 
 On the same synthetic corpus, compare ordinary filename search and generic document QA with PHOENIX using predeclared blocker labels. Evaluate blocker recall, false blocking allegations, citation precision, abstention, repeatability, and actual time spent. Do not announce scores before measurement.
 
+## Reasoning validation
+
+The evidence reasoning procedures above were developed against 38 held-out natural-language cases (missing, stale, conflicting, truncated, alternative, hostile, and recheck shapes) using local model inference with frozen prompts, committed transcripts, and deterministic verdict aggregation. Local inference is not NAS execution: finalist-day testing must confirm the procedures transfer to the native Uliya model and approved experts.
+
 ## Finalist NAS verification
 
 Run the approved tests on the assigned UGREEN NAS day. Confirm registered expert delegation, exact capabilities, approval gates, output completeness, missing/partial-data behavior, and the actual report-save path if enabled. Preserve real evidence, logs permitted by the platform, and honest limitations. Static checker success is not a runtime pass.

@@ -35,6 +35,17 @@ def _src_path(sources: str, known: dict) -> str:
     return sources.split(",")[0].split(":")[0].strip()
 
 
+def _cites(sources: str, path: str, known: dict) -> bool:
+    """True if sources contain a valid path:line citation into path."""
+    for s in sources.split(","):
+        p, _, num = s.strip().partition(":")
+        if p.strip() != path or not num.strip().isdigit():
+            continue
+        if 1 <= int(num) <= known.get(path, 0):
+            return True
+    return False
+
+
 ALT_MARKERS = ("either", "one of", "alternatively", "option")
 
 
@@ -134,6 +145,11 @@ def verify(case: str, tsv: str, dataset: str = "trackb") -> dict:
             elif cand != "-" and cand not in known and path not in known:
                 parts[3] = "MISSING"  # absence, not unreadability
                 corrected.append("|".join(parts))
+            elif parts[4].strip() not in ("", "-") and _cites(
+                    parts[5], cand if cand != "-" else path, known):
+                parts[3] = cand if cand != "-" else path
+                corrected.append("|".join(parts))
+                # observably read: valid citation into the file
             else:
                 unverified.append((subj, _src_path(parts[5], known)))
                 corrected.append(line)

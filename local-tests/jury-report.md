@@ -133,3 +133,67 @@ Reassessed v4 average: 6.5/10 (medium confidence), up from 5.0.
 The +1.5 comes from a real workflow (Closure), real inference data
 (Track B), and a mechanistic NAS-fit argument — not from re-grading
 the same artifact.
+
+---
+
+# v5 re-evaluation (adversarial, post-reliability program)
+
+Same posture. New evidence since v4: TB3/TB5/TB6 root-caused and fixed
+on local models; single-shot rule-interference demonstrated with two
+refuted hypotheses; Arch B pipeline (extract → verify → escalate →
+deterministic aggregate) scores 28/28 on Track B + dev + validation
+and 9/10 on the locked set with zero false clears; 9B transfer 5/6
+with zero context burns; Vultr harness built but BLOCKED-CREDENTIALS
+($0 spent); reasoning procedures transferred into the Skill; recheck
+shown claim-proof under separation and claim-vulnerable single-shot.
+
+## User Value: 7 -> 8
+
+Evidence: the recheck loop now has measured reliability behind it
+(28/28 + locked 9/10, errors fail safe-side), Proof Graph and Passport
+designs make reports portable and auditable, and the false-fix-claim
+rejection (c2/x30) answers "did my fix work" with evidence instead of
+trust.
+Strongest remaining objection: still no real user observed; value is
+measured on synthetic tasks, not human outcomes.
+Higher needs: user-study runs + NAS UX traces.
+
+## Innovation & Differentiation: 6 -> 7
+
+Evidence: Arch B separation (transcribe-then-judge with deterministic
+nets) is a genuine reliability architecture, not a prompt tweak; the
+verify/escalate loop and grounded-ALT/truncation-net mechanisms are
+novel within the Skill-constrained design space; single-shot
+claim-vulnerability vs separated claim-proof is a demonstrated,
+honest negative result competitors don't publish.
+Strongest remaining objection: orchestration + procedures, still no
+proprietary model or NAS-only mechanism proven.
+Higher needs: NAS-execution ablation proving the loop collapses
+without tool access.
+
+## Technical Quality: 8 -> 9
+
+Evidence: 30-case split benchmark (dev/validation/locked) with frozen
+labels; 30 offline aggregation tests + 20 harness tests, all green;
+locked discipline honored (x26 French-gap recorded, not patched);
+transcript-committed grading; systematic-debug + verification gates
+followed with same-day corrections disclosed; CI green on 3 OS × 2
+Python with kit checksum.
+Strongest remaining objection: core delegation still unexecuted on NAS.
+Higher needs: finalist-day traces.
+
+## AI NAS Fit & Validation: 5 -> 6
+
+Evidence: validation program is now the strongest in the repo's
+history (38 held-out cases, two models, locked eval, zero false
+clears); the transfer section in the Skill states exactly what was
+validated locally vs what needs NAS confirmation; Vultr campaign is
+staged (not run) with budget/identity controls pre-verified.
+Strongest remaining objection: fit remains designed, and the Vultr
+diversity leg never executed for lack of a key.
+Higher needs: NAS traces, or Vultr runs once keyed.
+
+Reassessed v5 average: 7.5/10 (medium confidence), up from 6.5.
+The +1.0 comes from measured reliability (28/28 + locked 9/10), a
+transferred reasoning upgrade in the Skill itself, and honest
+boundaries (locked discipline, blocked Vultr, documented residuals).

@@ -31,3 +31,13 @@ Return a human-readable report with:
 - If evidence conflicts, record the conflict. If coverage is insufficient, abstain.
 - Do not expose secrets in reports. If sensitive credentials are encountered, describe the dependency type without revealing their content.
 - Operate read-only until the user explicitly requests a supported report save and the platform approves it.
+
+## Evidence reasoning procedures
+
+Transcribe facts before judging them: first extract each requirement with its exact path, verbatim constraint, observed file, and source lines; only then assign labels. Never decide and extract in one step.
+
+- Version comparison: split versions into dot-separated numbers and compare left to right numerically. X satisfies "N or newer" if and only if X >= N (3 satisfies "2 or newer"). A satisfying version is FOUND, never CONFLICTING. Write the numeric comparison in the evidence row.
+- Superseded files: a file marked stale, superseded, deprecated, or "do not use" never satisfies a requirement. When only a stale same-named file exists elsewhere, label CONFLICTING and cite both the guide line and the stale marker line.
+- Truncation: a document cut off mid-sentence, naming absent pages, or ending abruptly states UNKNOWN requirements only. Name what is missing; never clear a truncated requirement.
+- Alternatives: when a guide offers A OR B ("either/or", "one of the two is enough"), one evidenced alternative suffices. Never demand the other; never invent an either/or the guide does not offer.
+- Unreadable files are UNKNOWN, never FOUND and never proof of absence. A verdict follows the worst label among required items: any CONFLICTING or NOT FOUND IN SCOPE blocks; otherwise any UNKNOWN or INACCESSIBLE abstains; otherwise the scope is clear. A clear verdict is still not a tested restore.

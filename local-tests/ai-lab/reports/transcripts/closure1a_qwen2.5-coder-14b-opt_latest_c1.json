@@ -1,0 +1,20 @@
+{
+  "request_id": "closure1a-1a11fedb",
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "model_returned": "qwen2.5-coder-14b-opt:latest",
+  "identity_ok": true,
+  "status": "ok",
+  "case": "c1",
+  "tag": "closure1a",
+  "prompt_sha": "6cb6eb20808a394d",
+  "max_out": 1536,
+  "reasoning_budget": null,
+  "prompt_tokens": 897,
+  "completion_tokens": 112,
+  "reasoning_tokens": 0,
+  "finish_reason": "stop",
+  "latency_s": 5.43,
+  "cost_usd": 0.0,
+  "verdict_line": "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES",
+  "response": "FINDINGS:\n- license file config/license.txt: FOUND \u2014 The file exists at the specified path (cite docs/guide.md:3)\n\nDELTA:\n- prior blocker: license file config/license.txt was NOT FOUND IN SCOPE (evidence: docs/guide.md:3 listed it as required; no such file was observed).\n- new evidence: config/license.txt:1 (license ok (synthetic))\n- state: RESOLVED\n- next: None\n\nVERDICT: NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES"
+}
