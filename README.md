@@ -140,6 +140,9 @@ platform questions for UGREEN support are listed in
   it is never generalized to global absence or impossibility of recovery.
 - Secrets are never exposed in reports; credential dependencies are described
   by type only.
+- Optional dependencies are not distinguished: every extracted prerequisite
+  is treated as required; optionality language in sources is flagged as
+  UNCERTAINTY in the evidence table.
 - Model and data residency unverified: the Skill calls no external APIs
   itself, but whether inference runs on-device or in the cloud depends on
   the UGREEN deployment; the published capability catalog contains no

@@ -1,7 +1,9 @@
 # Devpost draft kit (human pastes; nothing auto-submitted)
 
 Status: DRAFTS for the user to paste into Devpost. No submission performed.
-All claims match the verified repo state at HEAD.
+Pitch angle: Fail-Closed Evidence (tournament winner). All claims match the
+verified repo state at HEAD; every number below matches the README test
+table and the baseline report exactly.
 
 ## Title
 
@@ -9,25 +11,28 @@ PHOENIX — Recovery Intelligence for UGREEN AI NAS
 
 ## Tagline (elevator pitch)
 
-Do your saved files actually let you resume? PHOENIX cross-checks project
-prerequisites against NAS evidence and reports cited blockers — never a
-fake "restored".
+Cited blockers or honest abstention — PHOENIX never fakes a restore.
 
 ## Description (short)
 
-PHOENIX is a Markdown-only Uliya Skill that assesses whether a project's
-documentation and essential assets are sufficient to prepare its recovery
-after a computer loss or team departure. It discovers project files inside
-a user-authorized scope, extracts documented prerequisites, reconciles
-cross-document version claims, verifies critical references, and assembles
-a cited readiness report with five evidence labels
-(FOUND / CONFLICTING / NOT FOUND IN SCOPE / INACCESSIBLE / UNKNOWN) and a
-fail-closed verdict — including an honest INSUFFICIENT EVIDENCE abstention.
+Every dependency gets one of five fixed evidence labels — FOUND,
+CONFLICTING, NOT FOUND IN SCOPE, INACCESSIBLE, UNKNOWN — and every report
+ends in a fail-closed verdict, including INSUFFICIENT EVIDENCE. Unlike file
+search or generic QA that equate hits with health, PHOENIX reconciles
+cross-document version claims, verifies exact paths, and refuses recovery
+percentages and "restored" claims. Locally measured 8/8 verdicts with 2/2
+abstentions and 22/22 citations vs 6/8 and 0/2 for a strong cited retrieval
+baseline — NAS runtime honestly untested, finalist runbook ready.
+
+Yes: this is currently prompt orchestration over stock Uliya experts with
+zero NAS execution traces — that is precisely why the product bet is
+evidence discipline (labels, abstention, citations, access handling) rather
+than rescue promises, and why NAS traces are the scheduled finalist proof.
 Report-only by default; saving requires a separate request plus platform
 approval. Static checker: pass, 0 diagnostics. Local workflow logic: 59/59
-checks, 14/14 mutation kills, 8/8 verdicts vs 6/8 for a strong retrieval
-baseline. NAS runtime untested (no access in Round 1) — a 24-hour finalist
-runbook is ready.
+checks, 14/14 mutation kills. A Markdown-only Skill delegating to
+registered file-agent, document-agent, and knowledge-agent experts; no
+external APIs, no custom runtime code.
 
 ## Built With
 

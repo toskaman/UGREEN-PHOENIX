@@ -149,6 +149,9 @@ NOT APPLICABLE. Local simulation never counts as NAS evidence.
 - Evidence: absence in `harness.py:8-12`, `references/decision-protocol.md`.
 - Risk: medium — optional items can false-blocker. Improvement: `REQUIRES-OPTIONAL`
   + `edge-4` corpus. Status: OPEN (future work).
+- Mitigation (docs-only, tournament verdict): README Limitations states every
+  extracted prerequisite is treated as required, with optionality surfaced as
+  UNCERTAINTY; the code fix stays deferred post-deadline. FAIL stands.
 
 ### Q028 — Existence vs readability vs compatibility vs recoverability — PARTIAL
 - Finding: distinguished locally (FOUND / INACCESSIBLE / CONFLICTING /
