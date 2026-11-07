@@ -53,11 +53,17 @@ NAS permissions, or model quality on a real device.
   P01–P50 matrix (measured vs. not-applicable vs. blocked-on-NAS).
 - `evidence-check-result.json` — real output of the official static checker
   (`static-pass`, 0 errors, 0 warnings).
+- `audit-matrix.md` — 100-question forensic audit (40 PASS / 46 PARTIAL /
+  2 FAIL / 12 UNKNOWN) with evidence pointers.
+- `jury-report.md` — independent adversarial panel scores with agreements,
+  splits, TOPFIX disposition, and post-Cycle-3 reassessment.
+- `commercial-thesis.md` — research-backed business thesis + P2 log.
+- `evidence-index.md` — content hashes and artifact provenance.
 
 ## Run
 
 ```sh
-python run-tests.py       # 58 acceptance checks (must be ALL GREEN)
+python run-tests.py       # 59 acceptance checks (must be ALL GREEN)
 python run-baseline.py    # baseline comparison → reports/baseline-comparison.md
 python rehearse-wave1.py  # validate prompts, regenerate wave1/ artifacts
 ```

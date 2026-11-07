@@ -1,0 +1,117 @@
+# PHOENIX commercial thesis (research-backed, no fabricated validation)
+
+Status: thesis only. No revenue, no buyers, no UGREEN interest claimed.
+All competitor capabilities below are documented (with sources); anything
+else is labeled an assumption. Local-simulation honesty rules apply:
+nothing here was validated on a NAS.
+
+## 1. Why a NAS buyer needs recovery intelligence
+
+Small teams keep project files on a NAS and assume they can resume after
+a disruption (lost workstation, departure, folder loss). What they cannot
+answer is the documentary question: do the saved files actually contain
+every prerequisite the project's own guides demand? Backup dashboards
+answer "bytes copied"; nobody answers "can we resume from this?" PHOENIX
+answers exactly that, with cited evidence and explicit abstention.
+
+## 2. Why UGREEN benefits
+
+UGREEN sells AI NAS hardware (e.g. iDX6011 Pro, Intel Core Ultra 7 255H,
+96 TOPS) with an on-device assistant, Uliya. Recovery intelligence is a
+native, sticky, privacy-sensitive workload that runs where the data
+lives — a showcase Skill that differentiates UGOS from commodity file
+servers. It is pure Skill orchestration: no platform redesign required.
+
+## 3. Why backup software does not solve this
+
+| Product (documented) | What it verifies | Gap PHOENIX addresses |
+|---|---|---|
+| Synology Active Backup + VMM trial restore | VM/image boots, recorded on video | Says nothing about project-file prerequisites |
+| Synology Hyper Backup integrity checks | Backup container integrity | Block-level, not dependency-level |
+| Veeam SureBackup (boot VM in isolated lab, heartbeat/app tests) | Machine recoverability | Enterprise VM-centric; needs lab infra; no doc-dependency view |
+| QNAP HBS3 backup/restore/sync + snapshots | Bytes moved and restorable | No dependency intelligence at all |
+| Enterprise BCM suites (Fusion, Everbridge, Resolver) | Top-down dependency maps | Manual, expensive, consultant-driven |
+
+Sources: Synology ABB admin guide (VMM Backup Verification);
+Veeam SureBackup docs (virtual-lab boot + heartbeat checks);
+QNAP HBS3 docs; BCM vendor feature pages (Nov 2026).
+
+## 4. Measurable value hypothesis
+
+Value = failed-restore labor avoided: each missing dependency found
+*before* a recovery attempt saves a debug cycle during an outage.
+Measurable proxy (future pilot): fraction of recovery attempts where
+PHOENIX pre-flagged the true blocker. Unmeasured today — honest gap.
+
+## 5. Consumer vs professional
+
+- Prosumer/SMB studio: post-disruption readiness check (low frequency,
+  high stakes). Primary fit.
+- IT/grants/compliance: evidence trail that prerequisites were reviewed.
+- Consumer: weak fit — overkill for photo backup. Not the target.
+
+## 6. Models
+
+- Bundled UGOS Skill (free, adoption engine).
+- SMB add-on license per NAS (recurring readiness scans + history).
+- OEM licensing to UGREEN or other NAS vendors (white-label engine).
+- Enterprise: project-connector pack (issue trackers, CI manifests).
+
+## 7. Integration prerequisites
+
+Registered experts + catalog CLIs already exist; pilot needs only NAS
+access, the 11 open platform questions answered, and verdict-quality
+measurement on real projects.
+
+## 8. Privacy
+
+Skill calls no external APIs. Residency: third-party reviews report
+Uliya runs fully on-device (iDX6011 Pro), but hackathon resources note a
+Skill "may transmit data to cloud AI services supported by Uliya when
+necessary" — so on-device-only operation is NOT established. Any
+commercial privacy claim needs written deployment confirmation.
+
+## 9. Support and maintenance
+
+Markdown-only Skill: near-zero runtime maintenance. Costs sit in corpus
+quality, verdict-quality monitoring, and UGOS catalog-version tracking.
+
+## 10. Defensibility (honest)
+
+No hard moat today: prompt orchestration over stock catalog actions is
+copyable (nearest hackathon neighbor: DocDrift, doc-version
+reconciliation). Defensible assets would be: measured verdict-quality
+data, the abstention/citation evaluation harness, and OEM integration.
+Audit verdict: FAIL (acceptable pre-product, fatal to overclaim).
+
+## 11. Pilot design
+
+10 SMB studios, 4 weeks: run PHOENIX on real project scopes, grade each
+blocker true/false positive with the operator, measure pre-flag rate and
+time-to-next-action vs. manual search. Go/no-go on precision ≥ 0.8.
+
+## 12. Proof needed before any commercial conversation
+
+Real-NAS verdict quality, repeatability variance, latency at scale,
+residency confirmation, and one reference pilot. None exists today.
+
+## Outcomes considered
+
+Independent product (weak alone), OEM licensing (best fit), partnership
+after proven adoption (requires pilot). No UGREEN acquisition interest
+exists or is implied. PolyForm Strict 1.0.0 (repo license) forbids
+distribution/modification/commercial use without a separate license —
+consistent with an OEM path, but any partner needs a commercial license.
+
+## P2 investigation log (Phase 7)
+
+- P2.1 dependency graph in text: the evidence table already serializes
+  requirement→source→status edges; a separate graph syntax adds no
+  information. No change.
+- P2.2 failure explanation: shipped as per-label next steps plus the
+  plain-language verdict sentence (Cycle 3). Done.
+- P2.3 counterfactual scenarios: the 8-prompt rehearsal pack already
+  compares failure scenarios (loss, conflict, denial, truncation).
+  Done (local).
+- P2.4 recovery capsule: the report is the capsule; NAS-side save stays
+  approval-gated and unexecuted. Designed, BLOCKED-NAS.

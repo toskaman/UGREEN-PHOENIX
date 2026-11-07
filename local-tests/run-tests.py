@@ -301,6 +301,20 @@ def main():
                     str(out))
     with tempfile.TemporaryDirectory() as tmp:
         t = Path(tmp)
+        (t / "guide.md").write_text("REQUIRES: runtime >= 3.0\n",
+                                    encoding="utf-8")
+        (t / "old.yaml").write_text("PROVIDES: runtime 2.4.1\n",
+                                    encoding="utf-8")
+        (t / "new.yaml").write_text("PROVIDES: runtime 3.1.0\n",
+                                    encoding="utf-8")
+        res = harness.run(t)
+        alt = labels(res)
+        ok &= check("alternative provisions resolve when one satisfies",
+                    alt.get("runtime") == "FOUND"
+                    and res["verdict"] == "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES",
+                    str(alt))
+    with tempfile.TemporaryDirectory() as tmp:
+        t = Path(tmp)
         (t / "doc.md").write_text("REQUIRES: link.md\n", encoding="utf-8")
         (t / "real.md").write_text("hello\n", encoding="utf-8")
         try:

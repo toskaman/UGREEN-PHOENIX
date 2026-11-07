@@ -89,9 +89,10 @@ subsystem locally) · BLOCKED-NAS (needs the real device).
 ## Developer tooling and delivery
 
 - P41 checker time: MEASURED — 59 ms wall.
-- P42 CI runtime: MEASURED pre-Cycle-3 — checker 10 s, ubuntu tests 8 s,
-  windows tests 14 s (incl. runner setup), run 42398606486. Matrix now
-  covers 3.13+3.14 × ubuntu+windows; timings refresh after the next CI.
+- P42 CI runtime: MEASURED — checker 10 s, ubuntu tests 12 s,
+  windows tests 22–27 s (incl. runner setup), run 42400074403 (5 jobs:
+  checker + 3.13/3.14 × ubuntu/windows). No redundant jobs: each cell
+  covers a distinct OS/version pair.
 - P43 corpus generation: ~1 s observed, not separately timed.
 - P44 measurement noise: MEASURED — 7% stdev on the scale run.
 - P45 report size: MEASURED — 9 files, 15769 bytes, max 4736 bytes
