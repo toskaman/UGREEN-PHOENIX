@@ -1,0 +1,20 @@
+{
+  "request_id": "val-v2-623d3138",
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "model_returned": "qwen2.5-coder-14b-opt:latest",
+  "identity_ok": true,
+  "status": "ok",
+  "case": "x12",
+  "tag": "val-v2",
+  "prompt_sha": "23ef722df7931a8f",
+  "max_out": 1536,
+  "reasoning_budget": null,
+  "prompt_tokens": 692,
+  "completion_tokens": 48,
+  "reasoning_tokens": 0,
+  "finish_reason": "stop",
+  "latency_s": 2.01,
+  "cost_usd": 0.0,
+  "verdict_line": "INSUFFICIENT EVIDENCE",
+  "response": "FINDINGS:\n- data/backup.sql: NOT FOUND IN SCOPE \u2014 The file is noted to be on the old server, not here (docs/guide.md:3).\nVERDICT: INSUFFICIENT EVIDENCE"
+}

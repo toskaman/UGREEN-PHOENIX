@@ -1,0 +1,20 @@
+{
+  "request_id": "val-archb-6fd4bff7",
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "model_returned": "qwen2.5-coder-14b-opt:latest",
+  "identity_ok": true,
+  "status": "ok",
+  "case": "x17",
+  "tag": "val-archb",
+  "prompt_sha": "486b7262fc213581",
+  "max_out": 1536,
+  "reasoning_budget": null,
+  "prompt_tokens": 591,
+  "completion_tokens": 111,
+  "reasoning_tokens": 0,
+  "finish_reason": "stop",
+  "latency_s": 4.6,
+  "cost_usd": 0.0,
+  "verdict_line": "NO-VERDICT-LINE",
+  "response": "SUBJECT | REQUIRED_PATH | REQUIRED_CONSTRAINT | OBSERVED_PATH | OBSERVED_VALUE | SOURCE_LINES | NOTES\nsync | app/sync.py | - | app/sync.py | print(\"sync (synthetic)\") | docs/guide.md:3, app/sync.py:1 | OK\nsync | config/sync.txt | protocol 3 | config/sync.txt | protocol version: TBD (update after vendor call) | docs/guide.md:3, config/sync.txt:1 | STALE-MARKER-SEEN"
+}

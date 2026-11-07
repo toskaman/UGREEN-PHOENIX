@@ -1,0 +1,44 @@
+{
+  "base": "val-archb_qwen2.5-coder-14b-opt_latest_x14.json",
+  "unverified": [
+    [
+      "dashboard port",
+      "docs/guide.md"
+    ],
+    [
+      "dashboard port",
+      "docs/readme.md"
+    ]
+  ],
+  "rowfix_lines": [
+    "dashboard port | - | - | docs/guide.md | The dashboard listens on the documented port. | docs/guide.md:3 | OK",
+    "dashboard port | - | - | docs/readme.md | Point browsers at port 8080. | docs/readme.md:3 | OK"
+  ],
+  "verdict": "INSUFFICIENT EVIDENCE",
+  "findings": [
+    {
+      "subject": "dashboard port",
+      "label": "FOUND",
+      "reason": "present at required path, no constraint",
+      "sources": "docs/guide.md:3, config/service.txt:1"
+    },
+    {
+      "subject": "dashboard port",
+      "label": "UNKNOWN",
+      "reason": "file withheld as unreadable",
+      "sources": "docs/readme.md:3"
+    },
+    {
+      "subject": "dashboard port",
+      "label": "FOUND",
+      "reason": "present at required path, no constraint",
+      "sources": "docs/guide.md:3"
+    },
+    {
+      "subject": "dashboard port",
+      "label": "FOUND",
+      "reason": "present at required path, no constraint",
+      "sources": "docs/readme.md:3"
+    }
+  ]
+}

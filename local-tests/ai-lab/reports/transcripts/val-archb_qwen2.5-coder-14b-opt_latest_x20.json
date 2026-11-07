@@ -1,0 +1,20 @@
+{
+  "request_id": "val-archb-3faf2b89",
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "model_returned": "qwen2.5-coder-14b-opt:latest",
+  "identity_ok": true,
+  "status": "ok",
+  "case": "x20",
+  "tag": "val-archb",
+  "prompt_sha": "486b7262fc213581",
+  "max_out": 1536,
+  "reasoning_budget": null,
+  "prompt_tokens": 570,
+  "completion_tokens": 79,
+  "reasoning_tokens": 0,
+  "finish_reason": "stop",
+  "latency_s": 3.27,
+  "cost_usd": 0.0,
+  "verdict_line": "NO-VERDICT-LINE",
+  "response": "SUBJECT | REQUIRED_PATH | REQUIRED_CONSTRAINT | OBSERVED_PATH | OBSERVED_VALUE | SOURCE_LINES | NOTES\narchive | - | - | UNREADABLE | - | docs/guide.md:3 | UNREADABLE\nmanifest | config/manifest.txt | - | config/manifest.txt | manifest ok | docs/guide.md:4, config/manifest.txt:1 | OK"
+}

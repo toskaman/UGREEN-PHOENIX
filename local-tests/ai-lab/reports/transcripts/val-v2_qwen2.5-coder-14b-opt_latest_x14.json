@@ -1,0 +1,20 @@
+{
+  "request_id": "val-v2-2f681e46",
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "model_returned": "qwen2.5-coder-14b-opt:latest",
+  "identity_ok": true,
+  "status": "ok",
+  "case": "x14",
+  "tag": "val-v2",
+  "prompt_sha": "23ef722df7931a8f",
+  "max_out": 1536,
+  "reasoning_budget": null,
+  "prompt_tokens": 686,
+  "completion_tokens": 67,
+  "reasoning_tokens": 0,
+  "finish_reason": "stop",
+  "latency_s": 2.84,
+  "cost_usd": 0.0,
+  "verdict_line": "DOCUMENTARY BLOCKER IDENTIFIED",
+  "response": "FINDINGS:\n- Dashboard port: CONFLICTING \u2014 docs/guide.md:3 states port 9090, while docs/readme.md:3 states port 8080 (cite docs/guide.md:3, docs/readme.md:3)\nVERDICT: DOCUMENTARY BLOCKER IDENTIFIED"
+}

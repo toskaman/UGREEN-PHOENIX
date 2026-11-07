@@ -1,0 +1,20 @@
+{
+  "request_id": "val-archb-1227471b",
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "model_returned": "qwen2.5-coder-14b-opt:latest",
+  "identity_ok": true,
+  "status": "ok",
+  "case": "x13",
+  "tag": "val-archb",
+  "prompt_sha": "486b7262fc213581",
+  "max_out": 1536,
+  "reasoning_budget": null,
+  "prompt_tokens": 593,
+  "completion_tokens": 77,
+  "reasoning_tokens": 0,
+  "finish_reason": "stop",
+  "latency_s": 3.2,
+  "cost_usd": 0.0,
+  "verdict_line": "NO-VERDICT-LINE",
+  "response": "SUBJECT | REQUIRED_PATH | REQUIRED_CONSTRAINT | OBSERVED_PATH | OBSERVED_VALUE | SOURCE_LINES | NOTES\ndeploy script | scripts/deploy.sh | version 2 | old/deploy.sh | # stale deploy script v1, superseded \u2014 do not use | docs/guide.md:3, old/deploy.sh:1 | STALE-MARKER-SEEN"
+}

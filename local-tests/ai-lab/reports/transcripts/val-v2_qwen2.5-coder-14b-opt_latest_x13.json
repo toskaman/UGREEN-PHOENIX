@@ -1,0 +1,20 @@
+{
+  "request_id": "val-v2-001e53d2",
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "model_returned": "qwen2.5-coder-14b-opt:latest",
+  "identity_ok": true,
+  "status": "ok",
+  "case": "x13",
+  "tag": "val-v2",
+  "prompt_sha": "23ef722df7931a8f",
+  "max_out": 1536,
+  "reasoning_budget": null,
+  "prompt_tokens": 688,
+  "completion_tokens": 44,
+  "reasoning_tokens": 0,
+  "finish_reason": "stop",
+  "latency_s": 1.91,
+  "cost_usd": 0.0,
+  "verdict_line": "INSUFFICIENT EVIDENCE",
+  "response": "FINDINGS:\n- scripts/deploy.sh: INACCESSIBLE \u2014 The required file is not found at the specified path (cite docs/guide.md:3)\nVERDICT: INSUFFICIENT EVIDENCE"
+}

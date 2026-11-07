@@ -35,13 +35,67 @@ def constraint_op(text: str) -> tuple[str, tuple[int, ...] | None]:
     return ("?", parse_versions(text))
 
 
+CITE = re.compile(r"[\w./-]+\.\w+:\d+")
+
+
+def split_row(line: str) -> list[str]:
+    """Field separator: tabs if the line has them (true TSV), else pipes
+    (the visual separator from the prompt examples)."""
+    return line.split("\t") if "\t" in line else line.split("|")
+
+
+def _seps(line: str) -> tuple[str, int]:
+    if "\t" in line and line.count("\t") >= line.count("|"):
+        return ("\t", line.count("\t"))
+    return ("|", line.count("|"))
+
+
+def _physical_lines(tsv: str) -> list[str]:
+    """Join wrapped rows: a fragment line (<7 fields) continues only onto
+    a fragment buffer with the SAME separator. Pure prose (no separator)
+    is dropped, never glued to rows; a complete row always flushes."""
+    out, buf, buf_sep, buf_n = [], "", "|", 0
+
+    def flush():
+        nonlocal buf, buf_n
+        if buf:
+            out.append(buf)
+            buf, buf_n = "", 0
+
+    for raw in tsv.splitlines():
+        line = raw.strip()
+        if not line:
+            flush()
+            continue
+        head = split_row(line)[0].strip().upper()
+        if head in ("ALT", "TRUNC", "SUBJECT") or line.startswith("#"):
+            flush()
+            out.append(line)
+            continue
+        sep, n = _seps(line)
+        if n == 0:
+            flush()  # prose, never row content
+            continue
+        if buf and buf_n < 6 and n < 6 and sep == buf_sep:
+            buf = f"{buf} {line}"
+            buf_n = buf.count(sep)
+            if buf_n >= 6:
+                flush()
+        else:
+            flush()
+            buf, buf_sep, buf_n = line, sep, n
+            if buf_n >= 6:
+                flush()
+    flush()
+    return out
+
+
 def aggregate(tsv: str) -> dict:
     rows, alts, truncs = [], {}, set()
-    for line in tsv.splitlines():
-        line = line.strip()
-        if not line or line.startswith(("SUBJECT", "#")):
+    for line in _physical_lines(tsv):
+        if line.startswith(("SUBJECT", "#")):
             continue
-        parts = line.split("|")
+        parts = split_row(line)
         tag = parts[0].strip().upper()
         if tag == "ALT" and len(parts) >= 4:
             alts.setdefault(parts[1].strip(), []).append(
@@ -52,17 +106,41 @@ def aggregate(tsv: str) -> dict:
             continue
         if len(parts) < 7:
             continue
+        sources = parts[5].strip()
+        if not CITE.search(sources):
+            continue  # chatter line, not a cited row
+        if "*" in parts[0] or "`" in parts[0]:
+            continue  # markdown-quoted chatter, not a real row
+        req_path = parts[1].strip()
+        req_constraint = parts[2].strip()
+        if req_constraint == req_path:
+            req_constraint = "-"  # model echoed the path, not a constraint
         rows.append({
-            "subject": parts[0].strip(), "req_path": parts[1].strip(),
-            "req_constraint": parts[2].strip(), "obs_path": parts[3].strip(),
-            "obs_value": parts[4].strip(), "sources": parts[5].strip(),
+            "subject": parts[0].strip(), "req_path": req_path,
+            "req_constraint": req_constraint, "obs_path": parts[3].strip(),
+            "obs_value": parts[4].strip(), "sources": sources,
             "notes": parts[6].strip()})
 
-    # contradiction: same subject, differing required constraints
-    seen: dict[str, set[str]] = {}
+    # contradiction: same subject AND same observed file, but differing
+    # required constraints. (Same subject on different files is two
+    # requirements sharing a name, not a contradiction.)
+    seen: dict[tuple[str, str], set[str]] = {}
     for r in rows:
-        seen.setdefault(r["subject"], set()).add(r["req_constraint"])
-    conflicted = {s for s, v in seen.items() if len(v) > 1}
+        if r["obs_path"].upper() not in ("MISSING", "UNREADABLE"):
+            seen.setdefault((r["subject"], r["obs_path"]),
+                            set()).add(r["req_constraint"])
+    conflicted = {s for (s, _), v in seen.items() if len(v) > 1}
+    # observed-value disagreement: same subject stated with different
+    # numeric values across readable sources (e.g. port 8080 vs 9090).
+    # Rows without numerics (guide restatements) do not participate.
+    obs_vals: dict[str, set[tuple[int, ...]]] = {}
+    for r in rows:
+        if r["obs_path"].upper() in ("MISSING", "UNREADABLE"):
+            continue
+        nums = parse_versions(r["obs_value"])
+        if nums is not None:
+            obs_vals.setdefault(r["subject"], set()).add(nums)
+    conflicted |= {s for s, v in obs_vals.items() if len(v) > 1}
 
     findings = []
     for r in rows:
@@ -87,6 +165,11 @@ def aggregate(tsv: str) -> dict:
             got = parse_versions(r["obs_value"])
             if want is None or got is None:
                 label, why = "UNKNOWN", "unparseable version evidence"
+            elif op == "?" and got == want:
+                label, why = "FOUND", f"{got} matches stated {want}"
+            elif op == "?":
+                label, why = "UNKNOWN", \
+                    "bare version differs; comparison unknown"
             elif (op == ">=" and got >= want) or (op == "==" and got == want):
                 label, why = "FOUND", f"{got} satisfies {op} {want}"
             else:
@@ -96,11 +179,17 @@ def aggregate(tsv: str) -> dict:
         else:
             label, why = "FOUND", "present at required path, no constraint"
 
-        # ALT relief: any passing option clears the subject. An option
-        # passes if a row observed at that path has no version violation.
-        if subj in alts and label in ("NOT FOUND IN SCOPE", "UNKNOWN",
-                                      "CONFLICTING"):
-            opts = [o for pair in alts[subj] for o in pair]
+        # ALT relief: any passing option clears the rows it covers. ALT
+        # lines match rows by subject OR by option path (models often
+        # name the group, e.g. "billing job", instead of a row subject).
+        covering = [opts for _s, opts in alts.items()
+                    if _s == subj or any(
+                        r["req_path"] == o or r["obs_path"] == o
+                        for tup in opts for o in tup)]
+        if covering and label in ("NOT FOUND IN SCOPE", "UNKNOWN",
+                                  "CONFLICTING"):
+            opts = [o for pairs in covering for tup in pairs
+                    for o in tup]
             passed = False
             for o in opts:
                 for x in rows:

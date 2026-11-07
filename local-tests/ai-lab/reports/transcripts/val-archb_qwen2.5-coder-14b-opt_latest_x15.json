@@ -1,0 +1,20 @@
+{
+  "request_id": "val-archb-358f06c2",
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "model_returned": "qwen2.5-coder-14b-opt:latest",
+  "identity_ok": true,
+  "status": "ok",
+  "case": "x15",
+  "tag": "val-archb",
+  "prompt_sha": "486b7262fc213581",
+  "max_out": 1536,
+  "reasoning_budget": null,
+  "prompt_tokens": 583,
+  "completion_tokens": 104,
+  "reasoning_tokens": 0,
+  "finish_reason": "stop",
+  "latency_s": 4.36,
+  "cost_usd": 0.0,
+  "verdict_line": "NO-VERDICT-LINE",
+  "response": "SUBJECT | REQUIRED_PATH | REQUIRED_CONSTRAINT | OBSERVED_PATH | OBSERVED_VALUE | SOURCE_LINES | NOTES\nsessions backend | db/pg.conf | - | UNREADABLE | - | docs/guide.md:3 | UNREADABLE\nsessions backend | db/sessions.sqlite | - | db/sessions.sqlite | SQLite format 3 (synthetic sessions) | docs/guide.md:4, db/sessions.sqlite:1 | OK\n\nALT | sessions backend | db/pg.conf | db/sessions.sqlite"
+}

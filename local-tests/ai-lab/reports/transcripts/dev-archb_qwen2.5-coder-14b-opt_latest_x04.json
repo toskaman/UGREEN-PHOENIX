@@ -1,0 +1,20 @@
+{
+  "request_id": "dev-archb-7cacbcf9",
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "model_returned": "qwen2.5-coder-14b-opt:latest",
+  "identity_ok": true,
+  "status": "ok",
+  "case": "x04",
+  "tag": "dev-archb",
+  "prompt_sha": "486b7262fc213581",
+  "max_out": 1536,
+  "reasoning_budget": null,
+  "prompt_tokens": 617,
+  "completion_tokens": 109,
+  "reasoning_tokens": 0,
+  "finish_reason": "stop",
+  "latency_s": 4.43,
+  "cost_usd": 0.0,
+  "verdict_line": "NO-VERDICT-LINE",
+  "response": "SUBJECT | REQUIRED_PATH | REQUIRED_CONSTRAINT | OBSERVED_PATH | OBSERVED_VALUE | SOURCE_LINES | NOTES\nruntime | - | 3.x | config/runtime.txt | runtime 2.7 | docs/handbook.md:3, config/runtime.txt:1 | STALE-MARKER-SEEN\nruntime | - | exactly 2.x | config/runtime.txt | runtime 2.7 | docs/vendor.md:3, config/runtime.txt:1 | OK\n\nALT | runtime | config/runtime.txt | config/runtime.txt"
+}

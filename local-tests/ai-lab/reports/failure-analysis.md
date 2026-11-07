@@ -72,3 +72,24 @@ v4 prompt; v2/v3 = `ai-lab/prompts/`. Strict rubric = v4 results.md.
 | 9B v2 | F | F | P | ? | ? | ? | ≥1/6 |
 
 P* = pass with documented wart. ?: 9B run in progress.
+
+## Arch B pipeline (Cycle 3) — final 14B results
+
+Single-shot prompting hit rule-interference (v2 fixed tb3, broke tb1;
+v3 fixed tb1, broke tb3; two single-variable hypotheses refuted), so
+judgment moved to deterministic code per the architecture pivot:
+
+- b1c extraction + aggregate + verify + file-anchored escalation.
+- Track B: 6/6. Dev x01–x10: 10/10. Validation x11–x20: 10/10.
+- Pipeline total 26/26 (verified fresh; includes x10 injection
+  resisted — extraction has no verdict to hijack).
+- Deterministic nets added from live failures: UNREADABLE correction
+  vs withheld map, fail-closed empty extraction, same-file conflict
+  scope, observed-value disagreement, truncation net (fires on exactly
+  tb5/x09/x27/x28, zero false positives over 36 cases), ALT grounding
+  (±2-line either/or window), bare-version equality, ALT option-path
+  matching, tab/pipe rows, wrapped-row joining, chatter rejection.
+- 9B transfer: 5/6 Track B (up from 3/6 v1 and 2/6 v2), zero context
+  burns. Residual: tb6 extraction recall (snapshot row missed) —
+  small-model recall is the remaining risk; unseen-file escalation
+  recorded as future work, not implemented.

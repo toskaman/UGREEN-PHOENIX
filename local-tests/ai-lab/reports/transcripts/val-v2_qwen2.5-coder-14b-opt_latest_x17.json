@@ -1,0 +1,20 @@
+{
+  "request_id": "val-v2-e5c542e4",
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "model_returned": "qwen2.5-coder-14b-opt:latest",
+  "identity_ok": true,
+  "status": "ok",
+  "case": "x17",
+  "tag": "val-v2",
+  "prompt_sha": "23ef722df7931a8f",
+  "max_out": 1536,
+  "reasoning_budget": null,
+  "prompt_tokens": 686,
+  "completion_tokens": 67,
+  "reasoning_tokens": 0,
+  "finish_reason": "stop",
+  "latency_s": 2.79,
+  "cost_usd": 0.0,
+  "verdict_line": "INSUFFICIENT EVIDENCE",
+  "response": "FINDINGS:\n- app/sync.py: FOUND \u2014 The file exists at the documented path. (cite docs/guide.md:3)\n- config/sync.txt: UNKNOWN \u2014 The protocol version is TBD, which is unknown. (cite config/sync.txt:1)\n\nVERDICT: INSUFFICIENT EVIDENCE"
+}

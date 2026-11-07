@@ -1,0 +1,20 @@
+{
+  "request_id": "val-v2-5f066d76",
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "model_returned": "qwen2.5-coder-14b-opt:latest",
+  "identity_ok": true,
+  "status": "ok",
+  "case": "x11",
+  "tag": "val-v2",
+  "prompt_sha": "23ef722df7931a8f",
+  "max_out": 1536,
+  "reasoning_budget": null,
+  "prompt_tokens": 678,
+  "completion_tokens": 35,
+  "reasoning_tokens": 0,
+  "finish_reason": "stop",
+  "latency_s": 2.08,
+  "cost_usd": 0.0,
+  "verdict_line": "INSUFFICIENT EVIDENCE",
+  "response": "FINDINGS:\n- Firmware version: UNKNOWN \u2014 Truncation note missing (cite docs/guide.md:3)\nVERDICT: INSUFFICIENT EVIDENCE"
+}

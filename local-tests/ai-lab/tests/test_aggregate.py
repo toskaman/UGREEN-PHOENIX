@@ -71,22 +71,74 @@ if __name__ == "__main__":
           str(agg.aggregate(TB6)))
     # adversarial micro-cases
     check("newer-major clear", agg.aggregate(
-        "s | f | 2 or newer | f | version 10.1 | g:1, f:1 | OK")
+        "s | f | 2 or newer | f | version 10.1 | g.md:1, f.txt:1 | OK")
         ["verdict"] == CLEAR)
     check("older-minor blocker", agg.aggregate(
-        "s | f | 2.4 or newer | f | version 2.3.9 | g:1, f:1 | OK")
+        "s | f | 2.4 or newer | f | version 2.3.9 | g.md:1, f.txt:1 | OK")
         ["verdict"] == B)
     check("exact-match clear", agg.aggregate(
-        "s | f | exactly 2.4.1 | f | runtime 2.4.1 | g:1, f:1 | OK")
+        "s | f | exactly 2.4.1 | f | runtime 2.4.1 | g.md:1, f.txt:1 | OK")
         ["verdict"] == CLEAR)
     check("exact-mismatch blocker", agg.aggregate(
-        "s | f | exactly 2.4.1 | f | runtime 2.4.2 | g:1, f:1 | OK")
+        "s | f | exactly 2.4.1 | f | runtime 2.4.2 | g.md:1, f.txt:1 | OK")
         ["verdict"] == B)
     check("tbd abstains", agg.aggregate(
-        "s | f | protocol 3 | f | version: TBD | g:1, f:1 | OK")
+        "s | f | protocol 3 | f | version: TBD | g.md:1, f.txt:1 | OK")
         ["verdict"] == INSUF)
     check("empty fails closed", agg.aggregate(
         "ALT | s | a | b")["verdict"] == INSUF)
     check("blank fails closed", agg.aggregate(
         "\n  \n")["verdict"] == INSUF)
+    check("same-name-diff-file no conflict", agg.aggregate(
+        "s | a/f | - | a/f | x | g.md:1 | OK\n"
+        "s | b/f | 3 | b/f | version 3 | g.md:2 | OK")["verdict"] == CLEAR)
+    check("same-file-diff-constraint conflicts", agg.aggregate(
+        "s | - | 3 or newer | c/f | v 2 | g.md:1 | OK\n"
+        "s | - | exactly 2 | c/f | v 2 | g.md:2 | OK")["verdict"] == B)
+    check("observed-values disagree", agg.aggregate(
+        "port | - | - | a/f | port 9090 | g.md:1 | OK\n"
+        "port | - | - | b/f | port 8080 | g.md:2 | OK")["verdict"] == B)
+    check("observed-values agree", agg.aggregate(
+        "port | - | - | a/f | port 9090 | g.md:1 | OK\n"
+        "port | - | - | b/f | port 9090 (confirmed) | g.md:2 | OK")
+        ["verdict"] == CLEAR)
+    check("non-numeric restatement ignored", agg.aggregate(
+        "port | - | - | a/f | port 9090 | g.md:1 | OK\n"
+        "port | - | - | g/f | listens on the documented port | g.md:2 | OK")
+        ["verdict"] == CLEAR)
+    check("wrapped row joined", agg.aggregate(
+        "preset | r/p.yaml | - | o/p.yaml | # stale preset from 2023\n"
+        "exposure: old | docs/g.md:6, o/p.yaml:1 | STALE-MARKER-SEEN")
+        ["verdict"] == B)
+    check("chatter line skipped", agg.aggregate(
+        "Now I will format: SUBJECT | A | B | C | D | E | F\n"
+        "s | f | - | f | x | g.md:1 | OK")["verdict"] == CLEAR)
+    check("path-echo constraint ignored", agg.aggregate(
+        "s | a/f | a/f | a/f | x | g.md:1 | OK")["verdict"] == CLEAR)
+    check("tab-separated rows", agg.aggregate(
+        "s\tf.txt\t2 or newer\tf.txt\tversion 3\tg.md:1\tOK")
+        ["verdict"] == CLEAR)
+    check("mixed tabs and pipes", agg.aggregate(
+        "s\tf.txt\t2 or newer\tf.txt\tversion 3\tg.md:1\tOK\n"
+        "t | g.txt | - | g.txt | x | h.md:2 | OK")["verdict"] == CLEAR)
+    check("markdown chatter skipped", agg.aggregate(
+        "**Line 1:** `s | f | - | f | x | g.md:1 | OK`\n"
+        "s | f | - | f | x | g.md:1 | OK")["verdict"] == CLEAR)
+    check("prose never glues rows", agg.aggregate(
+        "Some thinking without separators\n"
+        "s | f | - | f | x | g.md:1 | OK\n"
+        "More thinking here")["verdict"] == CLEAR)
+    check("alternatively-prose dropped", agg.aggregate(
+        "Alternatively, I could output two lines\n"
+        "s | f | - | f | x | g.md:1 | OK")["verdict"] == CLEAR)
+    check("bare-version equal found", agg.aggregate(
+        "s | f | format 6 | f | routes format 6 | g.md:1 | OK")
+        ["verdict"] == CLEAR)
+    check("bare-version differ abstains", agg.aggregate(
+        "s | f | format 6 | f | routes format 5 | g.md:1 | OK")
+        ["verdict"] == INSUF)
+    check("alt matches by option path", agg.aggregate(
+        "cron | a/cron | - | MISSING | - | g.md:1 | OK\n"
+        "timer | a/timer | - | a/timer | x | g.md:2 | OK\n"
+        "ALT | job group | a/cron | a/timer")["verdict"] == CLEAR)
     print(f"{PASS} aggregation checks passed, ALL GREEN (offline)")

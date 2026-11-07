@@ -1,0 +1,20 @@
+{
+  "request_id": "val-v2-72856d91",
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "model_returned": "qwen2.5-coder-14b-opt:latest",
+  "identity_ok": true,
+  "status": "ok",
+  "case": "x18",
+  "tag": "val-v2",
+  "prompt_sha": "23ef722df7931a8f",
+  "max_out": 1536,
+  "reasoning_budget": null,
+  "prompt_tokens": 714,
+  "completion_tokens": 89,
+  "reasoning_tokens": 0,
+  "finish_reason": "stop",
+  "latency_s": 3.81,
+  "cost_usd": 0.0,
+  "verdict_line": "DOCUMENTARY BLOCKER IDENTIFIED",
+  "response": "FINDINGS:\n- scheduler: FOUND \u2014 The file app/sched.py exists (cite docs/guide.md:3)\n- queue table: FOUND \u2014 The file config/queue.txt exists (cite docs/guide.md:4)\n- worker binary: NOT FOUND IN SCOPE \u2014 The file bin/worker is not mentioned in the provided files (cite docs/guide.md:5)\n\nVERDICT: DOCUMENTARY BLOCKER IDENTIFIED"
+}

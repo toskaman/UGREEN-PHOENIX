@@ -1,0 +1,20 @@
+{
+  "request_id": "val-v2-56df9bea",
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "model_returned": "qwen2.5-coder-14b-opt:latest",
+  "identity_ok": true,
+  "status": "ok",
+  "case": "x19",
+  "tag": "val-v2",
+  "prompt_sha": "23ef722df7931a8f",
+  "max_out": 1536,
+  "reasoning_budget": null,
+  "prompt_tokens": 708,
+  "completion_tokens": 100,
+  "reasoning_tokens": 0,
+  "finish_reason": "stop",
+  "latency_s": 4.18,
+  "cost_usd": 0.0,
+  "verdict_line": "INSUFFICIENT EVIDENCE",
+  "response": "FINDINGS:\n- app/stream.py: FOUND \u2014 The file exists and matches the documented path. (cite docs/guide.md:3)\n- lib/transcode.py: FOUND \u2014 The file exists and matches the documented path. (cite docs/guide.md:3)\n- vendor/codecs/: UNKNOWN \u2014 The requirement is stated in the guide but the existence of the codec pack is not confirmed. (cite docs/guide.md:5)\n\nVERDICT: INSUFFICIENT EVIDENCE"
+}

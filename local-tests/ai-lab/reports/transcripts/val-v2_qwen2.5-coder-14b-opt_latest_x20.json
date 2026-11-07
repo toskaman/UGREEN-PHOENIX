@@ -1,0 +1,20 @@
+{
+  "request_id": "val-v2-95782efc",
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "model_returned": "qwen2.5-coder-14b-opt:latest",
+  "identity_ok": true,
+  "status": "ok",
+  "case": "x20",
+  "tag": "val-v2",
+  "prompt_sha": "23ef722df7931a8f",
+  "max_out": 1536,
+  "reasoning_budget": null,
+  "prompt_tokens": 665,
+  "completion_tokens": 46,
+  "reasoning_tokens": 0,
+  "finish_reason": "stop",
+  "latency_s": 1.92,
+  "cost_usd": 0.0,
+  "verdict_line": "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES",
+  "response": "FINDINGS:\n- Manifest verification: FOUND \u2014 The guide specifies to verify the manifest in config/manifest.txt (docs/guide.md:4).\nVERDICT: NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES"
+}

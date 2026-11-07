@@ -1,0 +1,20 @@
+{
+  "request_id": "val-v2-5e19b24d",
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "model_returned": "qwen2.5-coder-14b-opt:latest",
+  "identity_ok": true,
+  "status": "ok",
+  "case": "x16",
+  "tag": "val-v2",
+  "prompt_sha": "23ef722df7931a8f",
+  "max_out": 1536,
+  "reasoning_budget": null,
+  "prompt_tokens": 702,
+  "completion_tokens": 45,
+  "reasoning_tokens": 0,
+  "finish_reason": "stop",
+  "latency_s": 1.91,
+  "cost_usd": 0.0,
+  "verdict_line": "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES",
+  "response": "FINDINGS:\n- uploader in app/upload.py: FOUND \u2014 The file exists at the documented path (cite docs/guide.md:6)\nVERDICT: NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES"
+}

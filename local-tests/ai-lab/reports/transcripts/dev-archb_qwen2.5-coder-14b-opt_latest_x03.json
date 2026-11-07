@@ -1,0 +1,20 @@
+{
+  "request_id": "dev-archb-7f476c81",
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "model_returned": "qwen2.5-coder-14b-opt:latest",
+  "identity_ok": true,
+  "status": "ok",
+  "case": "x03",
+  "tag": "dev-archb",
+  "prompt_sha": "486b7262fc213581",
+  "max_out": 1536,
+  "reasoning_budget": null,
+  "prompt_tokens": 600,
+  "completion_tokens": 39,
+  "reasoning_tokens": 0,
+  "finish_reason": "stop",
+  "latency_s": 1.63,
+  "cost_usd": 0.0,
+  "verdict_line": "NO-VERDICT-LINE",
+  "response": "```\nparser | config/parser.txt | 2 or newer | config/parser.txt | parser version 5 | docs/guide.md:4, config/parser.txt:1 | OK\n```"
+}

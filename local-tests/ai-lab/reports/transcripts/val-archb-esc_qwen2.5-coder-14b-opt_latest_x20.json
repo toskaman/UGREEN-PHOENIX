@@ -1,0 +1,33 @@
+{
+  "base": "val-archb_qwen2.5-coder-14b-opt_latest_x20.json",
+  "unverified": [
+    [
+      "archive",
+      "docs/guide.md"
+    ]
+  ],
+  "rowfix_lines": [
+    "archive | config/manifest.txt | - | config/manifest.txt | 1| manifest ok | docs/guide.md:4 | OK"
+  ],
+  "verdict": "INSUFFICIENT EVIDENCE",
+  "findings": [
+    {
+      "subject": "archive",
+      "label": "UNKNOWN",
+      "reason": "file withheld as unreadable",
+      "sources": "docs/guide.md:3"
+    },
+    {
+      "subject": "manifest",
+      "label": "FOUND",
+      "reason": "present at required path, no constraint",
+      "sources": "docs/guide.md:4, config/manifest.txt:1"
+    },
+    {
+      "subject": "archive",
+      "label": "FOUND",
+      "reason": "present at required path, no constraint",
+      "sources": "manifest ok"
+    }
+  ]
+}

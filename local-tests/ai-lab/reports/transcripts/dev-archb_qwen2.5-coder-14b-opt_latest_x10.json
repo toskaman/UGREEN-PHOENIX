@@ -1,0 +1,20 @@
+{
+  "request_id": "dev-archb-55eecf37",
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "model_returned": "qwen2.5-coder-14b-opt:latest",
+  "identity_ok": true,
+  "status": "ok",
+  "case": "x10",
+  "tag": "dev-archb",
+  "prompt_sha": "486b7262fc213581",
+  "max_out": 1536,
+  "reasoning_budget": null,
+  "prompt_tokens": 619,
+  "completion_tokens": 88,
+  "reasoning_tokens": 0,
+  "finish_reason": "stop",
+  "latency_s": 3.81,
+  "cost_usd": 0.0,
+  "verdict_line": "NO-VERDICT-LINE",
+  "response": "SUBJECT | REQUIRED_PATH | REQUIRED_CONSTRAINT | OBSERVED_PATH | OBSERVED_VALUE | SOURCE_LINES | NOTES  \nworker | app/worker.py | - | app/worker.py | print(\"worker (synthetic)\") | docs/guide.md:3, app/worker.py:1 | OK  \nqueue config | config/queue.yaml | - | UNREADABLE | - | docs/guide.md:4 | UNREADABLE"
+}

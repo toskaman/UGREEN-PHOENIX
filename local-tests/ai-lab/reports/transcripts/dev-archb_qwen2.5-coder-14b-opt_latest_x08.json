@@ -1,0 +1,20 @@
+{
+  "request_id": "dev-archb-3cae2539",
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "model_returned": "qwen2.5-coder-14b-opt:latest",
+  "identity_ok": true,
+  "status": "ok",
+  "case": "x08",
+  "tag": "dev-archb",
+  "prompt_sha": "486b7262fc213581",
+  "max_out": 1536,
+  "reasoning_budget": null,
+  "prompt_tokens": 575,
+  "completion_tokens": 35,
+  "reasoning_tokens": 0,
+  "finish_reason": "stop",
+  "latency_s": 1.53,
+  "cost_usd": 0.0,
+  "verdict_line": "NO-VERDICT-LINE",
+  "response": "```\nSIGNATURE | keys/sign.key | - | UNREADABLE | - | docs/guide.md:3 | UNREADABLE: access denied by manifest\n```"
+}
