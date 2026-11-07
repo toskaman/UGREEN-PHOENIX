@@ -1,6 +1,6 @@
 # 100-question forensic audit matrix
 
-Judged tree: `410ca6c` (post-Cycle-3) unless noted. Verdict key: PASS
+Tree: `c44c4dd` (Cycle 4) unless noted. Verdict key: PASS
 (proven by cited evidence), PARTIAL (proven in one layer, open in
 another), FAIL (does not hold), UNKNOWN (no evidence either way),
 NOT APPLICABLE. Local simulation never counts as NAS evidence.
@@ -179,7 +179,7 @@ NOT APPLICABLE. Local simulation never counts as NAS evidence.
 - Finding: symlinks never followed (live conditional test incl.
   no_verify-leak assertion), traversal/absolute rejected, resolve-checked.
 - Evidence: `harness.py:61-71,109-123`, `run-tests.py` edge-3 + symlink block.
-- Risk: low. Status: VERIFIED (58/58 green incl. live symlink run).
+- Risk: low. Status: VERIFIED (59/59 green incl. live symlink run).
 
 ### Q033 — Hostile content changing instructions — PARTIAL
 - Finding: local parser only reads markers (injection corpus ignored);
@@ -273,7 +273,7 @@ NOT APPLICABLE. Local simulation never counts as NAS evidence.
 ## F. Testing, validation and quality assurance
 
 ### Q051 — Checks independent enough to detect real defects — PARTIAL
-- Finding: 58 checks + 14/14 mutation kills prove detection for covered
+- Finding: 59 checks + 14/14 mutation kills prove detection for covered
   points; property/fuzz/metamorphic layers absent.
 - Evidence: `mutate.py` kill log; `run-tests.py`.
 - Risk: medium. Status: OPEN (minor — diminishing returns).

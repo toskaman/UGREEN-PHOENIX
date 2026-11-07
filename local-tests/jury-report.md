@@ -2,8 +2,8 @@
 
 Method: 4 parallel judges (one criterion each) + synthesis agent, all
 read-only, instructed to argue why PHOENIX does NOT deserve a high score.
-Judged tree: commit `410ca6c` (post-Cycle-3). Scores are the judges' own,
-never inflated by the author.
+Judged tree: commit `4faa985` (pre-Cycle-3; the panel ran before the
+fixes). Scores are the judges' own, never inflated by the author.
 
 ## Panel scores (pre-Cycle-3 fixes)
 
@@ -18,7 +18,7 @@ Panel average: 4.5/10.
 
 ## Points of agreement (all/most judges)
 
-- Zero real-NAS runtime evidence; 58/58 and 8/8 are local simulation.
+- Zero real-NAS runtime evidence; 46/46 and 8/8 are local simulation.
 - Local proof is regex-marker simulation, not AI measurement.
 - Report-only, document-level only: restores nothing, next steps generic.
 - Scope/read-only/approval enforcement is prompt prose, unexecuted on NAS.

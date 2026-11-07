@@ -1,8 +1,9 @@
 # Evidence index (content hashes + provenance)
 
-Tree: commit `c44c4dd` (Cycle 4), `main`, 2026-11-07. All hashes SHA-256
-of working-tree bytes, verified this day. Checker file hashes agree with
-the tree hashes below.
+Working tree verified 2026-11-07 on `main` (release built from
+`c44c4dd`; `SKILL.md`+`references/` byte-identical in the final commit —
+verified by empty diff, see closing report). All hashes SHA-256 of the
+verified bytes. Checker file hashes agree with the tree hashes below.
 
 ## Submission package bytes (in the ZIP)
 
@@ -47,12 +48,12 @@ Rebuild: `python "A SOUMETTRE/build_zip.py"` then
 | LICENSE | `9EB48619FBC193AB7BB327B090CFCC703000265B83E670F81F231D0B1C43C56E` |
 | local-tests/README.md | `A7B53E85321E2C3268F945AECE7661883D5F8947A2D17FBD7AA9B950A9F81D0A` |
 | local-tests/perf-matrix.md | `24AACE7DBFEDEA2EF694966561C7C13E25D3053C94C645355A7074BEF88BAAC2` |
-| local-tests/audit-matrix.md | `0BC0443485C3389E64CE1200224BBAD844ACD808E93D10BE8F424B2777DBEF88` |
+| local-tests/audit-matrix.md | `71A3736FDA60CE84738AB7C399F3842EDF408388B3ECDDCC084830E92719C08F` |
 | local-tests/commercial-thesis.md | `73E3E44FEFBBA73059AE8A080BC254E584A970B19D4D7BC9C55A1709DE2422AD` |
-| local-tests/jury-report.md | `7F280FAEC78EDBF59B8F681BA52692A1C9B5F1B5C22DE1485685FC1DD78BADC1` |
+| local-tests/jury-report.md | `140760B12EB144ECA50171EA494168A2C1FAFAA6039CB4BE66BC37506938FB79` |
 
 ## CI
 
 Run 42400074403 (commit `410ca6c`): 5/5 success — checker + tests on
-ubuntu/windows × Python 3.13/3.14. Final-commit CI run recorded in the
-closing report.
+ubuntu/windows × Python 3.13/3.14. Run 42400566200 (commit `e8fbd25`):
+success. The closing report names the latest run.
