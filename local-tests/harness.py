@@ -52,6 +52,20 @@ PLAIN_VERDICT = {
         "possible yet.",
 }
 
+BLOCKER_STATES = {NOT_FOUND, CONFLICTING}
+GAP_STATES = {INACCESSIBLE, UNKNOWN}
+
+IMPACT = {
+    NOT_FOUND: "presence cannot be confirmed; recovery must not assume it.",
+    CONFLICTING: "no single observed version satisfies the requirement.",
+}
+
+
+def violates_restore_ban(text: str) -> bool:
+    """True when a recommendation claims restore-like action."""
+    return re.search(r"\b(restore\w*|recover\w*|rebuild\w*)\b",
+                     text, re.IGNORECASE) is not None
+
 MAX_VERSION_LENGTH = 64
 MAX_VERSION_SEGMENTS = 16
 MAX_DEPTH = 12
@@ -134,9 +148,11 @@ def compare(op: str, actual: str, wanted: str) -> bool:
             ">": a > w, "<": a < w}[op]
 
 
-def run(scope: Path, mode: str = "full") -> dict:
+def run(scope: Path, mode: str = "full", prior: dict | None = None) -> dict:
     """Run the decision procedure. mode='full', or ablation 'no_reconcile'
-    (contradictions degrade to UNKNOWN) or 'no_verify' (basename match)."""
+    (contradictions degrade to UNKNOWN) or 'no_verify' (basename match).
+    prior is a previous result dict used ONLY for delta comparison; all
+    evidence is re-observed from the scope on every run."""
     scope = scope.resolve()
     manifest = scope / "access-denied.txt"
     denied = set()
@@ -284,18 +300,77 @@ def run(scope: Path, mode: str = "full") -> dict:
     else:
         completion = "COMPLETED"
 
-    next_steps = []
+    # Recovery Closure: compare against the user-supplied prior report.
+    # Prior data is NEVER reused as evidence; everything above was
+    # re-observed from the scope on this run.
+    delta = None
+    if prior:
+        prev_map = {e["subject"]: e for e in prior.get("evidence", [])}
+        new_map = {e["subject"]: e["status"] for e in evidence}
+        prev_status = {s: e["status"] for s, e in prev_map.items()}
+        transitions = []
+        for subject in sorted(set(prev_status) | set(new_map)):
+            old, new = prev_status.get(subject), new_map.get(subject)
+            if old in BLOCKER_STATES and new == FOUND:
+                state = "RESOLVED"
+            elif new in BLOCKER_STATES and old not in BLOCKER_STATES:
+                state = "NEW BLOCKER"
+            elif new in BLOCKER_STATES:
+                state = "STILL BLOCKED"
+            elif old in GAP_STATES and new in GAP_STATES:
+                state = "STILL UNCERTAIN"
+            elif new in GAP_STATES:
+                state = "NEW GAP"
+            elif old == new:
+                state = "UNCHANGED"
+            elif old is None:
+                state = "NEW"
+            else:
+                state = "REMOVED"
+            transitions.append({
+                "subject": subject, "previous": old, "current": new,
+                "state": state,
+                "prior_detail": (prev_map[subject]["detail"]
+                                 if subject in prev_map else None),
+                "new_detail": next((e["detail"] for e in evidence
+                                    if e["subject"] == subject), None)})
+        resolved = [t["subject"] for t in transitions
+                    if t["state"] == "RESOLVED"]
+        delta = {"prior_verdict": prior.get("verdict"), "verdict": verdict,
+                 "transitions": transitions, "resolved": resolved,
+                 "resolved_count": len(resolved)}
+
+    recommendations = []
     for e in evidence:
         subject = redact(e["subject"])
+        source = f"{e['source']}:{e['line']}"
         if e["status"] == NOT_FOUND:
-            next_steps.append(f"Ask the operator to supply '{subject}' "
-                              f"or point to its approved location.")
+            recommendations.append({
+                "subject": subject, "priority": 1,
+                "action": f"Ask the operator to supply '{subject}' or "
+                          f"point to its approved location.",
+                "evidence": source, "auth": "no Skill write needed"})
         elif e["status"] == CONFLICTING:
-            next_steps.append(f"Confirm the intended '{subject}' "
-                              f"version with the document owners.")
-        elif e["status"] in (INACCESSIBLE, UNKNOWN):
-            next_steps.append(f"Resolve the '{subject}' evidence gap "
-                              f"(access or clearer source needed).")
+            recommendations.append({
+                "subject": subject, "priority": 1,
+                "action": f"Confirm the intended '{subject}' version "
+                          f"with the document owners.",
+                "evidence": f"{source} vs observed facts (see §4)",
+                "auth": "no Skill write needed"})
+        elif e["status"] == INACCESSIBLE:
+            recommendations.append({
+                "subject": subject, "priority": 2,
+                "action": f"Request read access to '{subject}' or an "
+                          f"approved copy.",
+                "evidence": source,
+                "auth": "access grant is the operator's decision"})
+        elif e["status"] == UNKNOWN:
+            recommendations.append({
+                "subject": subject, "priority": 2,
+                "action": f"Resolve the '{subject}' evidence gap with a "
+                          f"clearer source.",
+                "evidence": source, "auth": "no Skill write needed"})
+    recommendations.sort(key=lambda r: r["priority"])
 
     blockers = [e for e in evidence
                 if e["status"] in (NOT_FOUND, CONFLICTING)]
@@ -332,19 +407,38 @@ def run(scope: Path, mode: str = "full") -> dict:
                      f"{redact(e['detail'])}")
     lines += ["", "## 5. Priority blockers"]
     lines += [f"- {redact(e['subject'])}: {e['status']} — "
-              f"{redact(e['detail'])}"
+              f"{redact(e['detail'])} impact: {IMPACT[e['status']]}"
               for e in blockers] or ["- none"]
     lines += ["", "## 6. Contradictions"]
     lines += [f"- {redact(e['subject'])} — {redact(e['detail'])}"
               for e in conflicts] or ["- none observed"]
     lines += ["", "## 7. Next steps"]
-    lines += [f"- {s}" for s in next_steps] or ["- none"]
+    lines += [f"- P{r['priority']}: {r['action']} (evidence: {r['evidence']}; "
+              f"authorization: {r['auth']})"
+              for r in recommendations] or ["- none"]
     lines += ["", f"## 8. Verdict: {verdict}",
               f"In plain terms: {PLAIN_VERDICT[verdict]}",
               "Document-level assessment only — not a verified restore."]
+    if delta is not None:
+        lines += ["", "## 9. Recovery Delta",
+                  f"Verdict: {delta['prior_verdict']} -> {delta['verdict']}.",
+                  f"Documentary blockers resolved: {delta['resolved_count']}. "
+                  "This is not a tested restoration."]
+        for tr in delta["transitions"]:
+            lines.append(f"- {redact(tr['subject'])}: {tr['previous']} -> "
+                         f"{tr['current']} — {tr['state']}")
+        unknowns = [tr["subject"] for tr in delta["transitions"]
+                    if tr["state"] in ("STILL UNCERTAIN", "NEW GAP")]
+        if unknowns:
+            lines.append("Still unknown: "
+                         + ", ".join(redact(u) for u in unknowns) + ".")
+        lines.append("Next action: address the remaining blockers or gaps "
+                     "above, then run one more recheck with this report "
+                     "as prior.")
 
     return {"verdict": verdict, "completion": completion,
-            "evidence": evidence,
+            "evidence": evidence, "recommendations": recommendations,
+            "delta": delta,
             "coverage": {"reviewed": [d["path"] for d in discovered],
                          "skipped": skipped,
                          "inaccessible": inaccessible_files,
@@ -356,7 +450,10 @@ def run(scope: Path, mode: str = "full") -> dict:
 
 
 if __name__ == "__main__":
-    result = run(Path(sys.argv[1]))
+    prior = None
+    if len(sys.argv) > 3:
+        prior = json.loads(Path(sys.argv[3]).read_text(encoding="utf-8"))
+    result = run(Path(sys.argv[1]), prior=prior)
     print(result["report"])
     if len(sys.argv) > 2:
         Path(sys.argv[2]).write_text(json.dumps(result, indent=2),

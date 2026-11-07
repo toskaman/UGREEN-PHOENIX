@@ -33,6 +33,8 @@
       "detail": "Version fact satisfies requirement."
     }
   ],
+  "recommendations": [],
+  "delta": null,
   "coverage": {
     "reviewed": [
       "config/app.yaml",

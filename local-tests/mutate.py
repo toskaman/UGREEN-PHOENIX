@@ -74,6 +74,12 @@ MUTANTS = [
       ("harness.py",
        '    return TOKEN_RE.sub("[REDACTED-TOKEN]", masked)',
        "    return text  # MUTANT")]),
+    ("delta-stale-reuse", [("harness.py",
+      '        new_map = {e["subject"]: e["status"] for e in evidence}',
+      '        new_map = {e["subject"]: e["status"] for e in prior.get("evidence", [])}  # MUTANT')]),
+    ("delta-inversion", [("harness.py",
+      '            state = "RESOLVED"',
+      '            state = "STILL BLOCKED"  # MUTANT')]),
 ]
 
 

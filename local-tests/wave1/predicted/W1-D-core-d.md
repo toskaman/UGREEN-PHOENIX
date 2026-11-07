@@ -22,15 +22,15 @@ Completion: COMPLETED.
 - runtime: CONFLICTING (required by docs/deployment-guide.md:6) — Observed config/app.yaml:2 (2.9.0) contradicts required >= 3.0.
 
 ## 5. Priority blockers
-- config/missing.yaml: NOT FOUND IN SCOPE — Bounded scope search returned no confirmed 'config/missing.yaml'. This is not proof of global absence.
-- runtime: CONFLICTING — Observed config/app.yaml:2 (2.9.0) contradicts required >= 3.0.
+- config/missing.yaml: NOT FOUND IN SCOPE — Bounded scope search returned no confirmed 'config/missing.yaml'. This is not proof of global absence. impact: presence cannot be confirmed; recovery must not assume it.
+- runtime: CONFLICTING — Observed config/app.yaml:2 (2.9.0) contradicts required >= 3.0. impact: no single observed version satisfies the requirement.
 
 ## 6. Contradictions
 - runtime — Observed config/app.yaml:2 (2.9.0) contradicts required >= 3.0.
 
 ## 7. Next steps
-- Ask the operator to supply 'config/missing.yaml' or point to its approved location.
-- Confirm the intended 'runtime' version with the document owners.
+- P1: Ask the operator to supply 'config/missing.yaml' or point to its approved location. (evidence: docs/deployment-guide.md:5; authorization: no Skill write needed)
+- P1: Confirm the intended 'runtime' version with the document owners. (evidence: docs/deployment-guide.md:6 vs observed facts (see §4); authorization: no Skill write needed)
 
 ## 8. Verdict: DOCUMENTARY BLOCKER IDENTIFIED
 In plain terms: at least one required item is contradicted or cannot be confirmed from the reviewed sources — do not assume the project is recoverable.

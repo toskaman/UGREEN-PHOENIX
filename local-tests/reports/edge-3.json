@@ -43,6 +43,30 @@
       "detail": "'app/main.py' verified present in scope."
     }
   ],
+  "recommendations": [
+    {
+      "subject": "docs/locked.md",
+      "priority": 2,
+      "action": "Request read access to 'docs/locked.md' or an approved copy.",
+      "evidence": "docs/guide.md:4",
+      "auth": "access grant is the operator's decision"
+    },
+    {
+      "subject": "../escape.txt",
+      "priority": 2,
+      "action": "Resolve the '../escape.txt' evidence gap with a clearer source.",
+      "evidence": "docs/guide.md:5",
+      "auth": "no Skill write needed"
+    },
+    {
+      "subject": "C:/abs.txt",
+      "priority": 2,
+      "action": "Resolve the 'C:/abs.txt' evidence gap with a clearer source.",
+      "evidence": "docs/guide.md:6",
+      "auth": "no Skill write needed"
+    }
+  ],
+  "delta": null,
   "coverage": {
     "reviewed": [
       "docs/guide.md"
@@ -58,5 +82,5 @@
     "errors": [],
     "depth_capped": 0
   },
-  "report": "# PHOENIX local simulation report\n\n## 1. Scenario\nScope: edge-3 (local synthetic corpus, NOT a NAS runtime result).\n\n## 2. Coverage\nDocuments reviewed: 1, skipped non-documents: 1, inaccessible: 1, truncated: 0.\nCompletion: PARTIAL.\nInaccessible sources (content never read): docs/locked.md\n\n## 3. Requirements\n- docs/locked.md (required by docs/guide.md:4)\n- ../escape.txt (required by docs/guide.md:5)\n- C:/abs.txt (required by docs/guide.md:6)\n- app/main.py (required by docs/guide.md:7)\n\n## 4. Evidence table\n- docs/locked.md: INACCESSIBLE (required by docs/guide.md:4) \u2014 'docs/locked.md' cannot be read (access denied).\n- ../escape.txt: UNKNOWN (required by docs/guide.md:5) \u2014 '../escape.txt' is not a safe in-scope path; rejected without resolving outside the scope.\n- C:/abs.txt: UNKNOWN (required by docs/guide.md:6) \u2014 'C:/abs.txt' is not a safe in-scope path; rejected without resolving outside the scope.\n- app/main.py: FOUND (required by docs/guide.md:7) \u2014 'app/main.py' verified present in scope.\n\n## 5. Priority blockers\n- none\n\n## 6. Contradictions\n- none observed\n\n## 7. Next steps\n- Resolve the 'docs/locked.md' evidence gap (access or clearer source needed).\n- Resolve the '../escape.txt' evidence gap (access or clearer source needed).\n- Resolve the 'C:/abs.txt' evidence gap (access or clearer source needed).\n\n## 8. Verdict: INSUFFICIENT EVIDENCE\nIn plain terms: some evidence could not be read or confirmed, so no conclusion is possible yet.\nDocument-level assessment only \u2014 not a verified restore."
+  "report": "# PHOENIX local simulation report\n\n## 1. Scenario\nScope: edge-3 (local synthetic corpus, NOT a NAS runtime result).\n\n## 2. Coverage\nDocuments reviewed: 1, skipped non-documents: 1, inaccessible: 1, truncated: 0.\nCompletion: PARTIAL.\nInaccessible sources (content never read): docs/locked.md\n\n## 3. Requirements\n- docs/locked.md (required by docs/guide.md:4)\n- ../escape.txt (required by docs/guide.md:5)\n- C:/abs.txt (required by docs/guide.md:6)\n- app/main.py (required by docs/guide.md:7)\n\n## 4. Evidence table\n- docs/locked.md: INACCESSIBLE (required by docs/guide.md:4) \u2014 'docs/locked.md' cannot be read (access denied).\n- ../escape.txt: UNKNOWN (required by docs/guide.md:5) \u2014 '../escape.txt' is not a safe in-scope path; rejected without resolving outside the scope.\n- C:/abs.txt: UNKNOWN (required by docs/guide.md:6) \u2014 'C:/abs.txt' is not a safe in-scope path; rejected without resolving outside the scope.\n- app/main.py: FOUND (required by docs/guide.md:7) \u2014 'app/main.py' verified present in scope.\n\n## 5. Priority blockers\n- none\n\n## 6. Contradictions\n- none observed\n\n## 7. Next steps\n- P2: Request read access to 'docs/locked.md' or an approved copy. (evidence: docs/guide.md:4; authorization: access grant is the operator's decision)\n- P2: Resolve the '../escape.txt' evidence gap with a clearer source. (evidence: docs/guide.md:5; authorization: no Skill write needed)\n- P2: Resolve the 'C:/abs.txt' evidence gap with a clearer source. (evidence: docs/guide.md:6; authorization: no Skill write needed)\n\n## 8. Verdict: INSUFFICIENT EVIDENCE\nIn plain terms: some evidence could not be read or confirmed, so no conclusion is possible yet.\nDocument-level assessment only \u2014 not a verified restore."
 }

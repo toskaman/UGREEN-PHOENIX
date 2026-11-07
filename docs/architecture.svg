@@ -49,6 +49,10 @@
   <text x="610" y="332" text-anchor="middle" font-size="11">BLOCKER / CLEAR /</text>
   <text x="610" y="346" text-anchor="middle" font-size="11">INSUFFICIENT EVIDENCE</text>
   <line x1="480" y1="320" x2="508" y2="320" stroke="#333" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="610" y1="360" x2="610" y2="372" stroke="#888" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <line x1="610" y1="372" x2="150" y2="372" stroke="#888" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <line x1="150" y1="372" x2="150" y2="122" stroke="#888" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#a)"/>
+  <text x="380" y="384" text-anchor="middle" font-size="10" fill="#555">Recovery Closure: user fixes + prior report → steps 2–5 re-run on fresh evidence → §9 Recovery Delta</text>
   <defs>
     <marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
       <path d="M0,0 L7,3 L0,6 Z" fill="#333"/>

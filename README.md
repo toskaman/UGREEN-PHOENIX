@@ -19,6 +19,9 @@ registered expert agents; it never executes NAS commands directly:
    and version constraints, then reconciles cross-document claims.
 3. **knowledge-agent** (`ug-knowledge`) — assembles the evidence-qualified
    recovery-readiness report with citations, blockers, and next checks.
+4. **Recovery Closure** — after the user addresses cited issues, PHOENIX
+   re-inspects fresh evidence and appends a Recovery Delta (§9) comparing
+   before/after — never reusing the prior report as proof.
 
 Every dependency is labeled `FOUND`, `CONFLICTING`, `NOT FOUND IN SCOPE`,
 `INACCESSIBLE`, or `UNKNOWN`. The verdict is one of
@@ -40,7 +43,7 @@ Mapped to the official judging criteria (equally weighted, per the
   conventional file search and backup dashboards do not offer.
 - **Technical Quality** — sound orchestration through registered experts and
   supported CLI capabilities, with permission and approval handling:
-  `static-pass` (0 errors, 0 warnings), 59/59 local workflow-logic checks,
+  `static-pass` (0 errors, 0 warnings), 71/71 local workflow-logic checks,
   14/14 mutation kills, and a measured baseline comparison.
 - **AI NAS Fit & Validation** — every check runs inside a user-authorized
   NAS scope through `ug-filesystem`, `ug-document`, and `ug-knowledge`;
@@ -111,10 +114,10 @@ requires a separate user request plus platform approval.
 | Core test B — present but version-incompatible config | ✅ Logic validated locally (`CONFLICTING`, both sources cited) · NAS runtime ⏳ |
 | Edge case — denied access / prompt-injection document | ✅ Logic validated locally (denied, truncated, injection handled) · NAS runtime ⏳ |
 | Baseline comparison (6 methods, 8 cases) | ✅ Measured locally (PHOENIX 8/8, retrieval-plus 6/8, filename 3/8, generic QA 1/8) · NAS runtime ⏳ ([report](local-tests/reports/baseline-comparison.md)) |
-| Mutation testing (harness + baselines) | ✅ 14/14 mutants killed locally (incl. a double mutant) · also runs in CI |
+| Mutation testing (harness + baselines) | ✅ 16/16 mutants killed locally (incl. double + delta mutants) · also runs in CI |
 | Runtime execution on UGREEN AI NAS | ⏳ Untested — no NAS access in Round 1 |
 
-Local simulation: 59/59 checks green (`python local-tests/run-tests.py`)
+Local simulation: 71/71 checks green (`python local-tests/run-tests.py`)
 plus the measured baseline comparison. This validates the workflow logic
 only. The 24-hour finalist session plan is in
 [local-tests/finalist-runbook.md](local-tests/finalist-runbook.md).

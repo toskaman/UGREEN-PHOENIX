@@ -16,13 +16,13 @@ Completion: COMPLETED.
 - runtime: FOUND (required by docs/guide-v2.md:4) — Version fact satisfies requirement.
 
 ## 5. Priority blockers
-- runtime: CONFLICTING — Observed config/runtime.yaml:2 (2.4.1) contradicts required >= 3.0.
+- runtime: CONFLICTING — Observed config/runtime.yaml:2 (2.4.1) contradicts required >= 3.0. impact: no single observed version satisfies the requirement.
 
 ## 6. Contradictions
 - runtime — Observed config/runtime.yaml:2 (2.4.1) contradicts required >= 3.0.
 
 ## 7. Next steps
-- Confirm the intended 'runtime' version with the document owners.
+- P1: Confirm the intended 'runtime' version with the document owners. (evidence: docs/guide-v1.md:4 vs observed facts (see §4); authorization: no Skill write needed)
 
 ## 8. Verdict: DOCUMENTARY BLOCKER IDENTIFIED
 In plain terms: at least one required item is contradicted or cannot be confirmed from the reviewed sources — do not assume the project is recoverable.

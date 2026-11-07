@@ -19,6 +19,8 @@ Return a human-readable report with:
 6. Contradictions and alternative explanations, including whether a different file could satisfy a requirement.
 7. Next-step verification plan: low-risk checks first and actions requiring real restoration tools separated.
 8. Clear verdict: 'DOCUMENTARY BLOCKER IDENTIFIED', 'NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES', or 'INSUFFICIENT EVIDENCE'. None is a verified restore. Follow the verdict with one plain-language sentence a non-technical reader can act on: for a blocker, which required item failed and that recovery must not be assumed; for a clear result, that every extracted requirement was confirmed and this is still not a tested restore; when abstaining, what evidence is missing.
+9. Recommendations must be safe, specific, evidence-linked, and secret-free; state any authorization a write would need; never use restore, recover, or rebuild verbs for actions PHOENIX does not perform. Order blockers before evidence gaps.
+10. Recovery Closure: on recheck, re-observe all evidence from the authorized scope; compare field-by-field against the user-supplied prior report; report each requirement as RESOLVED, STILL BLOCKED, NEW BLOCKER, STILL UNCERTAIN, or UNCHANGED; a cleared documentary blocker is not a verified restore.
 
 ## Rules that prevent misleading results
 

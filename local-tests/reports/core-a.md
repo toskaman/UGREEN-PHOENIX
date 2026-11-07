@@ -16,13 +16,13 @@ Completion: COMPLETED.
 - config/prod-config.yaml: NOT FOUND IN SCOPE (required by docs/deployment-guide.md:5) — Bounded scope search returned no confirmed 'config/prod-config.yaml'. This is not proof of global absence.
 
 ## 5. Priority blockers
-- config/prod-config.yaml: NOT FOUND IN SCOPE — Bounded scope search returned no confirmed 'config/prod-config.yaml'. This is not proof of global absence.
+- config/prod-config.yaml: NOT FOUND IN SCOPE — Bounded scope search returned no confirmed 'config/prod-config.yaml'. This is not proof of global absence. impact: presence cannot be confirmed; recovery must not assume it.
 
 ## 6. Contradictions
 - none observed
 
 ## 7. Next steps
-- Ask the operator to supply 'config/prod-config.yaml' or point to its approved location.
+- P1: Ask the operator to supply 'config/prod-config.yaml' or point to its approved location. (evidence: docs/deployment-guide.md:5; authorization: no Skill write needed)
 
 ## 8. Verdict: DOCUMENTARY BLOCKER IDENTIFIED
 In plain terms: at least one required item is contradicted or cannot be confirmed from the reviewed sources — do not assume the project is recoverable.

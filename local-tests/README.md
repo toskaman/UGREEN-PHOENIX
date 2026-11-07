@@ -26,7 +26,8 @@ NAS permissions, or model quality on a real device.
 - `harness.py` — simulates discover → extract → verify → report and emits a
   PHOENIX-style evidence report with verdict, completion state
   (`COMPLETED`/`PARTIAL`), plain-language verdict line, depth cap, OS-error
-  mapping, and secret redaction.
+  mapping, secret redaction, prioritized recommendations, and Recovery
+  Closure rechecks (prior report in, §9 Recovery Delta out).
 - `run-tests.py` — runs the harness on all corpora and asserts the exact
   labels required by `references/validation-plan.md`, plus helper units,
   a SKILL/report vocabulary guard, and the 8-section report contract.
@@ -65,11 +66,13 @@ NAS permissions, or model quality on a real device.
   answers (Devpost FAQ source).
 - `devpost-kit.md` — paste-ready Devpost drafts (human-gated upload).
 - `make-scale-corpus.py` — deterministic scale-corpus generator.
+- `closure-demo.md` — flagship "The Recovery That Looked Complete" walkthrough
+  (scenarios A/B/C with reproduce recipes).
 
 ## Run
 
 ```sh
-python run-tests.py       # 59 acceptance checks (must be ALL GREEN)
+python run-tests.py       # 71 acceptance checks (must be ALL GREEN)
 python run-baseline.py    # baseline comparison → reports/baseline-comparison.md
 python rehearse-wave1.py  # validate prompts, regenerate wave1/ artifacts
 ```

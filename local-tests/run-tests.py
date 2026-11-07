@@ -336,6 +336,97 @@ def main():
         else:
             print("  [SKIP] symlink creation needs privileges")
 
+    print("closure (recheck + delta, scenarios A/B/C):")
+    import shutil
+    with tempfile.TemporaryDirectory() as tmp:
+        t = Path(tmp) / "case-a"
+        shutil.copytree(ROOT / "corpus" / "core-a", t)
+        before = harness.run(t)
+        (t / "config").mkdir(parents=True, exist_ok=True)
+        (t / "config" / "prod-config.yaml").write_text(
+            "# supplied by operator\n", encoding="utf-8")
+        after = harness.run(t, prior=before)
+        delta = after["delta"]
+        trans = {tr["subject"]: tr["state"] for tr in delta["transitions"]}
+        ok &= check("A: verdict BLOCKER -> CLEAR",
+                    before["verdict"] == "DOCUMENTARY BLOCKER IDENTIFIED"
+                    and after["verdict"] == "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES",
+                    f"{before['verdict']} -> {after['verdict']}")
+        ok &= check("A: missing asset RESOLVED with new evidence",
+                    trans.get("config/prod-config.yaml") == "RESOLVED"
+                    and "verified present" in str(delta["transitions"]),
+                    str(trans))
+        ok &= check("A: recheck report carries section 9, first run does not",
+                    "## 9. Recovery Delta" in after["report"]
+                    and "## 9. Recovery Delta" not in before["report"])
+    with tempfile.TemporaryDirectory() as tmp:
+        t = Path(tmp) / "case-b"
+        shutil.copytree(ROOT / "corpus" / "core-b", t)
+        before = harness.run(t)
+        (t / "config" / "runtime.yaml").write_text(
+            "# bumped by operator\nPROVIDES: runtime 3.0\n", encoding="utf-8")
+        after = harness.run(t, prior=before)
+        trans = {tr["subject"]: tr["state"] for tr in after["delta"]["transitions"]}
+        ok &= check("B: conflict RESOLVED after version fix",
+                    trans.get("runtime") == "RESOLVED"
+                    and after["verdict"] == "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES",
+                    str(trans))
+        sec9 = after["report"].split("## 9. Recovery Delta")[1]
+        ok &= check("B: delta never claims restoration",
+                    "not a tested restoration" in sec9
+                    and all(s not in sec9.lower() for s in
+                            ("restored", "recovery complete", "system restored")),
+                    sec9[:200])
+    with tempfile.TemporaryDirectory() as tmp:
+        t = Path(tmp)
+        (t / "guide.md").write_text(
+            "REQUIRES: tool.py\nREQUIRES: license >= 2.0\n", encoding="utf-8")
+        (t / "tool.py").write_text("x\n", encoding="utf-8")
+        before = harness.run(t)
+        (t / "readme.txt").write_text("unrelated note\n", encoding="utf-8")
+        after = harness.run(t, prior=before)
+        trans = {tr["subject"]: tr["state"] for tr in after["delta"]["transitions"]}
+        ok &= check("C: unverified stays uncertain after irrelevant change",
+                    before["verdict"] == "INSUFFICIENT EVIDENCE"
+                    and after["verdict"] == "INSUFFICIENT EVIDENCE"
+                    and trans.get("license") == "STILL UNCERTAIN"
+                    and trans.get("tool.py") == "UNCHANGED",
+                    str(trans))
+        ok &= check("C: nothing falsely RESOLVED",
+                    all(tr["state"] != "RESOLVED"
+                        for tr in after["delta"]["transitions"]))
+    sec7 = (REPORTS / "core-d.md").read_text(encoding="utf-8")
+    sec7 = sec7.split("## 7. Next steps")[1].split("## 8. Verdict")[0]
+    rec_lines = [ln for ln in sec7.splitlines() if ln.startswith("- ")]
+    ok &= check("recommendations prioritize blockers with evidence",
+                bool(rec_lines) and rec_lines[0].startswith("- P1:")
+                and "deployment-guide.md" in sec7,
+                str(rec_lines[:2]))
+    ok &= check("recommendations never claim restore-like action",
+                bool(rec_lines) and all(not harness.violates_restore_ban(ln)
+                                        for ln in rec_lines),
+                str(rec_lines))
+    sec5 = (REPORTS / "core-b.md").read_text(encoding="utf-8")
+    sec5 = sec5.split("## 5. Priority blockers")[1].split("## 6. ")[0]
+    ok &= check("blockers explain impact",
+                "impact:" in sec5 and "CONFLICTING" in sec5)
+    ok &= check("first-run reports carry no delta section",
+                "## 9. Recovery Delta" not in (REPORTS / "core-a.md").read_text(encoding="utf-8"))
+    with tempfile.TemporaryDirectory() as tmp:
+        t = Path(tmp)
+        (t / "g.md").write_text("REQUIRES: a.txt\n", encoding="utf-8")
+        p1 = t / "before.json"
+        r1 = subprocess.run([sys.executable, str(ROOT / "harness.py"), str(t), str(p1)],
+                            capture_output=True, text=True)
+        (t / "a.txt").write_text("x\n", encoding="utf-8")
+        p2 = t / "after.json"
+        r2 = subprocess.run([sys.executable, str(ROOT / "harness.py"), str(t), str(p2), str(p1)],
+                            capture_output=True, text=True)
+        ok &= check("CLI accepts prior report, emits delta",
+                    r1.returncode == 0 and r2.returncode == 0
+                    and "## 9. Recovery Delta" in r2.stdout
+                    and "RESOLVED" in r2.stdout)
+
     print("skill/report vocabulary guard:")
     skill = (ROOT.parent / "SKILL.md").read_text(encoding="utf-8")
     sentence = skill.split("exactly these sections:")[1].split(".")[0]
