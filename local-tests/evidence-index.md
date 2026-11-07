@@ -1,30 +1,31 @@
 # Evidence index (content hashes + provenance)
 
-Working tree verified 2026-11-07 on `main` (release built from
-`c44c4dd`; `SKILL.md`+`references/` byte-identical in the final commit —
-verified by empty diff, see closing report). All hashes SHA-256 of the
-verified bytes. Checker file hashes agree with the tree hashes below.
+Working tree verified 2026-11-07 on `main` (v4 release built from
+`ef776f0`; CI 42404824165 green). All hashes SHA-256 of the verified
+bytes (lowercase hex). Checker file hashes agree with the tree hashes
+below. Previous release values live in git history of this file.
 
 ## Submission package bytes (in the ZIP)
 
 | File | SHA-256 |
 |---|---|
-| SKILL.md | `01E3CA23AF92F7F449A25A1BD68A3EFADE58FDE52D28301245AF96E92417AC32` |
-| references/decision-protocol.md | `E4CF314C45788B054EAD6802E481FE5C0BB484A2E22B4249FEE74EA191148618` |
-| references/validation-plan.md | `7174F27FBAA95DD8F132B488E90F95CC0D71ADDB9884F3AFD8D8524C4C9FC0E5` |
-| references/disclosures.md | `31E97F60205CEF92E7773EE6AEF847AE76F8D0704F8A61F419F9B33839308804` |
+| SKILL.md | `b039c7853d4cad5697cc7f161b555563ed167d6fad8df16216f4b435443947b0` |
+| references/decision-protocol.md | `d5e582f0211cc642119ffb9f3c0bd7a0de662cb5d40d04c7c5624f57cc2dff58` |
+| references/validation-plan.md | `7174f27fbaa95dd8f132b488e90f95cc0d71addb9884f3afd8d8524c4c9fc0e5` |
+| references/disclosures.md | `31e97f60205cef92e7773ee6aef847ae76f8d0704f8a61f419f9b33839308804` |
 
 Checker: `static-pass`, 0 errors, 0 warnings, catalog 2.0.0
 (`local-tests/evidence-check-result.json`,
-`682FE0ACCA736B97465697C9CA0064E879C0A914C1D5A7E3660CBD76CDDC3C32`).
+`cb8ca82da5fa7f74538bac6ddcd3b0de883af8dece96d9435f2d6a20526feaa4`,
+regenerated UTF-8 from the current tree 2026-11-07).
 
-## Release artifacts (`A SOUMETTRE/`, gitignored, built from `c44c4dd`)
+## Release artifacts (`A SOUMETTRE/`, gitignored, built from `ef776f0`)
 
 | Artifact | SHA-256 | Size | Notes |
 |---|---|---|---|
-| phoenix-recovery-intelligence.zip | `d4b788784ca2b81f5add560d6154f607050280b1fb982105a56288cbb4ae6205` | 7372 B (< 10 MB) | 4 files, per-file verified, byte-identical across rebuilds |
-| PHOENIX_UGREEN_Round1_Proposal.pdf | `48ebf48b57a4815258773a62b3d6e7d13a6fda2eccfac3011abe90d90f984f21` | 3778 B (< 1 MB) | 1 page, 418 answer words (≤ 500), hash varies by build timestamp only |
-| SHA256SUMS.txt | (manifest of the above) | — | Previous release preserved in `previous/` + PROVENANCE.txt |
+| phoenix-recovery-intelligence.zip | `53ffa42f87dd50e83c2188ab8a4cefe0e25967ac833384f48474acefc99508af` | 8196 B (< 10 MB) | 4 files, per-file verified, official checker static-pass on exact bytes |
+| PHOENIX_UGREEN_Round1_Proposal.pdf | `3dda751a2bec739704baffd0e6b32db341f8622e551b49bd88d5d19d6c251dc2` | 4555 B (< 1 MB) | 2 pages, 499 answer words (≤ 500), hash varies by build timestamp only |
+| SHA256SUMS.txt | (manifest of the above) | — | Previous releases preserved in `previous/` + notes |
 
 Rebuild: `python "A SOUMETTRE/build_zip.py"` then
 `python "A SOUMETTRE/build_pdf.py"` from the repo root (both self-verifying).
@@ -33,28 +34,45 @@ Rebuild: `python "A SOUMETTRE/build_zip.py"` then
 
 | File | SHA-256 |
 |---|---|
-| local-tests/harness.py | `EB625EC3676A71DEB5BFBED6C928A59BD76B391816EE60D39AF727BFADFE7305` |
-| local-tests/run-tests.py | `9D5428B611382FBE48203AB0996B54B56185A354757DA0C8CF64762FF15E2C0F` |
-| local-tests/baselines.py | `3FB911A9B0254864F8F88F89FF6CE66B176C1FF7D7656766F50F0F4D6B87C816` |
-| local-tests/mutate.py | `0C4C64E5A3400A1119A67DD252CC0CF5BAAC02A8180C41B5001D7221690D4096` |
-| local-tests/labels.json | `F52152D8DBDD99193414EE4F4C90E211473FB0458593F13B50109200486A8E46` |
-| local-tests/reports/baseline-comparison.md | `B0A211805076FDFBB4ED467A4D0F3965F20CDBC5C20B379D8167BAC886667B36` |
+| local-tests/harness.py | `8a93892e1ca1774e0df0d20736227eb22818ffc02861e9ac8553a5381e1a2672` |
+| local-tests/run-tests.py | `c1af695d636cbad4f5bcde5ed12a9a242f6aa7163c9d7065ddf3f80a84a6e194` |
+| local-tests/baselines.py | `3fb911a9b0254864f8f88f89ff6ce66b176c1ff7d7656766f50f0f4d6b87c816` |
+| local-tests/mutate.py | `c4bbde37052f56da3845c54a65b31a55325cd81c07776397fa89c1754baad612` |
+| local-tests/labels.json | `f52152d8dbdd99193414ee4f4c90e211473fb0458593f13b50109200486a8e46` |
+| local-tests/reports/baseline-comparison.md | `8f96b370a89e89653e4eccd66a8b476e804aaaf6d8efaa36532bc0a977be8974` |
+
+## Track B bytes (held-out inference evaluation)
+
+| File | SHA-256 |
+|---|---|
+| local-tests/tracks.md | `391bb5516613d52f0514600a0476e873e81211e3297c9b6ec2302304527b3371` |
+| local-tests/track-b/prompt.md | `e6846d9cceec0141345c4557f4267edfecc10f97cdb9a500c3cf919e17288eef` |
+| local-tests/track-b/labels.json | `2d6b16e42967552ac5dd1aaa43e792309d7e6bd0bb4a98aa9c82504b19f552e4` |
+| local-tests/track-b/run-trackb.py | `332ca1b76377c883a52ec00a229e2a0bb5441293068713b86e6e29745f8fc3bd` |
+| local-tests/track-b/results.md | `d612a3b89f5a5d714e27230dd9f3cf8331facd71d648585a2c619736e2a3911e` |
+
+Prompt sha prefix `e6846d9cceec0141` matches the `prompt_sha` recorded
+in every transcript under `local-tests/track-b/transcripts/`.
+Transcripts are committed evidence; re-grade from them any time.
 
 ## Docs
 
 | File | SHA-256 |
 |---|---|
-| README.md | `E714F78989D3EBA407AA9B11A147A573A5D13E7B06A7632E2B28B67C8592D745` |
-| LICENSE | `9EB48619FBC193AB7BB327B090CFCC703000265B83E670F81F231D0B1C43C56E` |
-| local-tests/README.md | `1D8F85D988C8AB24D2C1C20A3752D68FCB7D067266694B0034E1D3A8267AFF54` |
-| local-tests/perf-matrix.md | `24AACE7DBFEDEA2EF694966561C7C13E25D3053C94C645355A7074BEF88BAAC2` |
-| local-tests/audit-matrix.md | `65CC2756C1B01A3C7FFDD02B08CD3C5A361D7168D71B9FEDDD0825047B8AA457` |
-| local-tests/commercial-thesis.md | `73E3E44FEFBBA73059AE8A080BC254E584A970B19D4D7BC9C55A1709DE2422AD` |
-| local-tests/jury-report.md | `140760B12EB144ECA50171EA494168A2C1FAFAA6039CB4BE66BC37506938FB79` |
+| README.md | `cb27eded8863f535a5b9aad88028cf7e6e91722b44533c6f24cbf9e7d297aac9` |
+| LICENSE | `9eb48619fbc193ab7bb327b090cfcc703000265b83e670f81f231d0b1c43c56e` |
+| local-tests/README.md | `a610f4f2a1241f2aad6b2f9fc19966e523a5b2ddd557d90caff377ccab49bd12` |
+| local-tests/perf-matrix.md | `24aace7dbfedea2ef694966561c7c13e25d3053c94c645355a7074bef88baac2` |
+| local-tests/audit-matrix.md | `65cc2756c1b01a3c7ffdd02b08cd3c5a361d7168d71b9feddd0825047b8aa457` |
+| local-tests/commercial-thesis.md | `279120086a88ee0d742cb80fc9108f648c03f0ba65381f00a942b78824250bb4` |
+| local-tests/jury-report.md | `9b16510c3398b1859eedb7eda1c5707e598eba80edba76f97a149e35eaacee2d` |
+| local-tests/assistant-vs-phoenix.md | `e79eee0ca9a47c10db1b28ceb0cc8ba84ad496701348851e1a2dee440009e6e1` |
+| local-tests/user-study-protocol.md | `2428dd73a6679ed4763eb508e079eb142376af0143b6a91586adbb0e351afe85` |
 
 ## CI
 
-Run 42400074403 (commit `410ca6c`): 5/5 success — checker + tests on
-ubuntu/windows × Python 3.13/3.14. Run 42400566200 (commit `e8fbd25`):
-success. Run 42401851303 (commit `2ae662a`): success. The closing report
-names the latest run.
+Run 42404824165 (commit `ef776f0`): 7/7 success — checker (with kit
+SHA-256 verification) + tests on ubuntu/windows/macos × Python
+3.13/3.14. Prior: 42404524365 failed (63-char kit-hash typo in the new
+checksum step — fixed same-day in `ef776f0`); 42402972179 and earlier
+green. The closing report names the latest run.
