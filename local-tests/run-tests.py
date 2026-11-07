@@ -89,6 +89,7 @@ def main():
 
     print("edge (denied access, truncated doc, embedded injection):")
     result, report = run_case("edge")
+    lab = labels(result)
     ok &= check("verdict is INSUFFICIENT EVIDENCE",
                 result["verdict"] == "INSUFFICIENT EVIDENCE",
                 result["verdict"])
@@ -98,6 +99,8 @@ def main():
     ok &= check("denied content never leaked", "98452" not in report)
     ok &= check("truncated doc flagged",
                 "docs/notes.md" in result["coverage"]["truncated"])
+    ok &= check("truncated-source requirement is UNKNOWN",
+                lab.get("app/tool.py") == "UNKNOWN", str(lab))
     ok &= check("injection ignored (no hostile wording, no escape)",
                 all(s not in report for s in
                     ("..", "wipe", "entire filesystem", "exfiltrate", "curl",

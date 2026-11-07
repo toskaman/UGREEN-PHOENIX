@@ -26,8 +26,10 @@ NAS permissions, or model quality on a real device.
   PHOENIX-style evidence report with verdict.
 - `run-tests.py` — runs the harness on all corpora and asserts the exact
   labels required by `references/validation-plan.md`.
-- `baselines.py` + `run-baseline.py` — naive filename search and generic QA
-  compared against PHOENIX on predeclared `labels.json` ground truth.
+- `baselines.py` + `run-baseline.py` — retrieval-plus-analysis, naive
+  filename search, and generic QA, plus two PHOENIX ablations
+  (no reconciliation, no verification), scored on predeclared
+  `labels.json` ground truth with extended precision/recall metrics.
 - `prompts.json` + `rehearse-wave1.py` — validated wave-1 prompt pack and
   session-artifact generator (prompt pack, predicted reports, run log,
   scoring sheet, upload ZIP).
@@ -39,13 +41,17 @@ NAS permissions, or model quality on a real device.
 - `open-questions-for-ugreen.md` — platform questions for the support team.
 - `reports/` — generated reports (regenerate with `run-tests.py` and
   `run-baseline.py`).
+- `mutate.py` — mutation testing: 8 single-point mutants, all must be
+  killed by the suite (measured kill rate, also runs in CI).
+- `bench.py` + `perf-matrix.md` — local performance measurements and the
+  P01–P50 matrix (measured vs. not-applicable vs. blocked-on-NAS).
 - `evidence-check-result.json` — real output of the official static checker
   (`static-pass`, 0 errors, 0 warnings).
 
 ## Run
 
 ```sh
-python run-tests.py       # 45 acceptance checks (must be ALL GREEN)
+python run-tests.py       # 46 acceptance checks (must be ALL GREEN)
 python run-baseline.py    # baseline comparison → reports/baseline-comparison.md
 python rehearse-wave1.py  # validate prompts, regenerate wave1/ artifacts
 ```

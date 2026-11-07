@@ -92,7 +92,9 @@ def compare(op: str, actual: str, wanted: str) -> bool:
             ">": a > w, "<": a < w}[op]
 
 
-def run(scope: Path) -> dict:
+def run(scope: Path, mode: str = "full") -> dict:
+    """Run the decision procedure. mode='full', or ablation 'no_reconcile'
+    (contradictions degrade to UNKNOWN) or 'no_verify' (basename match)."""
     scope = scope.resolve()
     manifest = scope / "access-denied.txt"
     denied = set()
@@ -146,6 +148,7 @@ def run(scope: Path) -> dict:
 
     # Step 3 — verification (simulates targeted file-agent checks).
     evidence = []
+    all_basenames = {p.name for p in scope.rglob("*") if p.is_file()}
     for req in requirements:
         subj = req["subject"]
         if req["truncated_source"]:
@@ -159,6 +162,16 @@ def run(scope: Path) -> dict:
                 evidence.append({**req, "status": INACCESSIBLE,
                                  "detail": f"'{subj}' cannot be read "
                                            f"(access denied)."})
+                continue
+            if mode == "no_verify":
+                base = subj.replace("\\", "/").split("/")[-1]
+                if base in all_basenames:
+                    evidence.append({**req, "status": FOUND,
+                                     "detail": f"Basename '{base}' matched "
+                                               f"somewhere (no verification)."})
+                else:
+                    evidence.append({**req, "status": NOT_FOUND,
+                                     "detail": f"No file named '{base}'."})
                 continue
             target = safe_join(scope, subj)
             if target is None:
@@ -187,10 +200,16 @@ def run(scope: Path) -> dict:
                 sources = ", ".join(
                     f"{p['source']}:{p['line']} ({p['version']})"
                     for p in matches)
-                evidence.append({**req, "status": CONFLICTING,
-                                 "detail": f"Observed {sources} contradicts "
-                                           f"required {req['op']} "
-                                           f"{req['version']}."})
+                if mode == "no_reconcile":
+                    evidence.append({**req, "status": UNKNOWN,
+                                     "detail": "Version comparison ran, but "
+                                               "reconciliation is disabled "
+                                               "in this ablation."})
+                else:
+                    evidence.append({**req, "status": CONFLICTING,
+                                     "detail": f"Observed {sources} "
+                                               f"contradicts required "
+                                               f"{req['op']} {req['version']}."})
             else:
                 evidence.append({**req, "status": FOUND,
                                  "detail": f"Version fact satisfies "

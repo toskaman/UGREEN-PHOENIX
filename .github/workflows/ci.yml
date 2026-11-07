@@ -22,6 +22,8 @@ jobs:
         run: python local-tests/run-baseline.py
       - name: Wave-1 rehearsal validations
         run: python local-tests/rehearse-wave1.py
+      - name: Mutation testing (must kill 8/8)
+        run: python local-tests/mutate.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:

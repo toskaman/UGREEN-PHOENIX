@@ -15,10 +15,13 @@ concept), unlike PHOENIX, which never opens denied files.
 import re
 from pathlib import Path
 
+import harness
+
 BLOCKER = "DOCUMENTARY BLOCKER IDENTIFIED"
 CLEAR = "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES"
 
-REQUIRES_RE = re.compile(r"^REQUIRES:\s*(\S+)(?:\s*(?:==|>=|<=|>|<)\s*\S+)?\s*$")
+REQUIRES_RE = re.compile(r"^REQUIRES:\s*(\S+)(?:\s*(==|>=|<=|>|<)\s*(\S+))?\s*$")
+PROVIDES_RE = re.compile(r"^PROVIDES:\s*(\S+)\s+(\S+)\s*$")
 DOC_SUFFIXES = {".md", ".yaml", ".yml", ".txt"}
 
 
@@ -69,5 +72,53 @@ def generic_qa(scope: Path) -> dict:
              "status": "SATISFIED" if s in blob else "UNSATISFIED"}
             for s in _requirements(docs)]
     verdict = (BLOCKER if any(r["status"] == "UNSATISFIED" for r in rows)
+               else CLEAR)
+    return {"verdict": verdict, "rows": rows, "cited": False}
+
+
+def _rich_requirements(docs: dict) -> list:
+    reqs = []
+    for text in docs.values():
+        for line in text.splitlines():
+            m = REQUIRES_RE.match(line.strip())
+            if m:
+                reqs.append((m.group(1), m.group(2), m.group(3)))
+    return reqs
+
+
+def _provides(docs: dict) -> dict:
+    facts = {}
+    for text in docs.values():
+        for line in text.splitlines():
+            m = PROVIDES_RE.match(line.strip())
+            if m and m.group(1) not in facts:
+                facts[m.group(1)] = m.group(2)
+    return facts
+
+
+def retrieval_plus(scope: Path) -> dict:
+    """Exact-path retrieval plus version analysis, binary verdict.
+
+    Well-designed retrieval (exact scoped paths, real version comparison)
+    but no evidence labels, no citations, and no insufficient-evidence
+    verdict: unreadable or unfounded requirements conservatively count as
+    missing, and every case ends BLOCKER or CLEAR.
+    """
+    scope = scope.resolve()
+    docs = _documents(scope)
+    facts = _provides(docs)
+    rows = []
+    for subject, op, version in _rich_requirements(docs):
+        if _is_file_subject(subject):
+            target = harness.safe_join(scope, subject)
+            status = ("MISSING" if target is None or not target.exists()
+                      else "FOUND")
+        elif op and subject in facts:
+            status = ("FOUND" if harness.compare(op, facts[subject], version)
+                      else "MISSING")
+        else:
+            status = "MISSING"  # unfounded version: conservative miss
+        rows.append({"subject": subject, "status": status})
+    verdict = (BLOCKER if any(r["status"] == "MISSING" for r in rows)
                else CLEAR)
     return {"verdict": verdict, "rows": rows, "cited": False}
