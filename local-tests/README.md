@@ -59,6 +59,12 @@ NAS permissions, or model quality on a real device.
   splits, TOPFIX disposition, and post-Cycle-3 reassessment.
 - `commercial-thesis.md` — research-backed business thesis + P2 log.
 - `evidence-index.md` — content hashes and artifact provenance.
+- `audit-delta.md` — OMEGA delta audit (D001–D050: prize fit, Devpost
+  surface, supply chain, hidden debt, failure shape).
+- `jury-questions.md` — 50 hardest jury questions with evidence-backed
+  answers (Devpost FAQ source).
+- `devpost-kit.md` — paste-ready Devpost drafts (human-gated upload).
+- `make-scale-corpus.py` — deterministic scale-corpus generator.
 
 ## Run
 
