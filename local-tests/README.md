@@ -10,8 +10,9 @@ NAS permissions, or model quality on a real device.
   absent `config/prod-config.yaml` (expects `NOT FOUND IN SCOPE`).
 - `corpus/core-b/` — synthetic project whose `runtime.yaml` declares
   `runtime 2.4.1` against a required `runtime >= 3.0` (expects `CONFLICTING`).
-- `corpus/edge/` — access-denied file, truncated document, and an embedded
-  instruction that must be ignored (expects `INSUFFICIENT EVIDENCE`).
+- `corpus/edge/` — access-denied file, truncated document, an embedded
+  instruction that must be ignored, and unicode filenames (expects
+  `INSUFFICIENT EVIDENCE`).
 - `corpus/core-a/old-backup/` — stale decoy copy: same basename, wrong
   location (must stay `NOT FOUND IN SCOPE`).
 - `corpus/core-c/` — healthy project, every requirement satisfied (expects
@@ -23,13 +24,17 @@ NAS permissions, or model quality on a real device.
   and absolute subjects that must be rejected without resolving.
 - `corpus/scale/` — 40 filler docs plus 5 requirements (coverage + timing).
 - `harness.py` — simulates discover → extract → verify → report and emits a
-  PHOENIX-style evidence report with verdict.
+  PHOENIX-style evidence report with verdict, completion state
+  (`COMPLETED`/`PARTIAL`), plain-language verdict line, depth cap, OS-error
+  mapping, and secret redaction.
 - `run-tests.py` — runs the harness on all corpora and asserts the exact
-  labels required by `references/validation-plan.md`.
-- `baselines.py` + `run-baseline.py` — retrieval-plus-analysis, naive
-  filename search, and generic QA, plus two PHOENIX ablations
-  (no reconciliation, no verification), scored on predeclared
-  `labels.json` ground truth with extended precision/recall metrics.
+  labels required by `references/validation-plan.md`, plus helper units,
+  a SKILL/report vocabulary guard, and the 8-section report contract.
+- `baselines.py` + `run-baseline.py` — a cited retrieval-plus-analysis
+  method that abstains on unfounded versions, naive filename search, and
+  generic QA, plus two PHOENIX ablations (no reconciliation, no
+  verification), scored on predeclared `labels.json` ground truth with
+  extended precision/recall metrics.
 - `prompts.json` + `rehearse-wave1.py` — validated wave-1 prompt pack and
   session-artifact generator (prompt pack, predicted reports, run log,
   scoring sheet, upload ZIP).
@@ -41,8 +46,9 @@ NAS permissions, or model quality on a real device.
 - `open-questions-for-ugreen.md` — platform questions for the support team.
 - `reports/` — generated reports (regenerate with `run-tests.py` and
   `run-baseline.py`).
-- `mutate.py` — mutation testing: 8 single-point mutants, all must be
-  killed by the suite (measured kill rate, also runs in CI).
+- `mutate.py` — mutation testing: 14 mutants (harness single-point, a
+  double mutant, a baselines mutant), all must be killed by the suite
+  (measured kill rate, also runs in CI).
 - `bench.py` + `perf-matrix.md` — local performance measurements and the
   P01–P50 matrix (measured vs. not-applicable vs. blocked-on-NAS).
 - `evidence-check-result.json` — real output of the official static checker
@@ -51,7 +57,7 @@ NAS permissions, or model quality on a real device.
 ## Run
 
 ```sh
-python run-tests.py       # 46 acceptance checks (must be ALL GREEN)
+python run-tests.py       # 58 acceptance checks (must be ALL GREEN)
 python run-baseline.py    # baseline comparison → reports/baseline-comparison.md
 python rehearse-wave1.py  # validate prompts, regenerate wave1/ artifacts
 ```

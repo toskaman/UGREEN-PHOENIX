@@ -5,6 +5,7 @@ Scope: core-c (local synthetic corpus, NOT a NAS runtime result).
 
 ## 2. Coverage
 Documents reviewed: 2, skipped non-documents: 1, inaccessible: 0, truncated: 0.
+Completion: COMPLETED.
 
 ## 3. Requirements
 - app/main.py (required by docs/deployment-guide.md:4)
@@ -19,11 +20,12 @@ Documents reviewed: 2, skipped non-documents: 1, inaccessible: 0, truncated: 0.
 ## 5. Priority blockers
 - none
 
-## 6. Contradictions and alternatives
+## 6. Contradictions
 - none observed
 
-## 7. Next verification actions
+## 7. Next steps
 - none
 
 ## 8. Verdict: NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES
+In plain terms: every extracted requirement was confirmed in the reviewed sources — this is still not a tested restore.
 Document-level assessment only — not a verified restore.

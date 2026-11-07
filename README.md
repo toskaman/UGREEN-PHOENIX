@@ -40,8 +40,8 @@ Mapped to the official judging criteria (equally weighted, per the
   conventional file search and backup dashboards do not offer.
 - **Technical Quality** — sound orchestration through registered experts and
   supported CLI capabilities, with permission and approval handling:
-  `static-pass` (0 errors, 0 warnings), 46/46 local workflow-logic checks,
-  and a measured baseline comparison.
+  `static-pass` (0 errors, 0 warnings), 58/58 local workflow-logic checks,
+  14/14 mutation kills, and a measured baseline comparison.
 - **AI NAS Fit & Validation** — every check runs inside a user-authorized
   NAS scope through `ug-filesystem`, `ug-document`, and `ug-knowledge`;
   the Skill itself calls no external APIs. Model and data residency depend
@@ -109,10 +109,11 @@ requires a separate user request plus platform approval.
 | Core test A — required config absent from corpus | ✅ Logic validated locally (`NOT FOUND IN SCOPE`, no global claim) · NAS runtime ⏳ ([plan](references/validation-plan.md)) |
 | Core test B — present but version-incompatible config | ✅ Logic validated locally (`CONFLICTING`, both sources cited) · NAS runtime ⏳ |
 | Edge case — denied access / prompt-injection document | ✅ Logic validated locally (denied, truncated, injection handled) · NAS runtime ⏳ |
-| Baseline comparison (filename search vs. generic QA vs. PHOENIX) | ✅ Measured locally (PHOENIX 8/8, filename 3/8, generic QA 1/8) · NAS runtime ⏳ ([report](local-tests/reports/baseline-comparison.md)) |
+| Baseline comparison (6 methods, 8 cases) | ✅ Measured locally (PHOENIX 8/8, retrieval-plus 6/8, filename 3/8, generic QA 1/8) · NAS runtime ⏳ ([report](local-tests/reports/baseline-comparison.md)) |
+| Mutation testing (harness + baselines) | ✅ 14/14 mutants killed locally (incl. a double mutant) · also runs in CI |
 | Runtime execution on UGREEN AI NAS | ⏳ Untested — no NAS access in Round 1 |
 
-Local simulation: 46/46 checks green (`python local-tests/run-tests.py`)
+Local simulation: 58/58 checks green (`python local-tests/run-tests.py`)
 plus the measured baseline comparison. This validates the workflow logic
 only. The 24-hour finalist session plan is in
 [local-tests/finalist-runbook.md](local-tests/finalist-runbook.md).

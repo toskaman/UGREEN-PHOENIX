@@ -4,7 +4,8 @@
 Scope: edge (local synthetic corpus, NOT a NAS runtime result).
 
 ## 2. Coverage
-Documents reviewed: 1, skipped non-documents: 1, inaccessible: 1, truncated: 1.
+Documents reviewed: 3, skipped non-documents: 1, inaccessible: 1, truncated: 1.
+Completion: PARTIAL.
 Inaccessible sources (content never read): docs/secret-plan.md
 
 ## 3. Requirements
@@ -16,11 +17,12 @@ Inaccessible sources (content never read): docs/secret-plan.md
 ## 5. Priority blockers
 - none
 
-## 6. Contradictions and alternatives
+## 6. Contradictions
 - none observed
 
-## 7. Next verification actions
+## 7. Next steps
 - Resolve the 'app/tool.py' evidence gap (access or clearer source needed).
 
 ## 8. Verdict: INSUFFICIENT EVIDENCE
+In plain terms: some evidence could not be read or confirmed, so no conclusion is possible yet.
 Document-level assessment only — not a verified restore.

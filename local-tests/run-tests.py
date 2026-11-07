@@ -9,14 +9,17 @@ import os
 import subprocess
 import sys
 import tempfile
+import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import baselines
 import harness
 
 ROOT = Path(__file__).resolve().parent
 REPORTS = ROOT / "reports"
-CASES = ["core-a", "core-b", "edge"]
+CASES = ["core-a", "core-b", "edge", "core-c", "core-d", "edge-2",
+         "edge-3", "scale"]
 
 CHECKS_PASSED = 0
 
@@ -73,6 +76,8 @@ def main():
     ok &= check("stale decoy seen but correctly rejected",
                 "old-backup/prod-config.yaml" in result["coverage"]["reviewed"]
                 and lab.get("config/prod-config.yaml") == "NOT FOUND IN SCOPE")
+    ok &= check("plain-language blocker sentence present",
+                "In plain terms:" in report and "do not assume" in report)
 
     print("core-b (present but incompatible version):")
     result, report = run_case("core-b")
@@ -105,6 +110,16 @@ def main():
                 all(s not in report for s in
                     ("..", "wipe", "entire filesystem", "exfiltrate", "curl",
                      "POST", "external server")))
+    ok &= check("unicode filenames reviewed",
+                any(ord(c) > 127 for p in result["coverage"]["reviewed"]
+                    for c in p),
+                str(result["coverage"]["reviewed"]))
+    ok &= check("completion is PARTIAL (gaps present)",
+                result.get("completion") == "PARTIAL",
+                str(result.get("completion")))
+    ok &= check("plain-language abstention sentence present",
+                "In plain terms:" in report
+                and "no conclusion is possible yet" in report)
 
     print("core-c (healthy project, no blocker):")
     result, report = run_case("core-c")
@@ -116,6 +131,12 @@ def main():
                 all(lab.get(s) == "FOUND"
                     for s in ("app/main.py", "config/app.yaml", "runtime")),
                 str(lab))
+    ok &= check("completion is COMPLETED (no gaps)",
+                result.get("completion") == "COMPLETED",
+                str(result.get("completion")))
+    ok &= check("plain-language clear sentence present",
+                "In plain terms:" in report
+                and "still not a tested restore" in report)
 
     print("core-d (mixed evidence):")
     result, report = run_case("core-d")
@@ -148,7 +169,8 @@ def main():
                 result["verdict"])
     ok &= check("coverage counts exact",
                 len(cov["reviewed"]) == 42 and len(cov["skipped"]) == 1,
-                str({k: len(v) for k, v in cov.items()}))
+                str({k: (len(v) if isinstance(v, list) else v)
+                     for k, v in cov.items()}))
     ok &= check("missing file and unfounded version flagged",
                 lab.get("config/missing.yaml") == "NOT FOUND IN SCOPE"
                 and lab.get("worker") == "UNKNOWN", str(lab))
@@ -189,6 +211,11 @@ def main():
     except Exception:
         nasty_ok = False
     ok &= check("version compare never raises", nasty_ok)
+    ok &= check("long versions differing late compare unequal",
+                not harness.compare("==", "1.0." + "9" * 100 + "a",
+                                    "1.0." + "9" * 100 + "b")
+                and harness.compare("==", "1.0." + "9" * 100 + "a",
+                                    "1.0." + "9" * 100 + "a"))
     scope = ROOT / "corpus" / "core-a"
     ok &= check("safe_join accepts in-scope spellings",
                 harness.safe_join(scope, "docs/checklist.md") is not None
@@ -206,7 +233,15 @@ def main():
     ok &= check("redact masks secrets, keeps facts",
                 harness.redact("api-key=hunter2") == "api-key=[REDACTED]"
                 and harness.redact("runtime 3.1.0") == "runtime 3.1.0"
-                and harness.redact("password : s3cr3t") == "password=[REDACTED]")
+                and harness.redact("password : s3cr3t") == "password=[REDACTED]"
+                and harness.redact("access token=abc")
+                == "access token=[REDACTED]"
+                and harness.redact("connection string=mongodb://u:p@h/db")
+                == "connection string=[REDACTED]"
+                and harness.redact("leaked ghp_0123456789abcdefZZ")
+                == "leaked [REDACTED-TOKEN]"
+                and harness.redact("key sk-abcdefgh12345678 here")
+                == "key [REDACTED-TOKEN] here")
     with tempfile.TemporaryDirectory() as tmp:
         t = Path(tmp)
         (t / "doc.md").write_text("REQUIRES: app/main.py\n", encoding="utf-8")
@@ -218,7 +253,55 @@ def main():
             binary_ok = False
     ok &= check("binary manifest cannot crash run", binary_ok)
     with tempfile.TemporaryDirectory() as tmp:
+        missing = Path(tmp) / "nope.md"
+        ok &= check("OS errors map to None, never raise",
+                    harness._safe_probe(missing) is None
+                    and harness._safe_read(missing) is None)
+    with tempfile.TemporaryDirectory() as tmp:
         t = Path(tmp)
+        deep = t
+        for i in range(15):
+            deep = deep / f"level{i}"
+            deep.mkdir()
+        (deep / "buried.md").write_text("REQUIRES: app/main.py\n",
+                                        encoding="utf-8")
+        (t / "top.md").write_text("REQUIRES: app/main.py\n", encoding="utf-8")
+        (t / "app").mkdir()
+        (t / "app" / "main.py").write_text("x\n", encoding="utf-8")
+        res = harness.run(t)
+        ok &= check("depth cap bounds deep trees",
+                    res["coverage"]["depth_capped"] >= 1
+                    and res["completion"] == "PARTIAL"
+                    and res["verdict"] == "INSUFFICIENT EVIDENCE",
+                    str(res["coverage"]["depth_capped"]))
+    with tempfile.TemporaryDirectory() as tmp:
+        t = Path(tmp)
+        (t / "big.md").write_text("# Big\n\n" + "padding line\n" * 100000
+                                  + "REQUIRES: app/main.py\n", encoding="utf-8")
+        (t / "app").mkdir()
+        (t / "app" / "main.py").write_text("x\n", encoding="utf-8")
+        start = time.perf_counter()
+        res = harness.run(t)
+        big_ms = (time.perf_counter() - start) * 1000
+        print(f"  [info] 1.3 MB doc run: {big_ms:.0f} ms")
+        ok &= check("large document processed correctly",
+                    res["verdict"] == "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES"
+                    and res["coverage"]["reviewed"] == ["big.md"],
+                    res["verdict"])
+    with tempfile.TemporaryDirectory() as tmp:
+        t = Path(tmp)
+        (t / "guide.md").write_text("REQUIRES: worker >= 2.0\n",
+                                    encoding="utf-8")
+        out = baselines.retrieval_plus(t)
+        ok &= check("retrieval_plus cites sources, abstains when unfounded",
+                    out["verdict"] == "INSUFFICIENT EVIDENCE"
+                    and out["cited"] is True
+                    and out["rows"]
+                    and out["rows"][0].get("source") == "guide.md:1",
+                    str(out))
+    with tempfile.TemporaryDirectory() as tmp:
+        t = Path(tmp)
+        (t / "doc.md").write_text("REQUIRES: link.md\n", encoding="utf-8")
         (t / "real.md").write_text("hello\n", encoding="utf-8")
         try:
             os.symlink(t / "real.md", t / "link.md")
@@ -229,20 +312,33 @@ def main():
             res = harness.run(t)
             assert res["coverage"]["symlinks_skipped"] == ["link.md"], \
                 "symlink followed!"
-            assert res["coverage"]["reviewed"] == ["real.md"], \
+            assert sorted(res["coverage"]["reviewed"]) == ["doc.md",
+                                                           "real.md"], \
                 "target misread!"
+            nover = harness.run(t, mode="no_verify")
+            assert nover["evidence"][0]["status"] == "NOT FOUND IN SCOPE", \
+                "symlink basename leaked into no_verify match!"
             print("  [PASS] symlinked file skipped (conditional, uncounted)")
         else:
             print("  [SKIP] symlink creation needs privileges")
 
+    print("skill/report vocabulary guard:")
+    skill = (ROOT.parent / "SKILL.md").read_text(encoding="utf-8")
+    sentence = skill.split("exactly these sections:")[1].split(".")[0]
+    sample = (REPORTS / "core-a.md").read_text(encoding="utf-8")
+    headings = [ln[6:].split(":")[0] for ln in sample.splitlines()
+                if ln.startswith("## ")]
+    ok &= check("every report heading noun appears in SKILL.md",
+                all(h.lower() in sentence.lower() for h in headings),
+                str(headings))
+
     print("report contract (8 sections):")
-    for case in ("core-a", "core-b", "edge", "core-c", "core-d", "edge-2",
-                 "edge-3", "scale"):
+    for case in CASES:
         text = (REPORTS / f"{case}.md").read_text(encoding="utf-8")
         want = ["## 1. Scenario", "## 2. Coverage", "## 3. Requirements",
                 "## 4. Evidence table", "## 5. Priority blockers",
-                "## 6. Contradictions and alternatives",
-                "## 7. Next verification actions", "## 8. Verdict: "]
+                "## 6. Contradictions",
+                "## 7. Next steps", "## 8. Verdict: "]
         ok &= check(f"{case} has all 8 sections",
                     all(h in text for h in want))
 

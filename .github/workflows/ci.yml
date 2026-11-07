@@ -10,24 +10,25 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
+        python-version: ['3.13', '3.14']
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.13'
+          python-version: ${{ matrix.python-version }}
       - name: Acceptance tests (must be ALL GREEN)
         run: python local-tests/run-tests.py
       - name: Baseline comparison (measurement)
         run: python local-tests/run-baseline.py
       - name: Wave-1 rehearsal validations
         run: python local-tests/rehearse-wave1.py
-      - name: Mutation testing (must kill 8/8)
+      - name: Mutation testing (must kill 14/14)
         run: python local-tests/mutate.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: reports-${{ matrix.os }}
+          name: reports-${{ matrix.os }}-py${{ matrix.python-version }}
           path: local-tests/reports/
 
   checker:

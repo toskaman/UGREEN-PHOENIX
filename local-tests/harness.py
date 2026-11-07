@@ -14,8 +14,10 @@ Marker spec (parsed from .md/.yaml/.txt documents, never from free text):
 Scope safety (all enforced, all tested):
   symlinks are never followed; traversal/absolute subjects are rejected as
   UNKNOWN and never resolved outside the scope; manifest entries are
-  normalized before comparison; version strings are length-capped and
-  compared with a total ordering that cannot raise.
+  normalized before comparison; version strings are compared with a total
+  ordering that cannot raise and cannot confuse two distinct long versions;
+  OS read errors map to never-used INACCESSIBLE entries instead of crashing;
+  directory trees deeper than MAX_DEPTH are capped and reported.
 """
 
 import hashlib
@@ -35,18 +37,39 @@ NOT_FOUND = "NOT FOUND IN SCOPE"
 INACCESSIBLE = "INACCESSIBLE"
 UNKNOWN = "UNKNOWN"
 
+COMPLETED = "COMPLETED"
+PARTIAL = "PARTIAL"
+
+PLAIN_VERDICT = {
+    "DOCUMENTARY BLOCKER IDENTIFIED":
+        "at least one required item is contradicted or cannot be confirmed "
+        "from the reviewed sources — do not assume the project is recoverable.",
+    "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES":
+        "every extracted requirement was confirmed in the reviewed sources — "
+        "this is still not a tested restore.",
+    "INSUFFICIENT EVIDENCE":
+        "some evidence could not be read or confirmed, so no conclusion is "
+        "possible yet.",
+}
+
 MAX_VERSION_LENGTH = 64
 MAX_VERSION_SEGMENTS = 16
-SECRET_RE = re.compile(r"(?i)\b(password|passwd|secret|api[_-]?key|"
-                       r"access[_-]?token|private[_-]?key)\s*[:=]\s*\S+")
+MAX_DEPTH = 12
+SECRET_RE = re.compile(r"(?i)\b(password|passwd|secret|api[\s_-]?key|"
+                       r"access[\s_-]?token|private[\s_-]?key|"
+                       r"client[\s_-]?secret|connection[\s_-]?string|"
+                       r"bearer)\s*[:=]\s*\S+")
+TOKEN_RE = re.compile(r"\b(ghp_[A-Za-z0-9_]+|gho_[A-Za-z0-9_]+|"
+                      r"xox[bpars]-[A-Za-z0-9-]+|sk-[A-Za-z0-9]{8,})\b")
 
 
 def redact(text: str) -> str:
-    """Mask obvious secret assignments in human-readable report output."""
+    """Mask obvious secret assignments and well-known token prefixes."""
     def _mask(match):
         head = re.sub(r"\s*[:=]\s*\S+$", "", match.group(0))
         return head + "=[REDACTED]"
-    return SECRET_RE.sub(_mask, text)
+    masked = SECRET_RE.sub(_mask, text)
+    return TOKEN_RE.sub("[REDACTED-TOKEN]", masked)
 
 
 def norm_rel(entry: str):
@@ -79,10 +102,29 @@ def sha256_of(path: Path) -> str:
     return h.hexdigest()
 
 
+def _safe_probe(path: Path):
+    """Return (size, sha256), or None when the OS refuses access."""
+    try:
+        return path.stat().st_size, sha256_of(path)
+    except OSError:
+        return None
+
+
+def _safe_read(path: Path):
+    """Return file text, or None when the OS refuses access."""
+    try:
+        return path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return None
+
+
 def ver_key(version: str):
     key = []
     for part in version[:MAX_VERSION_LENGTH].split(".")[:MAX_VERSION_SEGMENTS]:
         key.append((0, int(part)) if part.isdigit() else (1, part[:32]))
+    key.append((2, len(version),
+                hashlib.sha256(version.encode("utf-8",
+                                              errors="replace")).hexdigest()))
     return tuple(key)
 
 
@@ -106,27 +148,37 @@ def run(scope: Path, mode: str = "full") -> dict:
 
     # Step 1 — discovery (simulates file-agent find/ls/stat/sha256sum).
     discovered, inaccessible_files, skipped, symlinks = [], [], [], []
+    discovery_errors, depth_capped = [], 0
     for path in sorted(scope.rglob("*", recurse_symlinks=False)):
         if path.is_dir() or path.name == "access-denied.txt":
             continue
-        if path.is_symlink():
-            symlinks.append(path.relative_to(scope).as_posix())
-            continue  # never followed, never opened
         rel = path.relative_to(scope).as_posix()
+        if len(path.relative_to(scope).parts) > MAX_DEPTH:
+            depth_capped += 1
+            continue
+        if path.is_symlink():
+            symlinks.append(rel)
+            continue  # never followed, never opened
         if norm_rel(rel) in denied:
             inaccessible_files.append(rel)  # never opened, never read
             continue
         if path.suffix.lower() in PARSED_SUFFIXES:
-            discovered.append({"path": rel, "size": path.stat().st_size,
-                               "sha256": sha256_of(path)})
+            probed = _safe_probe(path)
+            if probed is None:
+                discovery_errors.append(rel + " (unreadable)")
+                continue
+            size, digest = probed
+            discovered.append({"path": rel, "size": size, "sha256": digest})
         else:
             skipped.append(rel)
 
     # Step 2 — extraction (simulates document-agent qa/extract/reconcile).
     requirements, provisions, truncated_docs = [], [], []
     for entry in discovered:
-        text = (scope / entry["path"]).read_text(encoding="utf-8",
-                                                 errors="replace")
+        text = _safe_read(scope / entry["path"])
+        if text is None:
+            discovery_errors.append(entry["path"] + " (unreadable)")
+            continue
         truncated = TRUNCATED_MARKER in text
         if truncated:
             truncated_docs.append(entry["path"])
@@ -148,7 +200,8 @@ def run(scope: Path, mode: str = "full") -> dict:
 
     # Step 3 — verification (simulates targeted file-agent checks).
     evidence = []
-    all_basenames = {p.name for p in scope.rglob("*") if p.is_file()}
+    all_basenames = {p.name for p in scope.rglob("*", recurse_symlinks=False)
+                     if p.is_file() and not p.is_symlink()}
     for req in requirements:
         subj = req["subject"]
         if req["truncated_source"]:
@@ -219,10 +272,17 @@ def run(scope: Path, mode: str = "full") -> dict:
     statuses = {e["status"] for e in evidence}
     if statuses & {NOT_FOUND, CONFLICTING}:
         verdict = "DOCUMENTARY BLOCKER IDENTIFIED"
-    elif statuses & {INACCESSIBLE, UNKNOWN} or inaccessible_files:
+    elif (statuses & {INACCESSIBLE, UNKNOWN} or inaccessible_files
+          or discovery_errors or depth_capped):
         verdict = "INSUFFICIENT EVIDENCE"
     else:
         verdict = "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES"
+
+    if (inaccessible_files or truncated_docs or discovery_errors
+            or depth_capped):
+        completion = "PARTIAL"
+    else:
+        completion = "COMPLETED"
 
     next_steps = []
     for e in evidence:
@@ -247,13 +307,20 @@ def run(scope: Path, mode: str = "full") -> dict:
              "## 2. Coverage",
              f"Documents reviewed: {len(discovered)}, skipped "
              f"non-documents: {len(skipped)}, inaccessible: "
-             f"{len(inaccessible_files)}, truncated: {len(truncated_docs)}."]
+             f"{len(inaccessible_files)}, truncated: {len(truncated_docs)}.",
+             f"Completion: {completion}."]
     if inaccessible_files:
         lines.append("Inaccessible sources (content never read): "
                      + ", ".join(inaccessible_files))
     if symlinks:
         lines.append("Symlinked entries skipped (never followed): "
                      + ", ".join(symlinks))
+    if discovery_errors:
+        lines.append("Unreadable files (OS error, content never used): "
+                     + ", ".join(discovery_errors))
+    if depth_capped:
+        lines.append(f"Entries below depth {MAX_DEPTH} not reviewed: "
+                     f"{depth_capped}.")
     lines += ["", "## 3. Requirements"]
     lines += [f"- {redact(e['subject'])} "
               f"(required by {e['source']}:{e['line']})"
@@ -267,20 +334,24 @@ def run(scope: Path, mode: str = "full") -> dict:
     lines += [f"- {redact(e['subject'])}: {e['status']} — "
               f"{redact(e['detail'])}"
               for e in blockers] or ["- none"]
-    lines += ["", "## 6. Contradictions and alternatives"]
+    lines += ["", "## 6. Contradictions"]
     lines += [f"- {redact(e['subject'])} — {redact(e['detail'])}"
               for e in conflicts] or ["- none observed"]
-    lines += ["", "## 7. Next verification actions"]
+    lines += ["", "## 7. Next steps"]
     lines += [f"- {s}" for s in next_steps] or ["- none"]
     lines += ["", f"## 8. Verdict: {verdict}",
+              f"In plain terms: {PLAIN_VERDICT[verdict]}",
               "Document-level assessment only — not a verified restore."]
 
-    return {"verdict": verdict, "evidence": evidence,
+    return {"verdict": verdict, "completion": completion,
+            "evidence": evidence,
             "coverage": {"reviewed": [d["path"] for d in discovered],
                          "skipped": skipped,
                          "inaccessible": inaccessible_files,
                          "truncated": truncated_docs,
-                         "symlinks_skipped": symlinks},
+                         "symlinks_skipped": symlinks,
+                         "errors": discovery_errors,
+                         "depth_capped": depth_capped},
             "report": "\n".join(lines)}
 
 

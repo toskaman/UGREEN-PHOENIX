@@ -18,7 +18,7 @@ Return a human-readable report with:
 5. Priority blockers: distinguish document-supported blocker from suspected blocker.
 6. Contradictions and alternative explanations, including whether a different file could satisfy a requirement.
 7. Next-step verification plan: low-risk checks first and actions requiring real restoration tools separated.
-8. Clear verdict: 'DOCUMENTARY BLOCKER IDENTIFIED', 'NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES', or 'INSUFFICIENT EVIDENCE'. None is a verified restore.
+8. Clear verdict: 'DOCUMENTARY BLOCKER IDENTIFIED', 'NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES', or 'INSUFFICIENT EVIDENCE'. None is a verified restore. Follow the verdict with one plain-language sentence a non-technical reader can act on: for a blocker, which required item failed and that recovery must not be assumed; for a clear result, that every extracted requirement was confirmed and this is still not a tested restore; when abstaining, what evidence is missing.
 
 ## Rules that prevent misleading results
 

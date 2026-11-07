@@ -1,5 +1,6 @@
 {
   "verdict": "DOCUMENTARY BLOCKER IDENTIFIED",
+  "completion": "COMPLETED",
   "evidence": [
     {
       "subject": "config/runtime.yaml",
@@ -31,7 +32,9 @@
     "skipped": [],
     "inaccessible": [],
     "truncated": [],
-    "symlinks_skipped": []
+    "symlinks_skipped": [],
+    "errors": [],
+    "depth_capped": 0
   },
-  "report": "# PHOENIX local simulation report\n\n## 1. Scenario\nScope: core-b (local synthetic corpus, NOT a NAS runtime result).\n\n## 2. Coverage\nDocuments reviewed: 3, skipped non-documents: 0, inaccessible: 0, truncated: 0.\n\n## 3. Requirements\n- config/runtime.yaml (required by docs/deployment-guide.md:4)\n- runtime (required by docs/deployment-guide.md:5)\n\n## 4. Evidence table\n- config/runtime.yaml: FOUND (required by docs/deployment-guide.md:4) \u2014 'config/runtime.yaml' verified present in scope.\n- runtime: CONFLICTING (required by docs/deployment-guide.md:5) \u2014 Observed config/runtime.yaml:2 (2.4.1) contradicts required >= 3.0.\n\n## 5. Priority blockers\n- runtime: CONFLICTING \u2014 Observed config/runtime.yaml:2 (2.4.1) contradicts required >= 3.0.\n\n## 6. Contradictions and alternatives\n- runtime \u2014 Observed config/runtime.yaml:2 (2.4.1) contradicts required >= 3.0.\n\n## 7. Next verification actions\n- Confirm the intended 'runtime' version with the document owners.\n\n## 8. Verdict: DOCUMENTARY BLOCKER IDENTIFIED\nDocument-level assessment only \u2014 not a verified restore."
+  "report": "# PHOENIX local simulation report\n\n## 1. Scenario\nScope: core-b (local synthetic corpus, NOT a NAS runtime result).\n\n## 2. Coverage\nDocuments reviewed: 3, skipped non-documents: 0, inaccessible: 0, truncated: 0.\nCompletion: COMPLETED.\n\n## 3. Requirements\n- config/runtime.yaml (required by docs/deployment-guide.md:4)\n- runtime (required by docs/deployment-guide.md:5)\n\n## 4. Evidence table\n- config/runtime.yaml: FOUND (required by docs/deployment-guide.md:4) \u2014 'config/runtime.yaml' verified present in scope.\n- runtime: CONFLICTING (required by docs/deployment-guide.md:5) \u2014 Observed config/runtime.yaml:2 (2.4.1) contradicts required >= 3.0.\n\n## 5. Priority blockers\n- runtime: CONFLICTING \u2014 Observed config/runtime.yaml:2 (2.4.1) contradicts required >= 3.0.\n\n## 6. Contradictions\n- runtime \u2014 Observed config/runtime.yaml:2 (2.4.1) contradicts required >= 3.0.\n\n## 7. Next steps\n- Confirm the intended 'runtime' version with the document owners.\n\n## 8. Verdict: DOCUMENTARY BLOCKER IDENTIFIED\nIn plain terms: at least one required item is contradicted or cannot be confirmed from the reviewed sources \u2014 do not assume the project is recoverable.\nDocument-level assessment only \u2014 not a verified restore."
 }

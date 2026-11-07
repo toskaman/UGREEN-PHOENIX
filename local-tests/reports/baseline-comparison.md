@@ -4,8 +4,8 @@ Methods: `phoenix` (full decision procedure: exact-path checks,
 version reconciliation, access handling, source:line citations);
 `phoenix_no_reconcile` (contradictions degrade to UNKNOWN);
 `phoenix_no_verify` (basename matching instead of exact paths);
-`retrieval_plus` (exact paths plus version compare, binary
-BLOCKER/CLEAR verdict, no abstention, no citations);
+`retrieval_plus` (exact paths plus version compare, cited,
+abstains only on unfounded versions, no access handling);
 `filename_search` (basename match anywhere, versions assumed
 satisfied, no citations); `generic_qa` (subject string mentioned
 anywhere counts as satisfied, no citations). Non-PHOENIX methods
@@ -15,11 +15,11 @@ verdicts below are the stable result.
 | method | verdict accuracy | blocker recall | false allegations | abstention | citation precision | repeatability | mean ms/case |
 |---|---|---|---|---|---|---|
 | phoenix | 8/8 | 5/5 | 0 | 2/2 | 22/22 rows cited | 8/8 stable | 3.4 |
-| phoenix_no_reconcile | 6/8 | 3/5 | 0 | 2/2 | 22/22 rows cited | 8/8 stable | 3.3 |
-| phoenix_no_verify | 6/8 | 4/5 | 0 | 1/2 | 22/22 rows cited | 8/8 stable | 2.9 |
-| retrieval_plus | 6/8 | 5/5 | 0 | 0/2 | 0/22 rows cited | 8/8 stable | 1.7 |
-| filename_search | 3/8 | 2/5 | 0 | 0/2 | 0/22 rows cited | 8/8 stable | 1.9 |
-| generic_qa | 1/8 | 0/5 | 0 | 0/2 | 0/22 rows cited | 8/8 stable | 1.4 |
+| phoenix_no_reconcile | 6/8 | 3/5 | 0 | 2/2 | 22/22 rows cited | 8/8 stable | 3.4 |
+| phoenix_no_verify | 6/8 | 4/5 | 0 | 1/2 | 22/22 rows cited | 8/8 stable | 3.1 |
+| retrieval_plus | 6/8 | 5/5 | 0 | 0/2 | 22/22 rows cited | 8/8 stable | 1.8 |
+| filename_search | 3/8 | 2/5 | 0 | 0/2 | 0/22 rows cited | 8/8 stable | 2.1 |
+| generic_qa | 1/8 | 0/5 | 0 | 0/2 | 0/22 rows cited | 8/8 stable | 1.5 |
 
 ## Extended metrics (absolute counts)
 
