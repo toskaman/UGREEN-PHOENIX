@@ -14,6 +14,11 @@ Bound struct: {op, low, high, lo_inc, hi_inc, exclusions} with ops:
   SERIES       major series N.x (observed major must equal N)
   BARE         bare stated version (equal clears, differ abstains)
   ANY          no bound (only exclusions apply)
+  XOR          exclusive choice among members (single pick in set clears)
+Conditional requirements (if/unless/only-if/si/sauf-si/...) are NOT
+gated: the predicate is unexamined, so they return None / UNKNOWN
+rather than a guessed BARE comparison. Predicate evaluation against
+evidence is future work, documented, not silently approximated.
 Tuples compare dot-separated numerically with zero-padding, so
 2.4 == 2.4.0 and 1.10 > 1.9.
 """
@@ -50,6 +55,16 @@ STRONG_EXACT_RE = re.compile(r"exactly|exactement|precisement|==")
 WEAK_EXACT_RE = re.compile(r"must be|doit etre|pinned at")
 EQ_SYMBOL_RE = re.compile(r"(?<![<>=!])=(?![=])")
 NEQ_RE = re.compile(r"!=|≠")
+# Conditional gating markers (EN/FR, folded text): the requirement
+# depends on an unexamined predicate -> abstain (None), never BARE.
+CONDITIONAL_RE = re.compile(
+    r"unless|only\s+if|sauf\s+si|uniquement\s+si|seulement\s+si|"
+    r"a\s+moins\s+que|\bif\b|\bsi\b|\bwhen\b|lorsque|\bquand\b")
+# Explicit exclusivity markers -> XOR struct (checked BEFORE the
+# exclusion machinery, so 'but not' never swallows the members).
+XOR_RE = re.compile(
+    r"but\s+not\s+both|not\s+both|mais\s+pas\s+les\s+deux|"
+    r"mais\s+pas\s+a\s+la\s+fois|ou\s+exclusif")
 MIN_RE = re.compile(
     r"or newer|or later|at least|minimum|au moins|>=|≥|"
     r"ou\s+superieur\w*|ou\s+plus\s+recent\w*|ou\s+ulterieur\w*")
@@ -176,9 +191,10 @@ def _excluded_numbers(folded: str) -> set:
 
 
 def _struct(op, low=None, high=None, lo_inc=True, hi_inc=True,
-            major=None, exclusions=frozenset()):
+            major=None, exclusions=frozenset(), members=None):
     return {"op": op, "low": low, "high": high, "lo_inc": lo_inc,
-            "hi_inc": hi_inc, "major": major, "exclusions": exclusions}
+            "hi_inc": hi_inc, "major": major, "exclusions": exclusions,
+            "members": members}
 
 
 def normalize_constraint(text: str):
@@ -203,6 +219,30 @@ def normalize_constraint(text: str):
     has_weak = bool(WEAK_EXACT_RE.search(f)) or bool(EQ_SYMBOL_RE.search(f))
     has_neq = bool(NEQ_RE.search(f))
     excluded = _excluded_numbers(f)
+
+    if CONDITIONAL_RE.search(f):
+        return None  # gated requirement; predicate unexamined
+    xm = XOR_RE.search(f)
+    if xm:
+        # Explicit exclusivity among the stated versions. The marker's
+        # own "not" must not count as an exclusion cue, so tangling is
+        # judged on the text OUTSIDE the marker span: any bound,
+        # exactness, or exclusion cue there (e.g. "...but not both, 7
+        # excluded") makes the requirement contradictory -> abstain.
+        rest = f[:xm.start()] + " " + f[xm.end():]
+        tangled = (MIN_RE.search(rest) or MAX_RE.search(rest)
+                   or STRICT_GT_RE.search(rest)
+                   or STRICT_LT_RE.search(rest)
+                   or STRONG_EXACT_RE.search(rest)
+                   or WEAK_EXACT_RE.search(rest)
+                   or EQ_SYMBOL_RE.search(rest) or NEQ_RE.search(rest)
+                   or _excluded_numbers(rest))
+        if tangled:
+            return None
+        members = frozenset(_tup(n) for n in NUM_RE.findall(rest))
+        if len(members) < 2:
+            return None
+        return _struct("XOR", members=members)
 
     # Explicit two-number ranges first (most specific).
     for rx in RANGE_RES:
@@ -348,6 +388,12 @@ def compare(norm, got) -> tuple[str, str]:
         return ("UNKNOWN", "bare version differs; comparison unknown")
     if op == "ANY":
         return ("SATISFIED", f"{got} is not excluded")
+    if op == "XOR":
+        # A single observed pick can satisfy at most one member, so
+        # exclusivity collapses to membership; anything else violates.
+        if any(_cmp(got, m) == 0 for m in norm["members"]):
+            return ("SATISFIED", f"{got} is an allowed exclusive pick")
+        return ("VIOLATED", f"{got} is outside the exclusive choice")
     if op == "EQ":
         if _cmp(got, norm["low"]) == 0:
             return ("SATISFIED", f"{got} satisfies == {norm['low']}")

@@ -300,6 +300,22 @@ if __name__ == "__main__":
         ("must be 5, 6 excluded", "v 6", "VIOLATED"),
         ("5, 6, 7 excluded", "v 8", "SATISFIED"),
         ("schema 2 ou superieur, sauf 3", "v 3", "VIOLATED"),
+        # v7: XOR exclusivity (was ANTI-XOR: rejected members, cleared other)
+        ("version 5 or 6 but not both", "v 5", "SATISFIED"),
+        ("version 5 or 6 but not both", "v 7", "VIOLATED"),
+        ("version 5 ou 6 mais pas les deux", "v 6", "SATISFIED"),
+        ("version 5 ou 6 mais pas les deux", "v 7", "VIOLATED"),
+        # v7 purple: XOR + third exclusion or bound is contradictory
+        ("version 5 or 6 but not both, 7 excluded", "v 5", "UNKNOWN"),
+        ("at least 5 or 6 but not both", "v 5", "UNKNOWN"),
+        # v7: conditional markers abstain (condition unexamined, never BARE)
+        ("version 5 unless legacy mode", "v 5", "UNKNOWN"),
+        ("version 5 sauf si mode legacy", "v 5", "UNKNOWN"),
+        ("version 5 only if clean install", "v 5", "UNKNOWN"),
+        ("version 5 uniquement si install propre", "v 5", "UNKNOWN"),
+        ("use 5 if node count is 2", "v 5", "UNKNOWN"),
+        ("version 5 when cluster mode", "v 5", "UNKNOWN"),
+        ("version 5 a moins que mode legacy", "v 5", "UNKNOWN"),
     ]
     for i, (c, o, exp) in enumerate(contract):
         n = norm_mod.normalize_constraint(c)

@@ -156,3 +156,21 @@ What did not change: no pilot, no NAS verdict-quality data, no
 residency confirmation, no buyer conversation. Pilot design (§11)
 and go/no-go (precision ≥ 0.8) stand; the v6 evidence only raises
 confidence that the pilot instrument is sound.
+
+## 15. v7 addendum: the shipped Skill now permits its flagship check
+
+What changed: v7 fixed a contradiction with direct commercial
+weight — the v6 Skill forbade verifying any path the first discovery
+did not list, which is exactly the missing-dependency check a buyer
+pilot would run on day one. The Category A/B/C contract (check
+document-cited paths in-scope, refuse invented ones) makes the pilot
+scenario executable as specified instead of failing on its own
+instructions. Conditional semantics (unless/only-if gates abstain,
+"but not both" means exactly one) extend the reasoning asset to the
+requirement shapes real guides use — version gates, exclusive
+options — removing false blockers and false clears that would erode
+pilot precision below the 0.8 go/no-go.
+What did not change: no pilot, no NAS verdict-quality data, no
+residency confirmation, no buyer conversation. The v7 evidence
+raises confidence that the product survives first contact with a
+real folder; it does not replace that contact.

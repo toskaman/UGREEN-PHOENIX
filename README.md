@@ -118,9 +118,9 @@ requires a separate user request plus platform approval.
 | Runtime execution on UGREEN AI NAS | ⏳ Untested — no NAS access in Round 1 |
 
 Local simulation: 86/86 acceptance checks green
-(`python local-tests/run-tests.py`), plus 122/122 aggregation, 37/37
-proof-graph, 31/31 harness, and 35/35 budget offline checks, 16/16
-mutation kills, and the measured baseline comparison. This validates
+(`python local-tests/run-tests.py`), plus 135/135 aggregation, 37/37
+proof-graph, 31/31 harness, 35/35 budget, and 12/12 skill-contract
+offline checks, 16/16 mutation kills, and the measured baseline comparison. This validates
 the workflow logic only. The 24-hour finalist session plan is in
 [local-tests/finalist-runbook.md](local-tests/finalist-runbook.md).
 No NAS runtime results are claimed;

@@ -267,3 +267,76 @@ The +0.25 comes from one justified move (Fit 6->7: transfer made
 auditable) plus held scores on a strictly stronger evidence base.
 Three holds are deliberate: without NAS traces, users, or a second
 product breakthrough, higher would be grade inflation.
+
+---
+
+# v7 re-evaluation (adversarial, post-allowlist fix + conditionals)
+
+Same posture, Round 1 rules. New evidence since v6: a CONFIRMED
+contradiction in the shipped Skill was found and fixed — v6 step-4
+"refuse any path the discovery did not verify" forbade exactly the
+check the flagship missing-dependency scenario requires; it is
+replaced by a Category A/B/C contract (discovered + document-cited
+paths checked in-scope, invented paths refused, traversal/out-of-scope
+rejected), pinned by a new 12-check skill-contract suite, mirrored in
+the protocol, with transfer T4/U5/test5 corrected and checker
+static-pass. Second: conditional-dependency semantics — the XOR
+anti-pattern (members rejected AND non-members cleared) fixed with
+exactly-one compare, unless/only-if/si gates abstain instead of
+silently clearing, 13 new contract checks (135 total, zero v6
+regressions), injection red-team probes abstain, native transfer via
+protocol rules + in-context step-3 sentence + T10/U11. Third: demo
+script gained the Recovery Closure beat (fix → recheck → Delta);
+stale counts corrected (85→86, 122→135, unverifiable 41/41 probe row
+removed). Still missing: any NAS trace, any Vultr run
+(BLOCKED-CREDENTIALS, $0), any user-study participant, 9B tb6
+residual OPEN, no local-model conditional run (new U11).
+
+## User Value: 8 -> 8 (hold)
+
+Evidence: the flagship scenario is now executable as written (v6
+Skill forbade its own core check); conditional handling removes a
+class of silent misreads users would have met as wrong verdicts.
+Against: zero observed users, unchanged; value still measured on
+synthetic tasks.
+Strongest remaining objection: designed value, not observed outcomes.
+Higher needs: user-study runs + NAS UX traces.
+
+## Innovation & Differentiation: 7 -> 7 (hold)
+
+Evidence: the A/B/C scope-preserving verification contract is a real
+design contribution under Skill constraints, and gated/XOR semantics
+extend the reasoning asset to ordinary real-world requirement shapes.
+Against: both are correctness + coverage on the v4-shaped product —
+a contradiction fix and an asset extension, not a second breakthrough
+or a demonstrated NAS-only mechanism.
+Strongest remaining objection: the product does nothing a user can
+see that v6 did not promise; it now keeps the promise.
+Higher needs: NAS-execution ablation proving the loop collapses
+without tool access.
+
+## Technical Quality: 9 -> 9 (hold)
+
+Evidence: TDD discipline held (contract suites RED-before-GREEN),
+red/purple cycle on conditionals with tangled-input pins, injection
+probes abstain, 135 + 86 + 37 + 31 + 35 + 12 checks green, rendered
+demo byte-reproducible, checker static-pass on new content.
+Strongest remaining objection: native core still unexecuted on target.
+Higher needs: finalist-day traces. 10/10 explicitly not claimed.
+
+## AI NAS Fit & Validation: 7 -> 7 (hold)
+
+Evidence: T10/U11 extend the auditable transfer; Category-B finalist
+test stages the highest-risk native check; in-context rules reduce
+reliance on linked-protocol recall.
+Strongest remaining objection: still more predictions — every T-row
+awaits the NAS, and U11 adds a fresh unverified assumption.
+Higher needs: NAS traces (tests T1-T10 staged and ready).
+
+Reassessed v7 average: 7.75/10 (medium-high confidence), unchanged
+from v6. Four holds are deliberate: v7 is the most important
+correctness release since v4 (the shipped Skill contradicted its own
+flagship scenario), but correctness recovered is not a new
+breakthrough, and Round 1 ceilings without NAS traces or users hold
+firm. The confidence upgrade (medium → medium-high) reflects a
+strictly stronger, contradiction-free evidence base.

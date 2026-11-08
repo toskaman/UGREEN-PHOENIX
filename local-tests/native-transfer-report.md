@@ -22,13 +22,14 @@ Re-verified this session (offline, no credentials):
 
 | Component | File | Checks | Result |
 |---|---|---|---|
-| Acceptance harness | `local-tests/run-tests.py` | 85 | 85/85 ALL GREEN |
+| Acceptance harness | `local-tests/run-tests.py` | 86 | 86/86 ALL GREEN |
 | Mutation | `local-tests/mutate.py` | 16 | 16/16 killed |
 | AI-lab harness | `ai-lab/tests/test_harness.py` | 31 | 31/31 |
 | Budget ledger | `ai-lab/tests/test_budget.py` | 35 | 35/35 |
-| Aggregation | `ai-lab/tests/test_aggregate.py` | 98 | 98/98 |
+| Aggregation | `ai-lab/tests/test_aggregate.py` | 135 | 135/135 |
+| Proof graph | `local-tests/test_proofgraph.py` | 37 | 37/37 |
+| Skill contract | `local-tests/test_skill_contract.py` | 12 | 12/12 |
 | Wave-1 rehearsal | `local-tests/rehearse-wave1.py` | 8 prompts / 8 corpora | all passed |
-| EN/FR normalizer probes | Cycle 1 probe set | 41 | 41/41 |
 
 Rules proven by these suites: suspect-row UNKNOWN; citation-gated verdicts;
 delta path-anchoring with vanish-always-UNCERTAIN; verified-append rowfix
@@ -63,12 +64,13 @@ Each row: local rule → Skill instruction → Uliya expert → expected behavio
 | T1 | Citation gate: uncited rows are UNRESOLVED, support nothing (`aggregate`) | L41: every requirement MUST carry path:line citation | Citation discipline | document-agent / extraction | Each requirement row carries SOURCE-PATH + LOCATION | U1, U2 |
 | T2 | Disagreement preserved, never silently resolved (`aggregate`) | L41: SUBJECT,CLAIM-A,SOURCE-A,CLAIM-B,SOURCE-B,AGREE\|DISAGREE | Conflict rule | document-agent / reconciliation | DISAGREE rows keep both sources | U2, U3 |
 | T3 | TRUNC byte-confirmed → UNKNOWN (`aggregate`, tb5) | L41: TRUNCATED in LOCATION, name what is missing | Truncation rule | document-agent / extraction | Truncated docs flagged, requirements UNKNOWN | U4 |
-| T4 | Discovery-result allowlist: verify only discovered paths (harness F12) | L43: Verify ONLY paths in step-2 discovery | Scope rule | file-agent / discovery + metadata | Refusal of undiscovered paths | U5 |
+| T4 | Check-then-report-absence: discovered (A) + document-cited (B) paths verified in-scope; invented (C) refused (`harness` safe_join+exists; v7 fix — the v6 refuse-if-undiscovered wording contradicted Core test A and was removed) | L43: Category A/B allowed, C refused, traversal/out-of-scope rejected | Verification sources | file-agent / discovery + metadata | PRESENT/ABSENT for A+B; OUT OF SCOPE/UNSAFE rejections | U5 |
 | T5 | Verified-append rowfix: re-verify, never substitute (`aggregate` x14) | L44: ONE targeted retry per item, then label and proceed | Recheck rule | parent + responsible expert | Single retry, then UNKNOWN/INACCESSIBLE, no loops | U6 |
 | T6 | Empty extraction never clears (gate requires resolved cite) | L46: zero cited rows → INSUFFICIENT EVIDENCE | Citation discipline | knowledge-agent / report assembly | INSUFFICIENT verdict on empty extraction | U7 |
 | T7 | Coverage echo verbatim (no invented counts) | L46 + L55: echo coverage/failures verbatim | Evidence fidelity | parent presentation | Counts match expert-observed values | U7 |
 | T8 | Delta: vanished subject is STILL UNCERTAIN (`delta`) | L51: prior subjects re-observed; absent → STILL UNCERTAIN | Delta discipline | parent / Recovery Delta | Delta marks un-re-examined subjects UNCERTAIN | U8 |
-| T9 | EN/FR numeric version compare (`normalize`, 41/41) | L41: compare numerically (3 satisfies 2-or-newer) | Multilingual version rule | document-agent / extraction | Correct min/max/range/strict handling EN+FR | U2, U9 |
+| T9 | EN/FR numeric version compare (`normalize`, 135-check contract) | L41: compare numerically (3 satisfies 2-or-newer) | Multilingual version rule | document-agent / extraction | Correct min/max/range/strict handling EN+FR | U2, U9 |
+| T10 | Gated requirements abstain unless the gate is verified; XOR means exactly one (`normalize`, 135-check contract, v7) | via protocol: UNKNOWN gates, exactly-one exclusivity | Gated-requirements + exclusive-alternatives rules | document-agent / extraction + knowledge-agent / verdict | Gated rows UNKNOWN without verified gate; XOR rows satisfied by exactly one member | U2, U11 |
 
 Published capabilities used: file discovery + metadata, document QA /
 extraction / reconciliation, report assembly, approval-gated save. No custom
@@ -82,6 +84,15 @@ transcripts stay outside the Skill ZIP. They are research infrastructure;
 the Skill must not depend on them. Verified: CI package-contents check
 allows only `SKILL.md` + `references/*.md`.
 
+v7 decision (Phase 7 investigation): no separate ASCII Proof-Graph
+section was added to the native report. Every graph edge field
+(requirement, source, status, version, uncertainty) is already carried
+by the mandatory Evidence table, and every passport field (scope,
+coverage, blockers, recheck history) by sections 1–9; a duplicated
+graph view would lengthen the prompt and risk small-model drift for
+no new evidence. The local `proofgraph.py` renderer stays the
+reference visualization for the same verified rows.
+
 ## 6. Actual behavior observed on Uliya
 
 NONE. No NAS access at writing time. All §4 "expected" cells are
@@ -94,7 +105,9 @@ predictions from local-model behavior, not observations.
   (local 9B needed structural help on TB2; native size unknown).
 - U3: reconciliation output preserves both conflicting claims verbatim.
 - U4: extraction exposes truncation signals (cut sentences, missing pages).
-- U5: step-2 discovery results pass verbatim to step-4 verification.
+- U5: file-agent performs a bounded in-scope existence check for a
+  document-cited path (Category B), not only for discovery-listed
+  paths; discovery results still pass verbatim to step-4.
 - U6: the parent performs exactly one retry (instruction-following, no
   platform loop guard assumed).
 - U7: knowledge-agent / parent do not summarize away explicit counts or
@@ -105,6 +118,9 @@ predictions from local-model behavior, not observations.
   (locally proven only in Python + 14B pipeline, m01-m12 12/12).
 - U10: `delegate` parameter syntax and expert availability on the real
   NAS firmware (open question for UGREEN).
+- U11: native model applies gated-requirement abstention and XOR
+  exactly-one per the protocol rules (locally proven only in Python;
+  no local-model conditional run yet).
 
 ## 8. Required finalist tests (map to `finalist-runbook.md`)
 
@@ -112,14 +128,17 @@ predictions from local-model behavior, not observations.
 2. Run flagship scenario A/B/C corpora; check citation lines (T1) → U1, U2.
 3. Feed conflicting docs; require DISAGREE with both sources (T2) → U3.
 4. Feed truncated guide; require TRUNCATED + UNKNOWN (T3) → U4.
-5. Request verification of an undiscovered path; require refusal (T4) → U5.
+5. Request verification of (a) a document-cited but undiscovered path → bounded PRESENT/ABSENT check allowed, (b) an uncited invented path → refusal (T4) → U5.
 6. Force UNRESOLVED once; count retries = 1 (T5) → U6.
 7. Empty-scope run; require INSUFFICIENT, no verdict (T6) → U7.
 8. Fix one blocker, recheck; require STILL UNCERTAIN for subjects the
    recheck did not re-examine (T8) → U8.
 9. French-constraint case (x26-class, fresh wording); require correct
    numeric verdict (T9) → U9.
-10. Record latency, context behavior, approval flow; capture evidence.
+10. Gated case ("required unless B", fresh wording) → UNKNOWN without a
+    verified gate; XOR case ("A or B but not both") → exactly-one
+    verdict (T10) → U11.
+11. Record latency, context behavior, approval flow; capture evidence.
 
 ## 9. Honesty ledger
 

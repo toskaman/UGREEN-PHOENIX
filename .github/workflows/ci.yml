@@ -32,6 +32,8 @@ jobs:
           python local-tests/ai-lab/tests/test_aggregate.py
       - name: Proof Graph / Passport tests (offline)
         run: python local-tests/test_proofgraph.py
+      - name: Skill-contract consistency tests (offline)
+        run: python local-tests/test_skill_contract.py
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
