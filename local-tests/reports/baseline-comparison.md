@@ -14,12 +14,12 @@ verdicts below are the stable result.
 
 | method | verdict accuracy | blocker recall | false allegations | abstention | citation precision | repeatability | mean ms/case |
 |---|---|---|---|---|---|---|
-| phoenix | 8/8 | 5/5 | 0 | 2/2 | 22/22 rows cited | 8/8 stable | 4.0 |
-| phoenix_no_reconcile | 6/8 | 3/5 | 0 | 2/2 | 22/22 rows cited | 8/8 stable | 4.0 |
-| phoenix_no_verify | 6/8 | 4/5 | 0 | 1/2 | 22/22 rows cited | 8/8 stable | 3.6 |
-| retrieval_plus | 6/8 | 5/5 | 0 | 0/2 | 22/22 rows cited | 8/8 stable | 2.0 |
-| filename_search | 3/8 | 2/5 | 0 | 0/2 | 0/22 rows cited | 8/8 stable | 2.4 |
-| generic_qa | 1/8 | 0/5 | 0 | 0/2 | 0/22 rows cited | 8/8 stable | 1.5 |
+| phoenix | 8/8 | 5/5 | 0 | 2/2 | 22/22 rows cited | 8/8 stable | 3.9 |
+| phoenix_no_reconcile | 6/8 | 3/5 | 0 | 2/2 | 22/22 rows cited | 8/8 stable | 3.9 |
+| phoenix_no_verify | 6/8 | 4/5 | 0 | 1/2 | 22/22 rows cited | 8/8 stable | 3.2 |
+| retrieval_plus | 6/8 | 5/5 | 0 | 0/2 | 22/22 rows cited | 8/8 stable | 1.9 |
+| filename_search | 3/8 | 2/5 | 0 | 0/2 | 0/22 rows cited | 8/8 stable | 2.2 |
+| generic_qa | 1/8 | 0/5 | 0 | 0/2 | 0/22 rows cited | 8/8 stable | 1.6 |
 
 ## Extended metrics (absolute counts)
 

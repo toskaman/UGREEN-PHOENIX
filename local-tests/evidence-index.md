@@ -31,7 +31,7 @@ regenerated UTF-8 from the current tree 2026-11-08).
 | Artifact | SHA-256 | Size | Notes |
 |---|---|---|---|
 | phoenix-recovery-intelligence.zip | `58b6ff5426804338d512536a946043ca87bfd9c790eb1641c1b782acdff1ddb1` | 13411 B (< 10 MB) | 5 files, per-file verified, official checker static-pass on exact bytes |
-| PHOENIX_UGREEN_Round1_Proposal.pdf | `f0410513331c6a7b9feef6207f52169ff259144222a1cf7c223af91871b14096` | 4452 B (< 1 MB) | 2 pages, 471 answer words (≤ 500; v9.1 planner sentence), hash varies by build timestamp only |
+| PHOENIX_UGREEN_Round1_Proposal.pdf | `082783b5328ca6e14f58875c1e606b2be702f52bf449e8d9fc3582e8968a1c39` | 4452 B (< 1 MB) | 2 pages, 471 answer words (≤ 500; v9.1 planner sentence), hash varies by build timestamp only |
 | SHA256SUMS.txt | (manifest of the above) | — | Previous releases preserved in `previous/` + notes |
 
 Rebuild: `python "A SOUMETTRE/build_zip.py"` then
@@ -46,7 +46,7 @@ Rebuild: `python "A SOUMETTRE/build_zip.py"` then
 | local-tests/baselines.py | `3fb911a9b0254864f8f88f89ff6ce66b176c1ff7d7656766f50f0f4d6b87c816` |
 | local-tests/mutate.py | `4ffbdacd61e847f8d1f6d392ad4742236732d1637d9d2b021666495e482cd03d` |
 | local-tests/labels.json | `f52152d8dbdd99193414ee4f4c90e211473fb0458593f13b50109200486a8e46` |
-| local-tests/reports/baseline-comparison.md | `3fbe0cf4dfe6d28dbc0e91f3c73efbe1de07cd329584b738104a0664a887450c` |
+| local-tests/reports/baseline-comparison.md | `5126bd88c77168b615f981a24f59b6cba71a0d632b08c7e22f0a561389dd9e00` |
 | local-tests/proofgraph.py | `32f8b03372b28d45251f285b1f1f724348cd5c521406bb6bf0365250b1cd33a1` |
 | local-tests/test_proofgraph.py | `648e6a02d160b7f1ef4af470b14e47a412b376dc65309b2b9bfb93796f90cd50` |
 | local-tests/native-transfer-report.md | `58ba1da03f357119ae53571aa611a8350aea77a234a5ecc963671913b8ac20e8` |
