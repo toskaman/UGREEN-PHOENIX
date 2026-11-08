@@ -1,0 +1,5 @@
+# Normalize text to LF on commit and checkout on every platform, so
+# release bytes (ZIP/PDF inputs) and content hashes reproduce exactly.
+* text=auto eol=lf
+*.zip binary
+*.pdf binary
