@@ -1,4 +1,4 @@
-﻿{
+{
   "checkFormatVersion": "2.0.0",
   "status": "static-pass",
   "target": {
@@ -10,11 +10,15 @@
   "files": [
     {
       "path": "references/decision-protocol.md",
-      "sha256": "656014f42a6ab80e1a33e1beeced74b77ea08959ebf5db60871ce219548252ae"
+      "sha256": "b88d8b3063e8bd02e53afda2d97f881525c324e9b3f403b077d7adf5baf6498b"
     },
     {
       "path": "references/disclosures.md",
       "sha256": "31e97f60205cef92e7773ee6aef847ae76f8d0704f8a61f419f9b33839308804"
+    },
+    {
+      "path": "references/report-contract.md",
+      "sha256": "b18e9c3d6931a2fe748638368665b63c060016fc2f5cbe00b3c733a7e34c7bb9"
     },
     {
       "path": "references/validation-plan.md",
@@ -22,7 +26,7 @@
     },
     {
       "path": "SKILL.md",
-      "sha256": "588ec279f0e89db280f94482c4ce70d5b5815fecf8d89b0c22a437891218cd63"
+      "sha256": "b736e0ae89a557711d2aadadf33fae432a3acb613051c9f550531c0193045333"
     }
   ],
   "summary": {
