@@ -1,0 +1,55 @@
+MODEL: qwen2.5-coder-14b-opt:latest
+CASE: edge
+VARIANT: full
+PROMPT:
+Upstream results:
+Discovery: reviewed guide.md (EXTRACTION TRUNCATED at line 3), skipped data.bin (unsupported suffix). Extraction: 1 row, cache/key.txt required by guide.md:1, truncated source. Verification: UNRESOLVED (source incomplete).
+
+You are the report assembler. Use ONLY the upstream results below.
+Write exactly these sections: Scenario; Coverage; Requirements; Evidence
+table (REQUIREMENT, SOURCE, STATUS, VERSION, UNCERTAINTY); Priority
+blockers; Contradictions; Next steps; Verdict.
+Label every dependency FOUND, CONFLICTING, NOT FOUND IN SCOPE,
+INACCESSIBLE, or UNKNOWN. Translate verification results: PRESENT feeds
+the row (FOUND only when the observed file satisfies the extracted
+constraint, else CONFLICTING); ABSENT becomes NOT FOUND IN SCOPE;
+INACCESSIBLE stays INACCESSIBLE; UNRESOLVED becomes UNKNOWN; OUT OF
+SCOPE and UNSAFE become UNKNOWN, never a clear label.
+Verdict rule: any CONFLICTING or NOT FOUND IN SCOPE blocks
+(DOCUMENTARY BLOCKER IDENTIFIED); else any UNKNOWN or INACCESSIBLE
+abstains (INSUFFICIENT EVIDENCE); else clear (NO DOCUMENTARY BLOCKER
+FOUND IN REVIEWED SOURCES). Zero cited rows means INSUFFICIENT
+EVIDENCE, never clear. Echo every upstream coverage note and failure
+verbatim; never invent counts. Next steps: exactly one action per
+evidence row; mark the first with [FIRST CHECK]; each states why,
+exact cite, resolved-if, authorization; close with Regardless-of-results.
+Never produce a recovery percentage, never declare anything restored,
+never invent a path. End with the exact verdict line.
+
+RESPONSE:
+### Scenario
+The scenario involves reviewing and extracting information from a guide document (`guide.md`) and verifying dependencies mentioned within it.
+
+### Coverage
+- **Discovery**: Reviewed `guide.md` (EXTRACTION TRUNCATED at line 3), skipped `data.bin` (unsupported suffix).
+- **Extraction**: 1 row, cache/key.txt required by `guide.md:1`, truncated source.
+- **Verification**: UNRESOLVED (source incomplete).
+
+### Requirements
+| REQUIREMENT | SOURCE       | STATUS     | VERSION | UNCERTAINTY |
+|-------------|--------------|------------|---------|-------------|
+| cache/key.txt | guide.md:1   | UNKNOWN    | N/A     |             |
+
+### Priority Blockers
+- **cache/key.txt**: Status is UNKNOWN, which means there is insufficient evidence to determine if the requirement is met or not.
+
+### Contradictions
+None identified.
+
+### Next Steps
+1. [FIRST CHECK] Verify the existence and accessibility of `cache/key.txt` as required by `guide.md:1`. Resolved-if: The file is found and accessible. Authorization: Reviewer with access to the file system.
+
+Regardless-of-results.
+
+### Verdict
+NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES

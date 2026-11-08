@@ -1,0 +1,5 @@
+pid,expertise,condition,task,score,seconds,notes
+# expertise: beginner|expert; condition: manual|phoenix
+# task: T1..T6 (T6 = explain result in own words, no jargon)
+# score: 0|1|2 (T2: count of false statements instead); seconds: int
+# example: p01,beginner,phoenix,T1,2,95,"cited guide line 5"

@@ -1,0 +1,27 @@
+RESPONSE:
+### Scenario
+The scenario involves reviewing and extracting information from a guide document (`guide.md`) and verifying dependencies mentioned within it.
+
+### Coverage
+- **Discovery**: Reviewed `guide.md` (truncated at line 3), skipped `data.bin` (unsupported suffix).
+- **Extraction**: Extracted 1 row, identified `cache/key.txt` as required by `guide.md:1`, but the source was truncated.
+- **Verification**: UNRESOLVED (source incomplete).
+
+### Requirements
+| REQUIREMENT | SOURCE       | STATUS     | VERSION | UNCERTAINTY |
+|-------------|--------------|------------|---------|-------------|
+| cache/key.txt | guide.md:1   | UNKNOWN    | N/A     |             |
+
+### Priority Blockers
+- **DOCUMENTARY BLOCKER IDENTIFIED**: The requirement for `cache/key.txt` is marked as UNKNOWN due to the incomplete source.
+
+### Contradictions
+None identified.
+
+### Next Steps
+- [FIRST CHECK] Verify the existence and accessibility of `cache/key.txt` (resolved-if: file found, authorization: access to the directory).
+
+Regardless-of-results.
+
+### Verdict
+**INSUFFICIENT EVIDENCE**

@@ -66,6 +66,16 @@ check("graph: satisfied-by edges grounded (FILE or cited FACT)",
       all(d.startswith("[FILE: ") or re.search(r"\S+:\d+ \([^)]*\)", d)
           for d in fact_targets),
       str(fact_targets))
+# v9: a version-constrained dotted subject is a capability (FACT),
+# mirroring harness capability handling — never a FILE node.
+cap_nodes, cap_edges = proofgraph.build_graph(
+    {"evidence": [{"subject": "db.engine", "op": ">=", "version": "2",
+                   "status": "FOUND", "source": "guide.md", "line": 1,
+                   "detail": "observed 3 per guide.md:1 (manual)"}]})
+cap_sat = [d for _, k, d in cap_edges if k == "satisfied-by"]
+check("graph: version-constrained dotted subject renders FACT not FILE",
+      len(cap_sat) == 1 and cap_sat[0].startswith("[FACT: "),
+      str(cap_edges))
 res_b = harness.run(HERE / "corpus" / "core-b")
 _, edges_b = proofgraph.build_graph(res_b)
 clash_targets = [d for _, k, d in edges_b if k == "contested"]
@@ -154,6 +164,10 @@ pp3 = proofgraph.render_passport(res_prior, project="d", scope="s",
                                  scenario="x", version="v")
 check("passport: delta embedded when present",
       "PROOF GRAPH WITH DELTA" in pp3)
+# v9: the report contract keeps passport §§5-6 separate on recheck.
+check("passport: delta keeps sections 5 and 6 separate",
+      "## 5. Blockers" in pp3 and "## 6. Resolution history" in pp3
+      and "## 5-6." not in pp3, pp3)
 
 # --- 7. redaction ------------------------------------------------------------
 scope = make_scope({"guide.md": "REQUIRES: api_key=hunter2\n"})

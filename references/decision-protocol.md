@@ -15,6 +15,14 @@
 - **Category B**: document-referenced paths named with an exact path:line citation by the completed document assessment. Before checking, re-read the cited path:line and confirm the literal path string appears there; otherwise the candidate is Category C. A bounded existence check inside the authorized scope is allowed; absence from initial discovery never proves absence.
 - **Category C**: paths with neither source (invented or unsupported). Refuse without accessing.
 
+## Verification-result translation
+
+Step-4 RESULTs translate to documentary states: PRESENT feeds the
+evidence row (FOUND only when the observed file satisfies the extracted
+constraint, otherwise CONFLICTING); ABSENT becomes NOT FOUND IN SCOPE;
+INACCESSIBLE stays INACCESSIBLE; UNRESOLVED becomes UNKNOWN; OUT OF
+SCOPE and UNSAFE become UNKNOWN, never a clear label.
+
 ## Output contract
 
 Return a human-readable report with:
@@ -24,10 +32,10 @@ Return a human-readable report with:
 4. Evidence table: each requirement, source location, status, version, and uncertainty.
 5. Priority blockers: distinguish document-supported blocker from suspected blocker.
 6. Contradictions and alternative explanations, including whether a different file could satisfy a requirement.
-7. Next-step verification plan: low-risk checks first and actions requiring real restoration tools separated.
+7. Next-step verification plan (Evidence Gain Planner): exactly one action per evidence row — never add actions for items with no row; mark the single first check (first P1, else first P2); every action states why it matters, its exact evidence cite, what observed result counts as resolved (resolved-if), and its authorization; close with a Regardless-of-results residual. Actions are verification checks only (re-observe, confirm, request access): no file modifications, version updates, or similar-name searches. Low-risk checks first; actions requiring real restoration tools separated.
 8. Clear verdict: 'DOCUMENTARY BLOCKER IDENTIFIED', 'NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES', or 'INSUFFICIENT EVIDENCE'. None is a verified restore. Follow the verdict with one plain-language sentence a non-technical reader can act on: for a blocker, which required item failed and that recovery must not be assumed; for a clear result, that every extracted requirement was confirmed and this is still not a tested restore; when abstaining, what evidence is missing.
-9. Recommendations must be safe, specific, evidence-linked, and secret-free; state any authorization a write would need; never use restore, recover, or rebuild verbs for actions PHOENIX does not perform. Order blockers before evidence gaps.
-10. Recovery Closure: on recheck, re-observe all evidence from the authorized scope; compare field-by-field against the user-supplied prior report; report each requirement as RESOLVED, STILL BLOCKED, NEW BLOCKER, STILL UNCERTAIN, or UNCHANGED; a cleared documentary blocker is not a verified restore.
+9. Recommendation rules for §7 (guidance, not a separate section): recommendations must be safe, specific, evidence-linked, and secret-free; state any authorization a write would need; never use restore, recover, or rebuild verbs for actions PHOENIX does not perform. Order blockers before evidence gaps.
+10. Recovery Closure rules (§9 on recheck only, not a first-assessment section): on recheck, re-observe all evidence from the authorized scope; compare field-by-field against the user-supplied prior report; report each requirement with the full transition vocabulary in the Report contract; a cleared documentary blocker is not a verified restore.
 
 ## Rules that prevent misleading results
 

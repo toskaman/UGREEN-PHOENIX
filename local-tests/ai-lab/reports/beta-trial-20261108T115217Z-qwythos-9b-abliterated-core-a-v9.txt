@@ -1,0 +1,49 @@
+MODEL: qwythos-9b-abliterated:optimized
+CASE: core-a
+VARIANT: v9
+PROMPT:
+Evidence:
+- config/prod-config.yaml: NOT FOUND IN SCOPE (required by docs/deployment-guide.md:5) — no observed file provides it.
+Verdict: DOCUMENTARY BLOCKER IDENTIFIED
+
+Write 'Next steps' as an Evidence Gain Planner. Mark the single first check with [FIRST CHECK]. Every action line: `- P1: <action> (why: <which blocker/gap it addresses>; evidence: <path:line cite>; resolved-if: <what observed result counts as resolved>; authorization: <note>)`. Close with a '- Regardless of results: <what stays unverified>' line. Use only the evidence above; invent nothing.
+Next steps:
+
+RESPONSE:
+The user wants me to produce a “Next steps” section for an Evidence Gain Planner, based on the single piece of evidence provided:
+
+- `config/prod-config.yaml`: NOT FOUND IN SCOPE (required by `docs/deployment-guide.md:5`) — no observed file provides it.
+- Verdict: DOCUMENTARY BLOCKER IDENTIFIED
+
+I must write a concise list of actions, each prefixed with `- P1:` and containing the fields: `<action>`, `(why: <which blocker/gap it addresses>)`, `evidence: <path:line cite>`, `resolved-if: <what observed result counts as resolved>`, and `authorization: <note>`. Then a final line “- Regardless of results: <what stays unverified>”.
+
+I need to use only the evidence above; I can invent plausible details but must stay grounded in what is known. The blocker is that `docs/deployment-guide.md` at line 5 references `config/prod-config.yaml`, yet no file with that name appears in scope (i.e., not found). So the first logical step is to locate or confirm where this config should live, perhaps by scanning the repository for any YAML files named similarly, or checking if it’s stored elsewhere.
+
+Given the limited evidence, I’ll propose a single “first check” action: search the entire project scope (or at least the `config/` directory) for any file that could satisfy the requirement—maybe `prod-config.yaml`, `prod-config.yml`, or even a nested path like `config/prod/config.yaml`. The action should be something like “Search repo for prod-config YAML variants”.
+
+Now I need to fill in each component:
+
+- Action: `- P1: Search repo for prod-config YAML variants`
+- Why: addresses the missing `config/prod-config.yaml` referenced at line 5 of the deployment guide.
+- Evidence: cite the original blocker line, i.e., `docs/deployment-guide.md:5`.
+- Resolved-if: what would count as resolved? If any file named `prod-config.yaml` (or close) is found and its contents align with expectations—maybe if a file appears in scope or if we can confirm it exists. I’ll phrase it as “if any `prod-config.yaml` (or similar) surfaces in scope”.
+- Authorization: note that this is a low‑risk read operation, perhaps requiring only read access to the repo.
+
+Finally, regardless of whether we find something, there will still be some uncertainty—maybe about the exact naming convention or whether the file is truly “in scope” (i.e., part of the deployment bundle). So I’ll write: `- Regardless of results: Whether `config/prod-config.yaml` is truly in scope remains unverified`.
+
+Let me double‑check that each field matches the format requested. The prompt says: “Every action line: `- P1: <action> (why: <which blocker/gap it addresses>; evidence: <path:line cite>; resolved-if: <what observed result counts as resolved>; authorization: <note>)`.” So I need to ensure parentheses and semicolons are placed correctly.
+
+Thus the final output should be something like:
+
+```
+Next steps:
+- P1: Search repo for prod-config YAML variants (why: addresses missing `config/prod-config.yaml` referenced at line 5 of deployment guide; evidence: docs/deployment-guide.md:5; resolved-if: any `prod-config.yaml` (or similar) surfaces in scope; authorization: read access to repo)
+- Regardless of results: Whether `config/prod-config.yaml` is truly in scope remains unverified
+```
+
+That seems concise and directly derived from the evidence. I’ll present that as the answer.
+</think>
+
+Next steps:
+- P1: Search repo for prod-config YAML variants (why: addresses missing `config/prod-config.yaml` referenced at line 5 of deployment guide; evidence: docs/deployment-guide.md:5; resolved-if: any `prod-config.yaml` (or similar) surfaces in scope; authorization: read access to repo)
+- Regardless of results: Whether `config/prod-config.yaml` is truly in scope remains unverified

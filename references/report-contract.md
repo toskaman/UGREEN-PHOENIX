@@ -19,7 +19,10 @@ For each requirement, one block:
 
 Node vocabulary: `[REQ: ...]`, `[DOC: path:line]`, `[FILE: path]` (or
 `[FACT: observed detail]` when no single file applies),
-`[GAP: subject — STATUS: detail]`, `[CLASH: detail]`.
+`[GAP: subject — STATUS: detail]`, `[CLASH: detail]`. A
+version-constrained requirement appends its verbatim constraint:
+`[REQ: runtime >= 3.0]`. Mirror the exact operator and version from
+the evidence row.
 
 Edge vocabulary (exactly one outcome edge per REQ):
 
@@ -38,15 +41,23 @@ a graph look clean; an edge without an upstream source is forbidden.
 
 Header: `PROOF GRAPH WITH DELTA (prior verdict -> current verdict)`.
 
-Same blocks, each REQ suffixed with its transition state:
-`[REQ: subject] [RESOLVED]`, `[STILL UNCERTAIN]`, `[UNCHANGED]`,
-`[NEW GAP]`. Subjects named in the prior report but absent from current
-findings are listed as prior-only and stay uncertain — never silently
-resolved.
+Same blocks, each REQ suffixed with its transition state. Full
+transition vocabulary (exhaustive): `RESOLVED` (was a blocker or gap,
+now evidenced); `NEW BLOCKER` (newly blocking); `STILL BLOCKED`
+(still blocking); `STILL UNCERTAIN` (gap then, gap now);
+`NEW GAP` (newly uncertain); `UNCHANGED` (same non-blocking state);
+`NEW` (subject seen first time on recheck); `UNVERIFIED` (prior
+subject absent from current findings — listed as prior-only, never
+silently resolved); `REMOVED` (subject gone with no prior status to
+compare). Example: `[REQ: subject] [RESOLVED]`.
 
 Footer: `Documentary blockers resolved: N. This is not a tested restoration.`
 
 ## Readiness Passport (compact, 7 sections)
+
+Placement: the Passport follows the Verdict as an appendix; it is not
+one of the 8 numbered report sections, and section 9 stays reserved
+for Recovery Delta on recheck.
 
 1. Identity: project, scope, scenario, assessment time, PHOENIX version.
 2. Verdict: the exact verdict line.

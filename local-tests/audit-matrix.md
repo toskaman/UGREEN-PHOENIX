@@ -441,11 +441,13 @@ NOT APPLICABLE. Local simulation never counts as NAS evidence.
   from same tree (timestamps: none embedded).
 - Evidence: baseline repeatability column. Risk: low. Status: VERIFIED.
 
-### Q085 — Dependencies pinned/documented — PARTIAL
-- Finding: kit 0.7.3 + catalog 2.0.0 pinned; Python matrix 3.13/3.14;
-  CI actions float on major tags; node 20 (deprecated upstream, still works).
-- Evidence: `.github/workflows/ci.yml`. Risk: low.
-- Improvement: pin action SHAs. Status: OPEN (minor).
+### Q085 — Dependencies pinned/documented — PASS
+- Finding: kit 0.7.3 zip sha256-pinned in CI and (v9) in the local
+  builder; catalog 2.0.0 enforced by checker code and asserted by the
+  builder; Python matrix 3.13/3.14; CI actions pinned to SHAs; node 20.
+- Evidence: `.github/workflows/ci.yml:52-53`,
+  `A SOUMETTRE/build_zip.py` (KIT_ZIP_SHA256, CATALOG_VERSION).
+  Risk: low. Status: VERIFIED (v9).
 
 ### Q086 — Runs on Windows/Linux/macOS — PARTIAL
 - Finding: windows + ubuntu CI green; macOS untested (no runner budget).

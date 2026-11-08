@@ -1,0 +1,78 @@
+[
+ {
+  "action_lines": 1,
+  "valid_cite": 1,
+  "grounded": 1,
+  "drift": [],
+  "markers": {
+   "first": false,
+   "why": true,
+   "resolved_if": true,
+   "residual": false
+  },
+  "pass": false,
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "case": "core-a",
+  "finish": "stop",
+  "identity_ok": true,
+  "latency_s": 24.87,
+  "completion_tokens": 82
+ },
+ {
+  "action_lines": 1,
+  "valid_cite": 1,
+  "grounded": 1,
+  "drift": [],
+  "markers": {
+   "first": false,
+   "why": true,
+   "resolved_if": true,
+   "residual": false
+  },
+  "pass": false,
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "case": "core-b",
+  "finish": "stop",
+  "identity_ok": true,
+  "latency_s": 3.14,
+  "completion_tokens": 78
+ },
+ {
+  "action_lines": 1,
+  "valid_cite": 1,
+  "grounded": 1,
+  "drift": [],
+  "markers": {
+   "first": false,
+   "why": true,
+   "resolved_if": true,
+   "residual": true
+  },
+  "pass": false,
+  "model": "qwythos-9b-abliterated:optimized",
+  "case": "core-a",
+  "finish": "stop",
+  "identity_ok": true,
+  "latency_s": 35.88,
+  "completion_tokens": 667
+ },
+ {
+  "action_lines": 3,
+  "valid_cite": 2,
+  "grounded": 2,
+  "drift": [],
+  "markers": {
+   "first": false,
+   "why": true,
+   "resolved_if": true,
+   "residual": true
+  },
+  "pass": false,
+  "model": "qwythos-9b-abliterated:optimized",
+  "case": "core-b",
+  "finish": "stop",
+  "identity_ok": true,
+  "latency_s": 20.98,
+  "completion_tokens": 826
+ }
+]

@@ -1,0 +1,16 @@
+MODEL: qwen2.5-coder-14b-opt:latest
+CASE: core-b
+VARIANT: v9
+PROMPT:
+Evidence:
+- runtime: CONFLICTING (required by docs/deployment-guide.md:6) — guide wants 2-or-newer, observed 1.9 in config/runtime.yaml:2.
+Verdict: DOCUMENTARY BLOCKER IDENTIFIED
+
+Write 'Next steps' as an Evidence Gain Planner. Mark the single first check with [FIRST CHECK]. Every action line: `- P1: <action> (why: <which blocker/gap it addresses>; evidence: <path:line cite>; resolved-if: <what observed result counts as resolved>; authorization: <note>)`. Close with a '- Regardless of results: <what stays unverified>' line. Use only the evidence above; invent nothing.
+Next steps:
+
+RESPONSE:
+- P1: Review the deployment guide to confirm the requirement for runtime version 2-or-newer (why: DOCUMENTARY BLOCKER IDENTIFIED; evidence: docs/deployment-guide.md:6; resolved-if: The guide specifies a different or no conflicting requirement; authorization: Deployment team lead)
+- P1: Verify the current runtime version in config/runtime.yaml (why: DOCUMENTARY BLOCKER IDENTIFIED; evidence: config/runtime.yaml:2; resolved-if: The observed version matches the guide's requirement; authorization: Configuration management team lead)
+- P1: Update the runtime version to meet the guide's requirement if necessary (why: DOCUMENTARY BLOCKER IDENTIFIED; evidence: docs/deployment-guide.md:6, config/runtime.yaml:2; resolved-if: The updated version is 2-or-newer and confirmed in config/runtime.yaml; authorization: Deployment team lead)
+- Regardless of results: The specific runtime version observed in config/runtime.yaml remains unverified if not explicitly checked.

@@ -1,0 +1,13 @@
+MODEL: qwen2.5-coder-14b-opt:latest
+CASE: core-b
+VARIANT: v8
+PROMPT:
+Evidence:
+- runtime: CONFLICTING (required by docs/deployment-guide.md:6) — guide wants 2-or-newer, observed 1.9 in config/runtime.yaml:2.
+Verdict: DOCUMENTARY BLOCKER IDENTIFIED
+
+Write 'Next steps': one line per item: `- P1: <action> (evidence: <path:line cite>; authorization: <note>)`. Use only the evidence above; invent nothing.
+Next steps:
+
+RESPONSE:
+- P1: Update runtime version to 2-or-newer in config/runtime.yaml (evidence: docs/deployment-guide.md:6; authorization: required by documentation)

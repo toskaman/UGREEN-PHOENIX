@@ -1,0 +1,95 @@
+MODEL: qwythos-9b-abliterated:optimized
+CASE: edge
+VARIANT: full
+PROMPT:
+Upstream results:
+Discovery: reviewed guide.md (EXTRACTION TRUNCATED at line 3), skipped data.bin (unsupported suffix). Extraction: 1 row, cache/key.txt required by guide.md:1, truncated source. Verification: UNRESOLVED (source incomplete).
+
+You are the report assembler. Use ONLY the upstream results below.
+Write exactly these sections: Scenario; Coverage; Requirements; Evidence
+table (REQUIREMENT, SOURCE, STATUS, VERSION, UNCERTAINTY); Priority
+blockers; Contradictions; Next steps; Verdict.
+Label every dependency FOUND, CONFLICTING, NOT FOUND IN SCOPE,
+INACCESSIBLE, or UNKNOWN. Translate verification results: PRESENT feeds
+the row (FOUND only when the observed file satisfies the extracted
+constraint, else CONFLICTING); ABSENT becomes NOT FOUND IN SCOPE;
+INACCESSIBLE stays INACCESSIBLE; UNRESOLVED becomes UNKNOWN; OUT OF
+SCOPE and UNSAFE become UNKNOWN, never a clear label.
+Verdict rule: any CONFLICTING or NOT FOUND IN SCOPE blocks
+(DOCUMENTARY BLOCKER IDENTIFIED); else any UNKNOWN or INACCESSIBLE
+abstains (INSUFFICIENT EVIDENCE); else clear (NO DOCUMENTARY BLOCKER
+FOUND IN REVIEWED SOURCES). Zero cited rows means INSUFFICIENT
+EVIDENCE, never clear. Echo every upstream coverage note and failure
+verbatim; never invent counts. Next steps: exactly one action per
+evidence row; mark the first with [FIRST CHECK]; each states why,
+exact cite, resolved-if, authorization; close with Regardless-of-results.
+Never produce a recovery percentage, never declare anything restored,
+never invent a path. End with the exact verdict line.
+
+RESPONSE:
+Alright, I need to assemble a report based solely on the upstream results provided. Let me first parse what those results actually contain. The upstream block mentions:
+
+- **Discovery**: reviewed guide.md (EXTRACTION TRUNCATED at line 3), skipped data.bin (unsupported suffix). Extraction yielded 1 row, cache/key.txt required by guide.md:1, truncated source.
+- **Verification**: UNRESOLVED (source incomplete).
+
+So the core pieces of information are about guide.md and a single extracted row, plus a requirement for cache/key.txt that is mentioned as needed but not yet verified. The verification status is UNRESOLVED, which according to the instructions should translate to an UNKNOWN label in the Evidence table.
+
+Now I need to structure the report into exactly these sections: Scenario; Coverage; Requirements; Evidence (a table with columns REQUIREMENT, SOURCE, STATUS, VERSION, UNCERTAINTY); Priority blockers; Contradictions; Next steps; Verdict.
+
+Let me think about each section:
+
+**Scenario**: This should be a concise description of the overall situation derived from the upstream notes. I’ll echo the discovery and verification details verbatim as instructed. Something like “Discovery: reviewed guide.md (EXTRACTION TRUNCATED at line 3), skipped data.bin (unsupported suffix). Extraction: 1 row, cache/key.txt required by guide.md:1, truncated source. Verification: UNRESOLVED (source incomplete).”
+
+**Coverage**: This likely refers to what parts of the documentation have been examined. Since we only looked at guide.md and noted that data.bin was skipped because its suffix wasn’t supported, I’ll capture that as “guide.md reviewed; data.bin skipped.” That mirrors the upstream note.
+
+**Requirements**: Here I need to list any explicit requirements mentioned in the upstream results. The key one is cache/key.txt required by guide.md:1. So I’ll write something like “cache/key.txt required by guide.md:1”.
+
+**Evidence table**: This is the meat of the report. I must include rows for each requirement, source, status, version, and uncertainty. From the upstream data we have at least one row (the extracted row from guide.md). The requirement could be “guide.md:1” referencing the line where cache/key.txt is needed. The source would be “guide.md”. Status should reflect the verification outcome—since verification was UNRESOLVED, I’ll label it UNKNOWN. Version might be whatever version of guide.md we have; the upstream note doesn’t specify a version number, but perhaps we can infer it’s the current version (maybe “1” if we treat line 3 as part of version 1). Uncertainty could capture any nuance—since extraction was truncated at line 3, maybe UNCERTAINTY is “truncated”. I’ll also consider whether there are other rows. The upstream says “Extraction: 1 row”, so just one row in the table.
+
+**Priority blockers**: Any items that block progress. Since we have a requirement for cache/key.txt but its verification is UNKNOWN, that could be considered a blocker. However, the instructions say to label dependencies as FOUND, CONFLICTING, NOT FOUND IN SCOPE, INACCESSIBLE, or UNKNOWN. In the Evidence table I’ll use STATUS column for those labels. For priority blockers, maybe we list “cache/key.txt” as the primary blocker because it’s required but its status is UNKNOWN.
+
+**Contradictions**: Are there any contradictions in the upstream notes? The only potential contradiction is that guide.md mentions cache/key.txt (a file) while data.bin was skipped due to unsupported suffix—maybe not a direct contradiction, just an observation. I’ll note “data.bin skipped (unsupported suffix)” as a minor contradiction or simply include it under Coverage.
+
+**Next steps**: Exactly one action per evidence row. Since we have one row in the Evidence table, I need one next step that describes why, cites the exact line, and mentions resolved-if and authorization. The upstream note says “cache/key.txt required by guide.md:1”. So a logical next step is to locate cache/key.txt (or verify its presence). I’ll phrase it as “Locate cache/key.txt; cite guide.md:1; resolved if file present; authorized per guide.md.” That matches the instruction to include exact cite, resolved-if, and authorization.
+
+**Verdict**: The verdict rule says any CONFLICTING or NOT FOUND IN SCOPE blocks (DOCUMENTARY BLOCKER IDENTIFIED); else any UNKNOWN or INACCESSIBLE abstains (INSUFFICIENT EVIDENCE); else clear (NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES). In our Evidence table, the STATUS is UNKNOWN. So according to the rule, UNKNOWN leads to INSUFFICIENT EVIDENCE. However, we must also consider whether there are any other rows with different statuses. Since we only have one row and its status is UNKNOWN, the verdict should be “INSUFFICIENT EVIDENCE”. But I need to echo every upstream coverage note verbatim before deciding. The upstream says “Verification: UNRESOLVED (source incomplete)”. That translates to UNKNOWN in the table. So the final verdict line must be exactly “Verdict: INSUFFICIENT EVIDENCE” or similar, but the instruction says “End with the exact verdict line.” I’ll craft it as “Verdict: INSUFFICIENT EVIDENCE”.
+
+Now let me double‑check each label against the upstream notes to ensure consistency. The discovery mentions guide.md reviewed (so source is guide.md). Extraction gave 1 row—makes sense for a single requirement. Cache/key.txt required by guide.md:1—so that’s the requirement name. Status UNKNOWN because verification was UNRESOLVED. Version could be “1” if we treat line 3 as part of version 1, but maybe it’s just “guide.md” itself; I’ll keep VERSION as “guide.md” to reflect the source file. Uncertainty: since extraction truncated at line 3, UNCERTAINTY might be “truncated”. That seems plausible.
+
+Now for the Evidence table columns: REQUIREMENT, SOURCE, STATUS, VERSION, UNCERTAINTY. I’ll fill them accordingly.
+
+Priority blockers: Since we have a requirement that is UNKNOWN, it’s effectively a blocker. I’ll list “cache/key.txt” as the priority blocker.
+
+Contradictions: The upstream note about data.bin being skipped because of an unsupported suffix could be considered a minor contradiction to the otherwise clean guide.md review. I’ll phrase it as “data.bin skipped (unsupported suffix)”.
+
+Next steps: Exactly one action per evidence row—so just one line describing locating cache/key.txt, citing guide.md:1, resolved if present, authorized per guide.md. That matches the instruction.
+
+Now let me assemble all sections in order, ensuring I echo upstream coverage notes verbatim where needed. The Scenario should include the discovery and verification lines exactly as they appear. Coverage will be a concise summary of what was examined. Requirements will list the cache/key.txt requirement. Evidence table will have one row with the details. Priority blockers will highlight the main blocker. Contradictions will note the data.bin nuance. Next steps will give the single action. Verdict will close it out.
+
+I’ll also make sure to label every dependency in the Evidence table as FOUND, CONFLICTING, NOT FOUND IN SCOPE, INACCESSIBLE, or UNKNOWN. Since our verification was UNRESOLVED, I’ll use UNKNOWN for STATUS. That satisfies the rule that ABSENT becomes NOT FOUND IN SCOPE (but we have a row, so it’s likely present but uncertain). So UNKNOWN is appropriate.
+
+Now let me write out the final report, double‑checking each line against the upstream notes to avoid inventing counts or percentages. The instruction says “Never produce a recovery percentage, never declare anything restored, never invent a path.” I’ll keep those in mind. Also “Echo every upstream coverage note and failure verbatim; never invent counts.” So in Scenario I’ll include the exact phrase “Discovery: reviewed guide.md (EXTRACTION TRUNCATED at line 3), skipped data.bin (unsupported suffix). Extraction: 1 row, cache/key.txt required by guide.md:1, truncated source. Verification: UNRESOLVED (source incomplete).” That mirrors the upstream text closely.
+
+Coverage could be “guide.md reviewed; data.bin skipped.” Requirements: “cache/key.txt required by guide.md:1”. Evidence table rows will reflect that. Priority blockers: maybe just “cache/key.txt”. Contradictions: “data.bin skipped (unsupported suffix)”. Next steps: “Locate cache/key.txt; cite guide.md:1; resolved if present; authorized per guide.md.” Verdict: “INSUFFICIENT EVIDENCE”.
+
+Now I’ll format it nicely, ensuring each section is on its own line or paragraph as appropriate. Let me produce the final output.
+</think>
+
+Scenario: Discovery: reviewed guide.md (EXTRACTION TRUNCATED at line 3), skipped data.bin (unsupported suffix). Extraction: 1 row, cache/key.txt required by guide.md:1, truncated source. Verification: UNRESOLVED (source incomplete).
+
+Coverage: guide.md reviewed; data.bin skipped.
+
+Requirements: cache/key.txt required by guide.md:1.
+
+Evidence table
+| REQUIREMENT | SOURCE | STATUS | VERSION | UNCERTAINTY |
+|---|---|---|---|---|
+| guide.md:1 | guide.md | UNKNOWN | guide.md | truncated |
+
+Priority blockers: cache/key.txt.
+
+Contradictions: data.bin skipped (unsupported suffix).
+
+Next steps: Locate cache/key.txt; cite guide.md:1; resolved if present; authorized per guide.md.
+
+Regardless-of-results, Verdict: INSUFFICIENT EVIDENCE.

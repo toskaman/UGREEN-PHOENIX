@@ -1,0 +1,154 @@
+[
+ {
+  "action_lines": 1,
+  "valid_cite": 1,
+  "grounded": 1,
+  "markers": {
+   "first": false,
+   "why": false,
+   "resolved_if": false,
+   "residual": false
+  },
+  "pass": true,
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "case": "core-a",
+  "variant": "v8",
+  "finish": "stop",
+  "identity_ok": true,
+  "latency_s": 22.78,
+  "completion_tokens": 33
+ },
+ {
+  "action_lines": 4,
+  "valid_cite": 4,
+  "grounded": 3,
+  "markers": {
+   "first": true,
+   "why": true,
+   "resolved_if": true,
+   "residual": true
+  },
+  "pass": false,
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "case": "core-a",
+  "variant": "v9",
+  "finish": "stop",
+  "identity_ok": true,
+  "latency_s": 11.46,
+  "completion_tokens": 294
+ },
+ {
+  "action_lines": 1,
+  "valid_cite": 1,
+  "grounded": 1,
+  "markers": {
+   "first": false,
+   "why": false,
+   "resolved_if": false,
+   "residual": false
+  },
+  "pass": true,
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "case": "core-b",
+  "variant": "v8",
+  "finish": "stop",
+  "identity_ok": true,
+  "latency_s": 1.47,
+  "completion_tokens": 36
+ },
+ {
+  "action_lines": 3,
+  "valid_cite": 3,
+  "grounded": 3,
+  "markers": {
+   "first": false,
+   "why": true,
+   "resolved_if": true,
+   "residual": true
+  },
+  "pass": false,
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "case": "core-b",
+  "variant": "v9",
+  "finish": "stop",
+  "identity_ok": true,
+  "latency_s": 7.9,
+  "completion_tokens": 199
+ },
+ {
+  "action_lines": 1,
+  "valid_cite": 1,
+  "grounded": 0,
+  "markers": {
+   "first": false,
+   "why": false,
+   "resolved_if": false,
+   "residual": false
+  },
+  "pass": false,
+  "model": "qwythos-9b-abliterated:optimized",
+  "case": "core-a",
+  "variant": "v8",
+  "finish": "stop",
+  "identity_ok": true,
+  "latency_s": 38.67,
+  "completion_tokens": 787
+ },
+ {
+  "action_lines": 2,
+  "valid_cite": 2,
+  "grounded": 2,
+  "markers": {
+   "first": false,
+   "why": true,
+   "resolved_if": true,
+   "residual": true
+  },
+  "pass": false,
+  "model": "qwythos-9b-abliterated:optimized",
+  "case": "core-a",
+  "variant": "v9",
+  "finish": "stop",
+  "identity_ok": true,
+  "latency_s": 21.11,
+  "completion_tokens": 874
+ },
+ {
+  "action_lines": 1,
+  "valid_cite": 1,
+  "grounded": 1,
+  "markers": {
+   "first": false,
+   "why": false,
+   "resolved_if": false,
+   "residual": false
+  },
+  "pass": true,
+  "model": "qwythos-9b-abliterated:optimized",
+  "case": "core-b",
+  "variant": "v8",
+  "finish": "stop",
+  "identity_ok": true,
+  "latency_s": 10.41,
+  "completion_tokens": 426
+ },
+ {
+  "action_lines": 2,
+  "valid_cite": 2,
+  "grounded": 2,
+  "markers": {
+   "first": true,
+   "why": true,
+   "resolved_if": true,
+   "residual": true
+  },
+  "pass": true,
+  "model": "qwythos-9b-abliterated:optimized",
+  "case": "core-b",
+  "variant": "v9",
+  "finish": "stop",
+  "identity_ok": true,
+  "latency_s": 18.03,
+  "completion_tokens": 726
+ }
+]

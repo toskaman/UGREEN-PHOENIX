@@ -22,7 +22,8 @@ UNRESOLVED: 1 gap, 0 clashes.
 
 ```text
 ## 7. Next steps
-- P2: Resolve the 'license' evidence gap with a clearer source. (evidence: guide.md:2; authorization: no Skill write needed)
+- P2: [FIRST CHECK] Resolve the 'license' evidence gap with a clearer source. (why: prevents a decision (evidence gap); evidence: guide.md:2; resolved-if: a clearer source is observed and the requirement is re-extracted; authorization: no Skill write needed)
+- Regardless of results: whether the full project can actually be reconstructed stays unverified — only a real restoration test proves that.
 ```
 
 ## After fix + recheck: Proof Graph with Delta
@@ -44,7 +45,7 @@ Documentary blockers resolved: 0. This is not a tested restoration.
 
 ## 1. Identity
 Project: studio-shot01 | Scope: synthetic-c | Scenario: unverified version fact (C)
-Assessed: demo render (no live clock) | PHOENIX: v8 (local simulation, not a NAS result).
+Assessed: demo render (no live clock) | PHOENIX: v9 (local simulation, not a NAS result).
 
 ## 2. Verdict
 INSUFFICIENT EVIDENCE
@@ -63,7 +64,7 @@ UNRESOLVED: 1 gap, 0 clashes.
 Reviewed: 2, skipped: 1, inaccessible: 0, truncated: 0, errors: 0, depth-capped: 0.
 Completion: COMPLETED.
 
-## 5-6. Blockers & Resolution history
+## 5. Blockers (prioritized)
 PROOF GRAPH WITH DELTA (INSUFFICIENT EVIDENCE -> INSUFFICIENT EVIDENCE)
 [REQ: tool.py] [UNCHANGED]
   --stated-by--> [DOC: guide.md:1]
@@ -72,6 +73,10 @@ PROOF GRAPH WITH DELTA (INSUFFICIENT EVIDENCE -> INSUFFICIENT EVIDENCE)
   --stated-by--> [DOC: guide.md:2]
   --blocked-by--> [GAP: license — UNKNOWN: No observed version fact for 'license'.]
 Documentary blockers resolved: 0. This is not a tested restoration.
+
+## 6. Resolution history
+- license: UNKNOWN -> UNKNOWN [STILL UNCERTAIN]
+- tool.py: FOUND -> FOUND [UNCHANGED]
 
 ## 7. Next checks
 This passport expires if the scope changes: new files, version changes, moved folders, or permission changes require a fresh assessment.

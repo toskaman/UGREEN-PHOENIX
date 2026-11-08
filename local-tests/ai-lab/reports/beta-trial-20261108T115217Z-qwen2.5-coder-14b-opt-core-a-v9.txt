@@ -1,0 +1,18 @@
+MODEL: qwen2.5-coder-14b-opt:latest
+CASE: core-a
+VARIANT: v9
+PROMPT:
+Evidence:
+- config/prod-config.yaml: NOT FOUND IN SCOPE (required by docs/deployment-guide.md:5) — no observed file provides it.
+Verdict: DOCUMENTARY BLOCKER IDENTIFIED
+
+Write 'Next steps' as an Evidence Gain Planner. Mark the single first check with [FIRST CHECK]. Every action line: `- P1: <action> (why: <which blocker/gap it addresses>; evidence: <path:line cite>; resolved-if: <what observed result counts as resolved>; authorization: <note>)`. Close with a '- Regardless of results: <what stays unverified>' line. Use only the evidence above; invent nothing.
+Next steps:
+
+RESPONSE:
+- P1: [FIRST CHECK] Verify if `config/prod-config.yaml` exists in any other directory or branch (why: DOCUMENTARY BLOCKER IDENTIFIED; evidence: docs/deployment-guide.md:5; resolved-if: `config/prod-config.yaml` is found in another location; authorization: Check with the repository maintainers)
+- P1: Review deployment documentation for alternative configuration files or references (why: DOCUMENTARY BLOCKER IDENTIFIED; evidence: docs/deployment-guide.md:5; resolved-if: Alternative configuration files or references are identified; authorization: Review existing documentation)
+- P1: Contact the author of `docs/deployment-guide.md` to inquire about the location of `config/prod-config.yaml` (why: DOCUMENTARY BLOCKER IDENTIFIED; evidence: docs/deployment-guide.md:5; resolved-if: Author provides information on the correct location or alternative configuration; authorization: Reach out via email or communication channels)
+- P1: Check if there are any recent changes or updates to the repository that might have moved `config/prod-config.yaml` (why: DOCUMENTARY BLOCKER IDENTIFIED; evidence: docs/deployment-guide.md:5; resolved-if: Recent changes are identified and `config/prod-config.yaml` is located; authorization: Review commit history)
+
+- Regardless of results: The existence and location of `config/prod-config.yaml` will remain unverified if no alternative configuration files or references are found.

@@ -29,8 +29,9 @@ Completion: COMPLETED.
 - runtime — Observed config/app.yaml:2 (2.9.0) contradicts required >= 3.0.
 
 ## 7. Next steps
-- P1: Ask the operator to supply 'config/missing.yaml' or point to its approved location. (evidence: docs/deployment-guide.md:5; authorization: no Skill write needed)
-- P1: Confirm the intended 'runtime' version with the document owners. (evidence: docs/deployment-guide.md:6 vs observed facts (see §4); authorization: no Skill write needed)
+- P1: [FIRST CHECK] Ask the operator to supply 'config/missing.yaml' or point to its approved location. (why: blocks the verdict (documentary blocker); evidence: docs/deployment-guide.md:5; resolved-if: a scoped metadata check returns PRESENT and the re-extracted constraint is satisfied; authorization: no Skill write needed)
+- P1: Confirm the intended 'runtime' version with the document owners. (why: blocks the verdict (sources disagree); evidence: docs/deployment-guide.md:6 vs observed facts (see §4); resolved-if: one authoritative version is confirmed and re-observed; authorization: no Skill write needed)
+- Regardless of results: whether the full project can actually be reconstructed stays unverified — only a real restoration test proves that.
 
 ## 8. Verdict: DOCUMENTARY BLOCKER IDENTIFIED
 In plain terms: at least one required item is contradicted or cannot be confirmed from the reviewed sources — do not assume the project is recoverable.

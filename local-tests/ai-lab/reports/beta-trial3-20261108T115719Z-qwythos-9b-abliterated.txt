@@ -1,0 +1,57 @@
+MODEL: qwythos-9b-abliterated:optimized
+PROMPT:
+Evidence:
+- config/missing.yaml: NOT FOUND IN SCOPE (required by docs/deployment-guide.md:5) — bounded scope search returned no confirmed file.
+- runtime: CONFLICTING (required by docs/deployment-guide.md:6) — observed config/app.yaml:2 (2.9.0) contradicts required >= 3.0.
+Verdict: DOCUMENTARY BLOCKER IDENTIFIED
+
+Write 'Next steps' as an Evidence Gain Planner. There are exactly 2 evidence items above: write exactly 2 action lines, one per item, no more, P1 blockers first. Put [FIRST CHECK] at the start of the first action line only. Every action line: `- P1: <action> (why: <which blocker it addresses>; evidence: <path:line cite>; resolved-if: <what observed result counts as resolved>; authorization: <note>)`. Actions must be verification checks only (re-observe, confirm, request access): never propose modifying files, updating versions, or searching for similar names; cite exact paths only. Close with a '- Regardless of results: <what stays unverified>' line. Use only the evidence above; invent nothing.
+Next steps:
+
+RESPONSE:
+I need to craft two action lines that correspond exactly to the two pieces of evidence provided, following the strict formatting rules.
+
+First, I’ll look at the evidence items:
+
+1. **config/missing.yaml** – described as “NOT FOUND IN SCOPE (required by docs/deployment-guide.md:5) — bounded scope search returned no confirmed file.” This suggests that the deployment guide expects a file named `config/missing.yaml` to exist within the current scope, but the bounded search didn’t confirm its presence. The blocker is that the file might be missing entirely or perhaps hidden somewhere outside the searched region.
+
+2. **runtime** – described as “CONFLICTING (required by docs/deployment-guide.md:6) — observed config/app.yaml:2 (2.9.0) contradicts required >= 3.0.” Here, the guide expects a runtime version of at least 3.0, but the actual `config/app.yaml` line 2 shows version 2.9.0, creating a conflict.
+
+Now I must decide what verification actions to take for each, keeping in mind that the actions should be *verification checks only*—no proposing modifications or searching for similar names. The actions need to cite exact paths and lines from the evidence.
+
+**Action line 1 (for config/missing.yaml):**
+- Start with `- P1:` as required.
+- Include `[FIRST CHECK]` at the very beginning of this line, because it’s the first action.
+- Choose a verification that directly addresses “NOT FOUND IN SCOPE.” A good check would be to *re‑observe* the file within its bounded scope, perhaps by confirming whether it exists and what version it reports. Since the evidence mentions `config/missing.yaml` but not a specific line number, I’ll cite the path as given: `config/missing.yaml`.
+- For “why,” I need to explain which blocker this addresses: the missing‑yaml blocker. So write something like “(why: confirms presence within bounded scope)”.
+- For “evidence,” I must reference the exact line from the guide that required it: `docs/deployment-guide.md:5`. That’s the citation.
+- For “resolved-if,” I need to state what observed result would count as resolved. If the re‑observation shows a version of 3.0 or higher, that would satisfy the runtime requirement (since the missing file likely holds the version spec). So write `(resolved-if: reports >= 3.0)`.
+- For “authorization,” I’ll note any permission needed; perhaps it’s just confirming access to the config directory, so something like `(authorization: read‑only on config/)` works.
+
+Putting it together: `- P1: [FIRST CHECK] re‑observe config/missing.yaml (why: confirms presence within bounded scope; evidence: docs/deployment-guide.md:5; resolved-if: reports >= 3.0; authorization: read‑only on config/)`
+
+**Action line 2 (for runtime):**
+- Again start with `- P1:`.
+- Since this is the second action, I don’t need `[FIRST CHECK]`—just a concise verification that directly addresses the “CONFLICTING” blocker. A good check would be to *confirm* the version on `config/app.yaml` line 2, because that’s where the conflict originates.
+- For “why,” explain it resolves the runtime conflict: `(why: resolves runtime version clash)`.
+- For “evidence,” cite the exact path and line from the guide: `docs/deployment-guide.md:6`.
+- For “resolved-if,” what would count as resolved? If the observed version on that line is exactly 3.0, then the conflict disappears (since the requirement was >= 3.0). So write `(resolved-if: reads exactly 3.0)`.
+- For “authorization,” perhaps we need to read the app config file; a simple note like `(authorization: access to app.yaml)` suffices.
+
+Putting it together: `- P1: confirm config/app.yaml:2 (why: resolves runtime version clash; evidence: docs/deployment-guide.md:6; resolved-if: reads exactly 3.0; authorization: access to app.yaml)`
+
+Finally, I need a closing line that states what remains unverified regardless of the outcomes. Since we’re only checking two specific pieces, anything else—like other files or broader scope—remains uncertain. A concise phrase could be `- Regardless of results: any further scope‑wide versioning`. That captures the idea that beyond these two checks, more verification might still be needed.
+
+Now I’ll double‑check each component against the evidence to ensure no invented details slipped in:
+- `config/missing.yaml` is indeed cited as “NOT FOUND IN SCOPE” and required by line 5 of the guide—so referencing `docs/deployment-guide.md:5` matches.
+- The runtime conflict cites `config/app.yaml:2 (2.9.0)` and the guide’s line 6, so using `docs/deployment-guide.md:6` is accurate.
+- Both actions are verification checks only; I didn’t propose any modifications or search for similar names—just re‑observe and confirm.
+- The `[FIRST CHECK]` tag appears only on the first action line, satisfying that rule.
+
+Everything looks consistent, so I’ll output the two lines followed by the “Regardless of results” line.
+</think>
+
+Next steps:
+- P1: [FIRST CHECK] re-observe config/missing.yaml (why: confirms presence within bounded scope; evidence: docs/deployment-guide.md:5; resolved-if: reports >= 3.0; authorization: read-only on config/)
+- P1: confirm config/app.yaml:2 (why: resolves runtime version clash; evidence: docs/deployment-guide.md:6; resolved-if: reads exactly 3.0; authorization: access to app.yaml)
+- Regardless of results: any further scope-wide versioning

@@ -1,0 +1,31 @@
+MODEL: qwythos-9b-abliterated:optimized
+CASE: core-b
+VARIANT: v9
+PROMPT:
+Evidence:
+- runtime: CONFLICTING (required by docs/deployment-guide.md:6) — guide wants 2-or-newer, observed 1.9 in config/runtime.yaml:2.
+Verdict: DOCUMENTARY BLOCKER IDENTIFIED
+
+Write 'Next steps' as an Evidence Gain Planner. Mark the single first check with [FIRST CHECK]. Every action line: `- P1: <action> (why: <which blocker/gap it addresses>; evidence: <path:line cite>; resolved-if: <what observed result counts as resolved>; authorization: <note>)`. Close with a '- Regardless of results: <what stays unverified>' line. Use only the evidence above; invent nothing.
+Next steps:
+
+RESPONSE:
+Alright, I need to figure out what the next steps should be based on the given evidence. The evidence points out that there's a runtime conflict: the documentation (docs/deployment-guide.md) requires runtime version 2 or newer, but the observed configuration in config/runtime.yaml shows version 1.9. This is labeled as a DOCUMENTARY BLOCKER IDENTIFIED.
+
+First, I should consider what actions would directly address this discrepancy. The most straightforward step is to verify the actual runtime version specified in the deployment guide. Since the guide says "2-or-newer," checking its exact wording will confirm whether it's indeed requiring 2 or if there might be a typo or alternative phrasing. That seems like the logical first check because it directly targets the documentary requirement.
+
+So, for the [FIRST CHECK], I'll propose examining docs/deployment-guide.md at line 6 (since that's where the runtime requirement is mentioned). The action would be something like "read" to capture the exact text. Why? Because this confirms whether the guide truly demands version 2 or newer. If it does, then the conflict with config/runtime.yaml:2 becomes a clear mismatch; if not, maybe the guide allows flexibility.
+
+Next, I need to think about what evidence would support this check. The path is docs/deployment-guide.md:6, and the resolved-if condition should reflect what counts as a successful verification—perhaps seeing "runtime: 2-or-newer" or similar phrasing. Authorization isn't strictly necessary here since it's just reading an existing document, but I'll note that it's optional.
+
+After confirming the guide's requirement, the next logical step is to look at the actual runtime version in config/runtime.yaml. The evidence shows line 2 there has "runtime: 1.9". So, checking this file will give us the observed version. This action would be a second P1 item, maybe labeled as "read" again or something like "inspect". Why? Because it directly addresses the gap between what the guide wants and what's currently configured. The resolved-if condition here could be seeing "runtime: 1.9" to confirm the exact version present.
+
+Finally, regardless of whether these checks resolve the conflict, there might still be other aspects unverified—like whether the runtime version is actually compatible with the rest of the system or if any downstream components expect a specific version. Since we only have two pieces of evidence (the guide and the config), after reading both, we'd know the versions but not necessarily their compatibility. So, I'll add a line that says "Regardless of results: runtime compatibility with other components remains unverified."
+
+Putting it all together, the next steps would be structured as three action lines, each starting with "- P1:", followed by the description, why, evidence path and line, resolved-if condition, and authorization note. Then close with the final line about what stays unverified.
+</think>
+
+Next steps:
+- P1: read docs/deployment-guide.md:6 (why: confirm guide's exact runtime requirement; evidence: path:docs/deployment-guide.md:6; resolved-if: seeing "runtime: 2-or-newer" or equivalent phrasing; authorization: optional)
+- P1: read config/runtime.yaml:2 (why: capture the observed version that conflicts with the guide; evidence: path:config/runtime.yaml:2; resolved-if: seeing "runtime: 1.9"; authorization: optional)
+- Regardless of results: runtime compatibility with other components remains unverified

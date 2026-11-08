@@ -25,7 +25,8 @@ Inaccessible sources (content never read): docs/secret-plan.md
 - none observed
 
 ## 7. Next steps
-- P2: Resolve the 'app/tool.py' evidence gap with a clearer source. (evidence: docs/notes.md:3; authorization: no Skill write needed)
+- P2: [FIRST CHECK] Resolve the 'app/tool.py' evidence gap with a clearer source. (why: prevents a decision (evidence gap); evidence: docs/notes.md:3; resolved-if: a clearer source is observed and the requirement is re-extracted; authorization: no Skill write needed)
+- Regardless of results: whether the full project can actually be reconstructed stays unverified — only a real restoration test proves that.
 
 ## 8. Verdict: INSUFFICIENT EVIDENCE
 In plain terms: some evidence could not be read or confirmed, so no conclusion is possible yet.

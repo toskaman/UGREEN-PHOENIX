@@ -1,0 +1,50 @@
+MODEL: qwen2.5-coder-14b-opt:latest
+CASE: edge
+VARIANT: short
+PROMPT:
+Upstream results:
+Discovery: reviewed guide.md (EXTRACTION TRUNCATED at line 3), skipped data.bin (unsupported suffix). Extraction: 1 row, cache/key.txt required by guide.md:1, truncated source. Verification: UNRESOLVED (source incomplete).
+
+Assemble the report from ONLY the upstream results. Sections:
+Scenario; Coverage; Requirements; Evidence table; Priority blockers;
+Contradictions; Next steps; Verdict. Labels: FOUND, CONFLICTING,
+NOT FOUND IN SCOPE, INACCESSIBLE, UNKNOWN. Map OUT OF SCOPE and
+UNSAFE to UNKNOWN. Verdict: CONFLICTING/NOT FOUND blocks;
+UNKNOWN/INACCESSIBLE abstains (INSUFFICIENT EVIDENCE); else clear.
+Zero cited rows abstains. Echo coverage verbatim. Next steps: one
+action per row with cite and resolved-if. No percentages, no restored
+claims, no invented paths. End with the exact verdict line.
+
+RESPONSE:
+**Scenario:**  
+Review of guide.md and data.bin.
+
+**Coverage:**  
+Discovery: reviewed guide.md (EXTRACTION TRUNCATED at line 3), skipped data.bin (unsupported suffix). Extraction: 1 row, cache/key.txt required by guide.md:1, truncated source. Verification: UNRESOLVED (source incomplete).
+
+**Requirements:**  
+- Review guide.md and data.bin.
+- Extract relevant information from guide.md.
+- Identify dependencies like cache/key.txt.
+
+**Evidence table:**  
+
+| Item            | Status          | Source       | Notes                                      |
+|-----------------|-----------------|--------------|--------------------------------------------|
+| guide.md        | REVIEWED        |              | Extraction truncated at line 3.             |
+| data.bin        | SKIPPED         |              | Unsupported suffix.                        |
+| cache/key.txt   | REQUIRED        | guide.md:1   | Dependency identified but not extracted.     |
+
+**Priority blockers:**  
+- Truncated extraction from guide.md.
+- Unresolved verification due to incomplete source.
+
+**Contradictions:**  
+None identified.
+
+**Next steps:**  
+1. Re-extract information from guide.md, ensuring full content is captured (cite: Discovery).
+2. Verify the completeness of the extracted data and resolve any issues with dependencies like cache/key.txt (cite: Verification).
+
+**Verdict:**  
+CONFLICTING

@@ -3,6 +3,64 @@
 Goal: spend the remote session on real NAS execution, not preparation.
 Everything below assumes the local work in this repo is already green.
 
+## Go / no-go gates (v9 Theta — do not skip a gate)
+
+- Gate 1 Access: NAS reachable, credentials accepted, firmware +
+  capability versions recorded, no secrets committed. NO-GO: no
+  access → escalate to organizers, use the hour for report review.
+- Gate 2 Installation: Skill installs, registered experts discovered
+  (file/document/knowledge), minimal core-c invocation succeeds.
+  NO-GO: install fails → try the previous release ZIP (previous/),
+  then escalate; do not burn hours.
+- Gate 3 Evidence: real file discovery, document extraction with
+  path:line cites, exact-path verification, cross-document
+  reconcile all observed at least once. NO-GO: any capability
+  missing → run the degraded-mode subset (below) and record.
+- Gate 4 Reliability: missing (core-a), conflicting (core-b),
+  sufficient (core-c), insufficient (edge), denial (edge-3),
+  injection, scope escape, conditional (Q9 gate), recheck (A/B/C).
+  NO-GO per case: record FAIL with transcript, continue.
+- Gate 5 Product: actionable report, correct Proof Graph, consistent
+  Passport, honest failure handling, beginner-readable verdict.
+  NO-GO: verdict/citation failure → flag as blocking for Round 2
+  claims, keep footage honest.
+- Gate 6 Demo: real NAS footage captured, one end-to-end success,
+  evidence + limitations visible, no simulated success presented
+  as hardware. NO-GO: no footage → stills + transcripts; never fake.
+
+Priority order: installation proof → one flagship success → core
+reliability → Closure → citations → recording → package → export.
+
+## Emergency fallbacks (v9 Theta)
+
+| failure | response |
+|---|---|
+| install fails | previous/ ZIP, then escalate |
+| expert missing | degraded subset: file-only checks, record gap |
+| CLI syntax differs | adapt delegate lines live, re-run checker if possible |
+| small-model instruction loss | quote the exact failing rule; try the Beta guarded phrasing |
+| no path:line cites | FAIL citations; test verdict-only mode, record |
+| context overflow | shrink to core-a single-doc batch, record limits |
+| slow inference | drop scale corpus first, keep A/B/C + edge |
+| approval fails | report-only path only; record the denial |
+| recording fails | stills + full transcripts; narrate afterwards |
+| session drops | re-run gate 2, then resume at last green gate |
+| time runs out | freeze package + export; unfinished tests stay NOT RUN |
+
+## v9 model-risk watch list (from Beta/Zeta proxy trials)
+
+- Scope-drift wording ("any other directory", "production
+  environment"): verdict may be right while the action overreaches —
+  check every §7 action against step-4 Category rules.
+- "Locate or create" / version-update proposals: fail the §7 cell if
+  any action is not verification-only.
+- Residual discipline: stub ("Regardless-of-results.") or missing
+  dash — substance required, format noted.
+- Abstention: run the verdict checklist explicitly (worst label
+  wins); a clear verdict next to UNKNOWN is a FAIL.
+- Fake cites ("cite: Discovery"): every cite must resolve to an
+  observed path:line or the cell fails.
+
 ## Before the session
 
 - [ ] Skill package ready: `SKILL.md` + `references/` in a directory named
@@ -41,6 +99,15 @@ Run each corpus with its scenario prompt; save every report verbatim:
 | 6 | edge-2 | Disagreement surfaced as `CONFLICTING` |
 | 7 | edge-3 | Denied reference, unsafe paths rejected |
 | 8 | scale | Coverage counts, timing |
+
+Corpus → validation-plan mapping (the plan names test families, the
+corpora are their concrete expansions): core-a ≈ Core test A (missing
+dependency); core-b ≈ Core test B (`CONFLICTING`); edge ≈ Edge case
+(hostile/denied/truncated); core-c = sufficient-evidence control;
+core-d = mixed-table labels; edge-2 = cross-document disagreement;
+edge-3 = denied reference + unsafe paths; scale = coverage/timing.
+The comparison baseline and 38-case reasoning validation are separate
+local suites (`run-baseline.py`, `ai-lab`), not NAS corpora.
 
 For each run capture: prompt, full report, expert delegation trace if
 visible, timestamps, and any approval dialogs (screenshot).

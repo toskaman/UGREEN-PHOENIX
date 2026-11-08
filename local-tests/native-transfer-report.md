@@ -22,13 +22,14 @@ Re-verified this session (offline, no credentials):
 
 | Component | File | Checks | Result |
 |---|---|---|---|
-| Acceptance harness | `local-tests/run-tests.py` | 86 | 86/86 ALL GREEN |
-| Mutation | `local-tests/mutate.py` | 16 | 16/16 killed |
+| Acceptance harness | `local-tests/run-tests.py` | 92 | 92/92 ALL GREEN |
+| Mutation | `local-tests/mutate.py` | 17 | 17/17 killed |
 | AI-lab harness | `ai-lab/tests/test_harness.py` | 31 | 31/31 |
 | Budget ledger | `ai-lab/tests/test_budget.py` | 35 | 35/35 |
-| Aggregation | `ai-lab/tests/test_aggregate.py` | 135 | 135/135 |
-| Proof graph | `local-tests/test_proofgraph.py` | 37 | 37/37 |
-| Skill contract | `local-tests/test_skill_contract.py` | 12 | 12/12 |
+| Aggregation | `ai-lab/tests/test_aggregate.py` | 147 | 147/147 |
+| Proof graph | `local-tests/test_proofgraph.py` | 39 | 39/39 |
+| Skill contract | `local-tests/test_skill_contract.py` | 20 | 20/20 |
+| Adversarial combinations | `local-tests/test_adversarial.py` | 15 | 15/15 |
 | Wave-1 rehearsal | `local-tests/rehearse-wave1.py` | 8 prompts / 8 corpora | all passed |
 
 Rules proven by these suites: suspect-row UNKNOWN; citation-gated verdicts;

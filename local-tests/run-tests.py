@@ -691,6 +691,19 @@ def main():
                     labels(res).get("my.service") == "FOUND"
                     and res["verdict"] == "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES",
                     str(status_list(res)))
+    res = harness.run(ROOT / "corpus" / "core-a")
+    sec7 = res["report"].split("## 7. Next steps")[1].split("## 8.")[0]
+    ok &= check("planner: FIRST CHECK + why + resolved-if + residual",
+                "- P1: [FIRST CHECK]" in sec7 and "(why: " in sec7
+                and "resolved-if: " in sec7
+                and "- Regardless of results:" in sec7
+                and sec7.count("resolved-if: ") == len(
+                    [e for e in res["evidence"]
+                     if e["status"] in (harness.NOT_FOUND,
+                                       harness.CONFLICTING,
+                                       harness.INACCESSIBLE,
+                                       harness.UNKNOWN)]),
+                sec7)
 
     print(f"\n{CHECKS_PASSED} checks passed, "
           f"{'ALL GREEN' if ok else 'FAILURES PRESENT'} "

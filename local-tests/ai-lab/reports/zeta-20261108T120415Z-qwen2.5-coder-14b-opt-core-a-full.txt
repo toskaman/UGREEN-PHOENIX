@@ -1,0 +1,56 @@
+MODEL: qwen2.5-coder-14b-opt:latest
+CASE: core-a
+VARIANT: full
+PROMPT:
+Upstream results:
+Discovery: reviewed docs/deployment-guide.md, app/main.py. Extraction: config/prod-config.yaml required by docs/deployment-guide.md:5; app/main.py required by docs/deployment-guide.md:2. Verification: config/prod-config.yaml ABSENT (bounded search, old-backup decoy rejected); app/main.py PRESENT, satisfies no-version constraint.
+
+You are the report assembler. Use ONLY the upstream results below.
+Write exactly these sections: Scenario; Coverage; Requirements; Evidence
+table (REQUIREMENT, SOURCE, STATUS, VERSION, UNCERTAINTY); Priority
+blockers; Contradictions; Next steps; Verdict.
+Label every dependency FOUND, CONFLICTING, NOT FOUND IN SCOPE,
+INACCESSIBLE, or UNKNOWN. Translate verification results: PRESENT feeds
+the row (FOUND only when the observed file satisfies the extracted
+constraint, else CONFLICTING); ABSENT becomes NOT FOUND IN SCOPE;
+INACCESSIBLE stays INACCESSIBLE; UNRESOLVED becomes UNKNOWN; OUT OF
+SCOPE and UNSAFE become UNKNOWN, never a clear label.
+Verdict rule: any CONFLICTING or NOT FOUND IN SCOPE blocks
+(DOCUMENTARY BLOCKER IDENTIFIED); else any UNKNOWN or INACCESSIBLE
+abstains (INSUFFICIENT EVIDENCE); else clear (NO DOCUMENTARY BLOCKER
+FOUND IN REVIEWED SOURCES). Zero cited rows means INSUFFICIENT
+EVIDENCE, never clear. Echo every upstream coverage note and failure
+verbatim; never invent counts. Next steps: exactly one action per
+evidence row; mark the first with [FIRST CHECK]; each states why,
+exact cite, resolved-if, authorization; close with Regardless-of-results.
+Never produce a recovery percentage, never declare anything restored,
+never invent a path. End with the exact verdict line.
+
+RESPONSE:
+### Scenario
+The scenario involves reviewing documentation and code files to ensure that all dependencies required by the deployment guide are present and satisfy their constraints.
+
+### Coverage
+- Reviewed `docs/deployment-guide.md`
+- Reviewed `app/main.py`
+
+### Requirements
+
+| REQUIREMENT                | SOURCE                      | STATUS            | VERSION       | UNCERTAINTY |
+|----------------------------|-----------------------------|-------------------|---------------|-------------|
+| config/prod-config.yaml    | docs/deployment-guide.md:5   | NOT FOUND IN SCOPE| N/A           |             |
+| app/main.py                | docs/deployment-guide.md:2   | PRESENT           | no-version    |             |
+
+### Priority blockers
+- **config/prod-config.yaml**: NOT FOUND IN SCOPE (bounded search, old-backup decoy rejected)
+
+### Contradictions
+None
+
+### Next steps
+1. [FIRST CHECK] Verify the existence of `config/prod-config.yaml` in the production environment or backup locations. Resolved-if: The file is found and satisfies any version constraints mentioned in the deployment guide. Authorization: IT Operations.
+
+Regardless-of-results.
+
+### Verdict
+DOCUMENTARY BLOCKER IDENTIFIED

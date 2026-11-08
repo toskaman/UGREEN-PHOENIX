@@ -1,0 +1,35 @@
+MODEL: qwythos-9b-abliterated:optimized
+CASE: core-b
+PROMPT:
+Evidence:
+- runtime: CONFLICTING (required by docs/deployment-guide.md:6) — guide wants 2-or-newer, observed 1.9 in config/runtime.yaml:2.
+Verdict: DOCUMENTARY BLOCKER IDENTIFIED
+
+Write 'Next steps' as an Evidence Gain Planner. There is exactly 1 evidence item above: write exactly 1 action line(s), one per item, no more. Mark the single first check with [FIRST CHECK]. Every action line: `- P1: <action> (why: <which blocker/gap it addresses>; evidence: <path:line cite>; resolved-if: <what observed result counts as resolved>; authorization: <note>)`. Actions must be verification checks only (re-observe, confirm, request access): never propose modifying files, updating versions, or searching for similar names; cite exact paths only. Close with a '- Regardless of results: <what stays unverified>' line. Use only the evidence above; invent nothing.
+Next steps:
+
+RESPONSE:
+Alright, I need to craft a single action line that will serve as the "Next steps" based on the one piece of evidence provided. The evidence tells me that the runtime version is currently conflicting: the documentation (docs/deployment-guide.md) expects version 2 or newer, but the observed configuration in config/runtime.yaml shows version 1.9. This discrepancy is labeled a DOCUMENTARY BLOCKER.
+
+My task is to write exactly one action line following the specified format:
+- P1: <action> (why: <which blocker/gap it addresses>; evidence: <path:line cite>; resolved-if: <what observed result counts as resolved>; authorization: <note>)
+
+I must ensure that the action is a verification check, not a modification. So I need to decide what kind of verification makes sense here. Since the conflict arises from the runtime version being 1.9 versus the docs expecting 2+, the most straightforward verification would be to re-observe the runtime version in the config file and confirm whether it indeed reads as 1.9 or perhaps something else (maybe a typo, maybe a different format). That will directly address the DOCUMENTARY BLOCKER.
+
+Now I need to cite the exact evidence path and line number from the provided list. The evidence item is labeled "runtime: CONFLICTING" and references docs/deployment-guide.md at line 6 as where the guide wants version 2-or-newer, and config/runtime.yaml at line 2 as where the observed version is 1.9. So I should include both of those in the citation.
+
+For the "resolved-if" part, I need to think: what would count as resolved? If after re-observing, the runtime version reads something that satisfies the docs' requirement—i.e., a major version of 2 or higher (like 2.x) or perhaps exactly 1.9 if the docs actually accept 1.9 as well. Since the blocker is about the guide wanting 2-or-newer, the resolved condition would be seeing a runtime value that matches that expectation. I'll phrase it as "runtime reads ≥2" to capture any version where the major component is at least 2.
+
+Finally, the authorization note: this seems like a straightforward verification step, so I can just note something generic like "(verify)" or perhaps mention that no special permissions are needed beyond reading the config file. The format expects an "authorization:" field, so I'll add a brief parenthetical note there.
+
+Putting it all together, the action line should look like:
+- P1: re-observe runtime version (why: DOCUMENTARY BLOCKER; evidence: docs/deployment-guide.md:6 — guide wants 2-or-newer, config/runtime.yaml:2 — observed 1.9; resolved-if: runtime reads ≥2; authorization: verify)
+
+Now I need to close with a line that says "- Regardless of results: <what stays unverified>". Since the only thing we're checking is whether the runtime version matches the docs' expectation, if it does (say 2.x), then the blocker is resolved. If it doesn't (still 1.9 or something else), the blocker remains. So regardless of the outcome, there might still be some nuance—perhaps the exact major/minor version semantics could be ambiguous. I'll phrase it as "runtime version semantics (major vs minor) remain unverified" to capture that subtle uncertainty.
+
+Thus the final output will be exactly one action line followed by the closing line, matching the required format and using only the evidence provided without inventing new details.
+</think>
+
+Next steps:
+- P1: re-observe runtime version (why: DOCUMENTARY BLOCKER; evidence: docs/deployment-guide.md:6 — guide wants 2-or-newer, config/runtime.yaml:2 — observed 1.9; resolved-if: runtime reads ≥2; authorization: verify)
+- Regardless of results: runtime version semantics (major vs minor) remain unverified

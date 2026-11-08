@@ -24,7 +24,7 @@ import harness
 from harness import (CONFLICTING, FOUND, INACCESSIBLE, NOT_FOUND, UNKNOWN,
                      redact)
 
-REQ, DOC, FILE, GAP, CLASH = "REQ", "DOC", "FILE", "GAP", "CLASH"
+REQ, DOC, FILE, FACT, GAP, CLASH = "REQ", "DOC", "FILE", "FACT", "GAP", "CLASH"
 
 ANTI_GUARANTEE = (
     "> This passport documents EVIDENCE REVIEWED, not a tested recovery.\n"
@@ -49,7 +49,10 @@ def build_graph(result):
         edges.append((req, "stated-by", doc))
         status = e["status"]
         if status == FOUND:
-            if "/" in e["subject"] or "." in e["subject"]:
+            # v9: a version-constrained dotted subject is a capability
+            # (FACT), not a file — mirrors harness capability handling.
+            if "/" in e["subject"] or ("." in e["subject"]
+                                       and not e.get("op")):
                 target = f"[FILE: {redact(e['subject'])}]"
             else:
                 target = f"[FACT: {redact(e['detail'])}]"
@@ -139,8 +142,13 @@ def render_passport(result, project, scope, scenario, version,
              f"depth-capped: {cov['depth_capped']}.",
              f"Completion: {result['completion']}."]
     if result["delta"] is not None:
-        lines += ["", "## 5-6. Blockers & Resolution history",
-                  render_delta_graph(result)]
+        # v9: contract keeps §§5-6 separate (delta graph, then history).
+        lines += ["", "## 5. Blockers (prioritized)",
+                  render_delta_graph(result), "",
+                  "## 6. Resolution history"]
+        lines += [f"- {redact(t['subject'])}: {t['previous']} -> "
+                  f"{t['current']} [{t['state']}]"
+                  for t in result["delta"]["transitions"]]
     else:
         lines += ["", "## 5. Blockers (prioritized)"]
         lines += [f"- P1: {redact(e['subject'])}: {e['status']} — "

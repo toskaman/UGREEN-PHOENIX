@@ -22,7 +22,8 @@ UNRESOLVED: 0 gaps, 1 clash.
 
 ```text
 ## 7. Next steps
-- P1: Confirm the intended 'runtime' version with the document owners. (evidence: docs/deployment-guide.md:5 vs observed facts (see §4); authorization: no Skill write needed)
+- P1: [FIRST CHECK] Confirm the intended 'runtime' version with the document owners. (why: blocks the verdict (sources disagree); evidence: docs/deployment-guide.md:5 vs observed facts (see §4); resolved-if: one authoritative version is confirmed and re-observed; authorization: no Skill write needed)
+- Regardless of results: whether the full project can actually be reconstructed stays unverified — only a real restoration test proves that.
 ```
 
 ## After fix + recheck: Proof Graph with Delta
@@ -44,7 +45,7 @@ Documentary blockers resolved: 1. This is not a tested restoration.
 
 ## 1. Identity
 Project: studio-shot01 | Scope: core-b | Scenario: version conflict (B)
-Assessed: demo render (no live clock) | PHOENIX: v8 (local simulation, not a NAS result).
+Assessed: demo render (no live clock) | PHOENIX: v9 (local simulation, not a NAS result).
 
 ## 2. Verdict
 NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES
@@ -63,7 +64,7 @@ UNRESOLVED: 0 gaps, 0 clashes.
 Reviewed: 3, skipped: 0, inaccessible: 0, truncated: 0, errors: 0, depth-capped: 0.
 Completion: COMPLETED.
 
-## 5-6. Blockers & Resolution history
+## 5. Blockers (prioritized)
 PROOF GRAPH WITH DELTA (DOCUMENTARY BLOCKER IDENTIFIED -> NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES)
 [REQ: config/runtime.yaml] [UNCHANGED]
   --stated-by--> [DOC: docs/deployment-guide.md:4]
@@ -72,6 +73,10 @@ PROOF GRAPH WITH DELTA (DOCUMENTARY BLOCKER IDENTIFIED -> NO DOCUMENTARY BLOCKER
   --stated-by--> [DOC: docs/deployment-guide.md:5]
   --satisfied-by--> [FACT: Version fact satisfies requirement (observed config/runtime.yaml:2 (3.0)).]
 Documentary blockers resolved: 1. This is not a tested restoration.
+
+## 6. Resolution history
+- config/runtime.yaml: FOUND -> FOUND [UNCHANGED]
+- runtime: CONFLICTING -> FOUND [RESOLVED]
 
 ## 7. Next checks
 This passport expires if the scope changes: new files, version changes, moved folders, or permission changes require a fresh assessment.

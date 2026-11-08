@@ -1,0 +1,27 @@
+MODEL: qwythos-9b-abliterated:optimized
+CASE: core-b
+VARIANT: v8
+PROMPT:
+Evidence:
+- runtime: CONFLICTING (required by docs/deployment-guide.md:6) — guide wants 2-or-newer, observed 1.9 in config/runtime.yaml:2.
+Verdict: DOCUMENTARY BLOCKER IDENTIFIED
+
+Write 'Next steps': one line per item: `- P1: <action> (evidence: <path:line cite>; authorization: <note>)`. Use only the evidence above; invent nothing.
+Next steps:
+
+RESPONSE:
+The user wants a concise “Next steps” list based solely on the provided evidence. The evidence tells us that the runtime is marked as CONFLICTING because the deployment guide (docs/deployment-guide.md) expects version 2 or newer, but the actual configuration file (config/runtime.yaml) shows version 1.9. The verdict is a DOCUMENTARY BLOCKER IDENTIFIED.
+
+I need to translate this into one line per item, following the exact format: `- P1: <action> (evidence: <path:line cite>; authorization: <note>)`. I must use only the evidence given; no invented details.
+
+First, identify the primary action needed. Since the guide wants 2-or-newer and we have 1.9, the logical step is to bump the runtime version in the config file. That’s a P1 priority because it resolves the conflict directly.
+
+Now, construct the evidence citation. The guide line is at docs/deployment-guide.md:6 (the colon indicates line number). The config line is at config/runtime.yaml:2. I’ll combine them as `docs/deployment-guide.md:6; config/runtime.yaml:2`.
+
+For the authorization note, I need a brief description of what authority or context justifies this change. Since the guide specifies “2-or-newer” and we’re moving from 1.9 to something like 2.x, the note could be `guide wants 2-or-newer; bump runtime version in config`. That captures both the requirement and the action.
+
+Putting it together: `- P1: bump runtime version (evidence: docs/deployment-guide.md:6; config/runtime.yaml:2; authorization: guide wants 2-or-newer; bump runtime version in config)`. This matches the required format, uses only the given evidence, and stays concise.
+</think>
+
+Next steps:
+- P1: bump runtime version (evidence: docs/deployment-guide.md:6; config/runtime.yaml:2; authorization: guide wants 2-or-newer; bump runtime version in config)

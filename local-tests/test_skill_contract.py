@@ -127,6 +127,15 @@ check("contract: report contract defines delta + passport",
       and "7 sections" in rep,
       "recheck delta states and passport closure must be specified")
 
+# --- 9. v9 verdict checklist in-context -------------------------------------
+# Zeta: 14B false-cleared a truncated case despite the protocol verdict
+# rule; the mechanical checklist fixed it. The check must live in the
+# step-5 delegate instruction itself, not only in the linked protocol.
+check("contract: step-5 states verdict checklist",
+      "worst label" in step5 and "forbidden" in step5
+      and "INSUFFICIENT EVIDENCE" in step5,
+      "verdict selection must be mechanical in-context")
+
 print(f"\n{PASS} skill-contract checks passed"
       + (f", {FAIL} FAILED" if FAIL else ", ALL GREEN (offline)"))
 sys.exit(1 if FAIL else 0)

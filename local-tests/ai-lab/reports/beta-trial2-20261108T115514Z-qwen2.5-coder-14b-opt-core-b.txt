@@ -1,0 +1,14 @@
+MODEL: qwen2.5-coder-14b-opt:latest
+CASE: core-b
+PROMPT:
+Evidence:
+- runtime: CONFLICTING (required by docs/deployment-guide.md:6) — guide wants 2-or-newer, observed 1.9 in config/runtime.yaml:2.
+Verdict: DOCUMENTARY BLOCKER IDENTIFIED
+
+Write 'Next steps' as an Evidence Gain Planner. There is exactly 1 evidence item above: write exactly 1 action line(s), one per item, no more. Mark the single first check with [FIRST CHECK]. Every action line: `- P1: <action> (why: <which blocker/gap it addresses>; evidence: <path:line cite>; resolved-if: <what observed result counts as resolved>; authorization: <note>)`. Actions must be verification checks only (re-observe, confirm, request access): never propose modifying files, updating versions, or searching for similar names; cite exact paths only. Close with a '- Regardless of results: <what stays unverified>' line. Use only the evidence above; invent nothing.
+Next steps:
+
+RESPONSE:
+Next steps:
+- P1: Verify runtime version in config/runtime.yaml (why: DOCUMENTARY BLOCKER IDENTIFIED; evidence: docs/deployment-guide.md:6, config/runtime.yaml:2; resolved-if: observed runtime version is 2-or-newer; authorization: none)  
+Regardless of results: The specific requirement for the runtime version in the deployment guide remains unverified.

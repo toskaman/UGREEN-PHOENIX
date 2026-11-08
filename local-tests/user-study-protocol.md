@@ -22,6 +22,12 @@ a documentary blocker faster and more reliably than manual review.
 3. T3: locate the supporting evidence (file + line).
 4. T4: state the next action in own words (graded against rubric).
 5. T5: after applying the fix, determine resolved vs still-uncertain.
+6. T6 (v9): explain the result to a non-technical colleague in one
+   minute (no unexplained jargon + correct conclusion).
+
+Ready-to-run package: `user-study/` (fixtures, instructions + consent,
+results template, analyzer, comprehension proxy). Timers run per task
+(T1–T6), not just per scenario.
 
 ## Rubric (per task, 0/1/2)
 

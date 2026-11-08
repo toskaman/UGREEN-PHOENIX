@@ -22,7 +22,8 @@ UNRESOLVED: 1 gap, 0 clashes.
 
 ```text
 ## 7. Next steps
-- P1: Ask the operator to supply 'config/prod-config.yaml' or point to its approved location. (evidence: docs/deployment-guide.md:5; authorization: no Skill write needed)
+- P1: [FIRST CHECK] Ask the operator to supply 'config/prod-config.yaml' or point to its approved location. (why: blocks the verdict (documentary blocker); evidence: docs/deployment-guide.md:5; resolved-if: a scoped metadata check returns PRESENT and the re-extracted constraint is satisfied; authorization: no Skill write needed)
+- Regardless of results: whether the full project can actually be reconstructed stays unverified — only a real restoration test proves that.
 ```
 
 ## After fix + recheck: Proof Graph with Delta
@@ -44,7 +45,7 @@ Documentary blockers resolved: 1. This is not a tested restoration.
 
 ## 1. Identity
 Project: studio-shot01 | Scope: core-a | Scenario: missing asset (A)
-Assessed: demo render (no live clock) | PHOENIX: v8 (local simulation, not a NAS result).
+Assessed: demo render (no live clock) | PHOENIX: v9 (local simulation, not a NAS result).
 
 ## 2. Verdict
 NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES
@@ -63,7 +64,7 @@ UNRESOLVED: 0 gaps, 0 clashes.
 Reviewed: 5, skipped: 1, inaccessible: 0, truncated: 0, errors: 0, depth-capped: 0.
 Completion: COMPLETED.
 
-## 5-6. Blockers & Resolution history
+## 5. Blockers (prioritized)
 PROOF GRAPH WITH DELTA (DOCUMENTARY BLOCKER IDENTIFIED -> NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES)
 [REQ: app/main.py] [UNCHANGED]
   --stated-by--> [DOC: docs/deployment-guide.md:4]
@@ -72,6 +73,10 @@ PROOF GRAPH WITH DELTA (DOCUMENTARY BLOCKER IDENTIFIED -> NO DOCUMENTARY BLOCKER
   --stated-by--> [DOC: docs/deployment-guide.md:5]
   --satisfied-by--> [FILE: config/prod-config.yaml]
 Documentary blockers resolved: 1. This is not a tested restoration.
+
+## 6. Resolution history
+- app/main.py: FOUND -> FOUND [UNCHANGED]
+- config/prod-config.yaml: NOT FOUND IN SCOPE -> FOUND [RESOLVED]
 
 ## 7. Next checks
 This passport expires if the scope changes: new files, version changes, moved folders, or permission changes require a fresh assessment.

@@ -97,7 +97,7 @@ rebuild all three renders with `python local-tests/render-demo.py`.
 
 ## What the Skill does on the NAS (same contract)
 
-1. First assessment → 8-section report (§7 recommendations, §8 verdict).
+1. First assessment → 8-section report (§7 Next steps, §8 verdict).
 2. User fixes the cited issues inside the authorized scope.
 3. User re-invokes with the prior report → steps re-run on fresh evidence.
 4. Appended §9 Recovery Delta answers: resolved? what changed? what is

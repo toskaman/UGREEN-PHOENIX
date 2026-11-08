@@ -17,7 +17,7 @@ sys.path.insert(0, str(HERE))
 import harness
 import proofgraph
 
-VERSION = "v8"
+VERSION = "v9"
 
 
 def section7(report: str) -> str:

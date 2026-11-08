@@ -43,7 +43,7 @@ Mapped to the official judging criteria (equally weighted, per the
   conventional file search and backup dashboards do not offer.
 - **Technical Quality** — sound orchestration through registered experts and
   supported CLI capabilities, with permission and approval handling:
-  `static-pass` (0 errors, 0 warnings), 91/91 local workflow-logic checks,
+  `static-pass` (0 errors, 0 warnings), 92/92 local workflow-logic checks,
   17/17 mutation kills, and a measured baseline comparison.
 - **AI NAS Fit & Validation** — every check runs inside a user-authorized
   NAS scope through `ug-filesystem`, `ug-document`, and `ug-knowledge`;
@@ -117,10 +117,12 @@ requires a separate user request plus platform approval.
 | Mutation testing (harness + baselines) | ✅ 17/17 mutants killed locally (incl. double + delta mutants) · also runs in CI |
 | Runtime execution on UGREEN AI NAS | ⏳ Untested — no NAS access in Round 1 |
 
-Local simulation: 91/91 acceptance checks green
-(`python local-tests/run-tests.py`), plus 147/147 aggregation, 37/37
-proof-graph, 31/31 harness, 35/35 budget, and 19/19 skill-contract
-offline checks, 17/17 mutation kills, and the measured baseline comparison. This validates
+Local simulation: 92/92 acceptance checks green
+(`python local-tests/run-tests.py`; 91 on hosts without symlink privileges,
+where the symlink-escape check skips), plus 147/147 aggregation, 39/39
+proof-graph, 31/31 harness, 35/35 budget, 20/20 skill-contract, and
+15/15 adversarial-combination offline checks, 17/17 mutation kills,
+and the measured baseline comparison. This validates
 the workflow logic only. The 24-hour finalist session plan is in
 [local-tests/finalist-runbook.md](local-tests/finalist-runbook.md).
 No NAS runtime results are claimed;

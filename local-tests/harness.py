@@ -10,6 +10,8 @@ Marker spec (parsed from .md/.yaml/.txt documents, never from free text):
   PROVIDES: <name> <version>
   EXTRACTION TRUNCATED            -> alone on its own line, marks the whole
                                      document as partial
+  stale|superseded|deprecated     -> a line matching this in a PROVIDES doc
+  |do not use                        marks its provisions stale (never satisfy)
   access-denied.txt (manifest)    -> listed paths are INACCESSIBLE, never read
 
 Scope safety (all enforced, all tested):
@@ -31,6 +33,7 @@ REQUIRES_RE = re.compile(r"^REQUIRES:\s*(\S+)(?:\s*(==|>=|<=|>|<)\s*(\S+))?\s*$"
 REQUIRES_OR_NEWER_RE = re.compile(
     r"^REQUIRES:\s*(\S+)\s+(\S+)\s+or\s+(newer|later)\s*$", re.IGNORECASE)
 PROVIDES_RE = re.compile(r"^PROVIDES:\s*(\S+)\s+(\S+)\s*$")
+STALE_RE = re.compile(r"stale|superseded|deprecated|do not use", re.I)
 TRUNCATED_MARKER = "EXTRACTION TRUNCATED"
 PARSED_SUFFIXES = {".md", ".yaml", ".yml", ".txt"}
 
@@ -307,6 +310,12 @@ def run(scope: Path, mode: str = "full", prior: dict | None = None) -> dict:
                         for line in text.splitlines())
         if truncated:
             truncated_docs.append(entry["path"])
+        # v9 E4: stale-marker lines disqualify their doc's provisions.
+        stale_lines = [n for n, line in enumerate(text.splitlines(), 1)
+                       if STALE_RE.search(line)
+                       and not REQUIRES_RE.match(line.strip())
+                       and not REQUIRES_OR_NEWER_RE.match(line.strip())
+                       and not PROVIDES_RE.match(line.strip())]
         for lineno, line in enumerate(text.splitlines(), 1):
             line = line.strip()
             m = REQUIRES_RE.match(line)
@@ -328,7 +337,9 @@ def run(scope: Path, mode: str = "full", prior: dict | None = None) -> dict:
             if m:
                 name, version = m.groups()
                 provisions.append({"name": name, "version": version,
-                                   "source": entry["path"], "line": lineno})
+                                   "source": entry["path"], "line": lineno,
+                                   "stale": bool(stale_lines),
+                                   "stale_lines": stale_lines})
                 continue
             if line.startswith("REQUIRES:"):
                 requirements.append({
@@ -423,12 +434,23 @@ def run(scope: Path, mode: str = "full", prior: dict | None = None) -> dict:
                 evidence.append({**req, "status": UNKNOWN,
                                  "detail": f"No observed version fact for "
                                            f"'{subj}'."})
+                continue
+            fresh = [p for p in matches if not p.get("stale")]
+            if not fresh:
+                # v9 E4: only stale-marked evidence — never satisfies.
+                p = matches[0]
+                mark = (f"{p['source']}:{p['stale_lines'][0]}"
+                        if p.get("stale_lines") else p["source"])
+                evidence.append({**req, "status": CONFLICTING,
+                                 "detail": f"Only stale-marked evidence "
+                                           f"observed ({mark}); required by "
+                                           f"{req['source']}:{req['line']}."})
             elif req["op"] and all(
                     not compare(req["op"], p["version"], req["version"])
-                    for p in matches):
+                    for p in fresh):
                 sources = ", ".join(
                     f"{p['source']}:{p['line']} ({p['version']})"
-                    for p in matches)
+                    for p in fresh)
                 if mode == "no_reconcile":
                     evidence.append({**req, "status": UNKNOWN,
                                      "detail": "Version comparison ran, but "
@@ -442,7 +464,7 @@ def run(scope: Path, mode: str = "full", prior: dict | None = None) -> dict:
             else:
                 satisfied = ", ".join(
                     f"{p['source']}:{p['line']} ({p['version']})"
-                    for p in matches
+                    for p in fresh
                     if not req["op"] or compare(
                         req["op"], p["version"], req["version"]))
                 evidence.append({**req, "status": FOUND,
@@ -534,36 +556,58 @@ def run(scope: Path, mode: str = "full", prior: dict | None = None) -> dict:
                  "transitions": transitions, "resolved": resolved,
                  "resolved_count": len(resolved)}
 
+    # v9 Evidence Gain Planner: every action states why it matters, the
+    # exact cite, what observed result counts as resolved, and the
+    # residual unknown. Pure §7 enrichment — verdict logic untouched.
+    planner_why = {
+        NOT_FOUND: "blocks the verdict (documentary blocker)",
+        CONFLICTING: "blocks the verdict (sources disagree)",
+        INACCESSIBLE: "prevents a decision (evidence unread)",
+        UNKNOWN: "prevents a decision (evidence gap)",
+    }
+    planner_resolved_if = {
+        NOT_FOUND: "a scoped metadata check returns PRESENT and the "
+                   "re-extracted constraint is satisfied",
+        CONFLICTING: "one authoritative version is confirmed and "
+                     "re-observed",
+        INACCESSIBLE: "read access is granted and the content is "
+                      "re-observed",
+        UNKNOWN: "a clearer source is observed and the requirement is "
+                 "re-extracted",
+    }
     recommendations = []
     for e in evidence:
         subject = redact(e["subject"])
         source = f"{e['source']}:{e['line']}"
         if e["status"] == NOT_FOUND:
             recommendations.append({
-                "subject": subject, "priority": 1,
+                "subject": subject, "priority": 1, "status": e["status"],
                 "action": f"Ask the operator to supply '{subject}' or "
                           f"point to its approved location.",
                 "evidence": source, "auth": "no Skill write needed"})
         elif e["status"] == CONFLICTING:
             recommendations.append({
-                "subject": subject, "priority": 1,
+                "subject": subject, "priority": 1, "status": e["status"],
                 "action": f"Confirm the intended '{subject}' version "
                           f"with the document owners.",
                 "evidence": f"{source} vs observed facts (see §4)",
                 "auth": "no Skill write needed"})
         elif e["status"] == INACCESSIBLE:
             recommendations.append({
-                "subject": subject, "priority": 2,
+                "subject": subject, "priority": 2, "status": e["status"],
                 "action": f"Request read access to '{subject}' or an "
                           f"approved copy.",
                 "evidence": source,
                 "auth": "access grant is the operator's decision"})
         elif e["status"] == UNKNOWN:
             recommendations.append({
-                "subject": subject, "priority": 2,
+                "subject": subject, "priority": 2, "status": e["status"],
                 "action": f"Resolve the '{subject}' evidence gap with a "
                           f"clearer source.",
                 "evidence": source, "auth": "no Skill write needed"})
+    for r in recommendations:
+        r["why"] = planner_why[r["status"]]
+        r["resolved_if"] = planner_resolved_if[r["status"]]
     recommendations.sort(key=lambda r: r["priority"])
 
     blockers = [e for e in evidence
@@ -611,9 +655,18 @@ def run(scope: Path, mode: str = "full", prior: dict | None = None) -> dict:
     lines += [f"- {redact(e['subject'])} — {redact(e['detail'])}"
               for e in conflicts] or ["- none observed"]
     lines += ["", "## 7. Next steps"]
-    lines += [f"- P{r['priority']}: {r['action']} (evidence: {r['evidence']}; "
-              f"authorization: {r['auth']})"
-              for r in recommendations] or ["- none"]
+    step7 = []
+    for i, r in enumerate(recommendations):
+        tag = "[FIRST CHECK] " if i == 0 else ""
+        step7.append(f"- P{r['priority']}: {tag}{r['action']} "
+                     f"(why: {r['why']}; evidence: {r['evidence']}; "
+                     f"resolved-if: {r['resolved_if']}; "
+                     f"authorization: {r['auth']})")
+    if step7:
+        step7.append("- Regardless of results: whether the full project "
+                     "can actually be reconstructed stays unverified — "
+                     "only a real restoration test proves that.")
+    lines += step7 or ["- none"]
     lines += ["", f"## 8. Verdict: {verdict}",
               f"In plain terms: {PLAIN_VERDICT[verdict]}",
               "Document-level assessment only — not a verified restore."]

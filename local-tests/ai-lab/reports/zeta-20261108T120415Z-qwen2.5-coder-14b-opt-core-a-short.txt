@@ -1,0 +1,48 @@
+MODEL: qwen2.5-coder-14b-opt:latest
+CASE: core-a
+VARIANT: short
+PROMPT:
+Upstream results:
+Discovery: reviewed docs/deployment-guide.md, app/main.py. Extraction: config/prod-config.yaml required by docs/deployment-guide.md:5; app/main.py required by docs/deployment-guide.md:2. Verification: config/prod-config.yaml ABSENT (bounded search, old-backup decoy rejected); app/main.py PRESENT, satisfies no-version constraint.
+
+Assemble the report from ONLY the upstream results. Sections:
+Scenario; Coverage; Requirements; Evidence table; Priority blockers;
+Contradictions; Next steps; Verdict. Labels: FOUND, CONFLICTING,
+NOT FOUND IN SCOPE, INACCESSIBLE, UNKNOWN. Map OUT OF SCOPE and
+UNSAFE to UNKNOWN. Verdict: CONFLICTING/NOT FOUND blocks;
+UNKNOWN/INACCESSIBLE abstains (INSUFFICIENT EVIDENCE); else clear.
+Zero cited rows abstains. Echo coverage verbatim. Next steps: one
+action per row with cite and resolved-if. No percentages, no restored
+claims, no invented paths. End with the exact verdict line.
+
+RESPONSE:
+### Scenario
+Review of deployment documentation and application code.
+
+### Coverage
+- Reviewed `docs/deployment-guide.md`
+- Reviewed `app/main.py`
+
+### Requirements
+- `config/prod-config.yaml` required by `docs/deployment-guide.md:5`
+- `app/main.py` required by `docs/deployment-guide.md:2`
+
+### Evidence Table
+
+| Requirement | Status       | Source                | Cite |
+|-------------|--------------|-----------------------|------|
+| `config/prod-config.yaml` | ABSENT (bounded search, old-backup decoy rejected) | Verification step | docs/deployment-guide.md:5 |
+| `app/main.py`           | PRESENT, satisfies no-version constraint | Verification step | app/main.py |
+
+### Priority Blockers
+- `config/prod-config.yaml` is ABSENT.
+
+### Contradictions
+None
+
+### Next Steps
+1. Verify the presence of `config/prod-config.yaml` in other potential locations or backups (cite: docs/deployment-guide.md:5, resolved-if: found).
+2. Ensure that `app/main.py` meets all version constraints specified in deployment documentation (cite: app/main.py, resolved-if: satisfies version constraint).
+
+### Verdict
+CONFLICTING

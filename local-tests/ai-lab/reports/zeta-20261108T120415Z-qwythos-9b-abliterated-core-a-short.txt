@@ -1,0 +1,90 @@
+MODEL: qwythos-9b-abliterated:optimized
+CASE: core-a
+VARIANT: short
+PROMPT:
+Upstream results:
+Discovery: reviewed docs/deployment-guide.md, app/main.py. Extraction: config/prod-config.yaml required by docs/deployment-guide.md:5; app/main.py required by docs/deployment-guide.md:2. Verification: config/prod-config.yaml ABSENT (bounded search, old-backup decoy rejected); app/main.py PRESENT, satisfies no-version constraint.
+
+Assemble the report from ONLY the upstream results. Sections:
+Scenario; Coverage; Requirements; Evidence table; Priority blockers;
+Contradictions; Next steps; Verdict. Labels: FOUND, CONFLICTING,
+NOT FOUND IN SCOPE, INACCESSIBLE, UNKNOWN. Map OUT OF SCOPE and
+UNSAFE to UNKNOWN. Verdict: CONFLICTING/NOT FOUND blocks;
+UNKNOWN/INACCESSIBLE abstains (INSUFFICIENT EVIDENCE); else clear.
+Zero cited rows abstains. Echo coverage verbatim. Next steps: one
+action per row with cite and resolved-if. No percentages, no restored
+claims, no invented paths. End with the exact verdict line.
+
+RESPONSE:
+The user wants me to assemble a report based solely on the upstream results they provided. I need to parse those results carefully and map them into the required sections: Scenario; Coverage; Requirements; Evidence table; Priority blockers; Contradictions; Next steps; Verdict. The labels for each piece of evidence must be chosen from FOUND, CONFLICTING, NOT FOUND IN SCOPE, INACCESSIBLE, UNKNOWN. I also need to handle any OUT OF SCOPE or UNSAFE items by labeling them UNKNOWN. The verdict should reflect whether the overall state is CONFLICTING/NOT FOUND (blocking), UNKNOWN/INACCESSIBLE (abstaining with INSUFFICIENT EVIDENCE), or else clear.
+
+First, let’s look at the upstream results:
+
+- Discovery: reviewed docs/deployment-guide.md, app/main.py.
+- Extraction: config/prod-config.yaml required by docs/deployment-guide.md:5; app/main.py required by docs/deployment-guide.md:2.
+- Verification: config/prod-config.yaml ABSENT (bounded search, old-backup decoy rejected); app/main.py PRESENT, satisfies no-version constraint.
+
+From this I can infer the scenario: we are deploying an application where a deployment guide references two files—app/main.py and config/prod-config.yaml. The coverage should echo the upstream results verbatim as instructed (“Echo coverage verbatim”). So I’ll copy the exact phrasing of the Discovery, Extraction, and Verification lines into the Coverage section.
+
+Now for Requirements: these are the items that must be present according to the guide. From Extraction we have two requirements: config/prod-config.yaml (required by line 5) and app/main.py (required by line 2). I’ll list those under Requirements.
+
+Evidence table: I need a concise tabular representation of each piece of evidence, its label, and any notes. The upstream results give us three pieces: docs/deployment-guide.md (the source), config/prod-config.yaml (ABSENT), app/main.py (PRESENT). I’ll assign labels accordingly—FOUND for the present file, NOT FOUND IN SCOPE or ABSENT? The instruction says to use labels from the set; “ABSENT” isn’t in that list, but we can treat it as NOT FOUND IN SCOPE if it’s missing yet still required. However the upstream result explicitly says “config/prod-config.yaml ABSENT (bounded search, old-backup decoy rejected)”. Since the label options are FOUND, CONFLICTING, NOT FOUND IN SCOPE, INACCESSIBLE, UNKNOWN, I think we should label config/prod-config.yaml as NOT FOUND IN SCOPE because it’s required but missing. For app/main.py, it satisfies a no-version constraint, so that could be labeled FOUND (since it exists). The guide itself is the source; maybe label it FOUND as well.
+
+Priority blockers: any items that block progress. Since config/prod-config.yaml is absent and required, that seems like a blocker. I’ll list it under Priority blockers with its label.
+
+Contradictions: Are there any contradictions? The upstream results seem consistent—app/main.py present satisfies no-version constraint; config missing but bounded search performed. No obvious contradiction, so maybe leave empty or note “none”.
+
+Next steps: one action per row with cite and resolved-if. I need to propose actions based on the evidence rows. For each piece of evidence (the guide, prod-config, main.py), I’ll suggest a step like “re‑verify config/prod-config.yaml via bounded search” citing its label, and set a resolved-if condition such as “if file exists”. The instruction says “one action per row with cite and resolved-if.” So I’ll create three rows: one for the guide (maybe to confirm line numbers), one for prod-config (to locate or substitute), one for main.py (to ensure version constraint). I’ll keep them concise.
+
+Verdict: Since we have a blocker (config missing) but also a present file, the overall verdict could be CONFLICTING if the requirement is strict—i.e., config must exist but doesn’t, creating a conflict between the guide’s expectation and reality. The upstream results say “app/main.py PRESENT, satisfies no-version constraint” which might not directly affect the blocker. However the instruction says: Verdict: CONFLICTING/NOT FOUND blocks; UNKNOWN/INACCESSIBLE abstains (INSUFFICIENT EVIDENCE); else clear. So if we label config as NOT FOUND IN SCOPE, that could be a “NOT FOUND” block. But we also have app/main.py as FOUND. The guide itself is FOUND. I think the best verdict is CONFLICTING because the required config is missing yet still demanded by the guide—creating a conflict between requirement and reality. That aligns with the upstream result’s nuance: “config/prod-config.yaml ABSENT (bounded search, old-backup decoy rejected)”. So I’ll set Verdict to CONFLICTING.
+
+Now assemble everything into the final report format, ensuring each section is clearly labeled and that the Coverage section echoes the exact upstream phrasing. Let me draft it out:
+
+Scenario: Deployment of app/main.py guided by docs/deployment-guide.md, which mandates config/prod-config.yaml (line 5) alongside main.py (line 2).
+
+Coverage: Discovery: reviewed docs/deployment-guide.md, app/main.py. Extraction: config/prod-config.yaml required by docs/deployment-guide.md:5; app/main.py required by docs/deployment-guide.md:2. Verification: config/prod-config.yaml ABSENT (bounded search, old-backup decoy rejected); app/main.py PRESENT, satisfies no-version constraint.
+
+Requirements: config/prod-config.yaml (required by line 5), app/main.py (required by line 2).
+
+Evidence table:
+| Item | Label | Notes |
+| docs/deployment-guide.md | FOUND | Source of requirements |
+| config/prod-config.yaml | NOT FOUND IN SCOPE | Bounded search, old-backup decoy rejected |
+| app/main.py | FOUND | Satisfies no‑version constraint |
+
+Priority blockers: config/prod-config.yaml (required but absent).
+
+Contradictions: none.
+
+Next steps:
+1. Re‑verify config/prod-config.yaml via bounded search — cite: docs/deployment-guide.md:5, resolved-if: file exists.
+2. Confirm app/main.py version constraint — cite: docs/deployment-guide.md:2, resolved-if: no‑version satisfied.
+3. Validate guide line numbers against actual content — cite: docs/deployment-guide.md, resolved-if: lines 2 & 5 present.
+
+Verdict: CONFLICTING.
+
+I’ll double‑check that I haven’t introduced any percentages or invented paths—looks clean. The Coverage section is a verbatim echo of the upstream results, satisfying the instruction. All labels are from the allowed set (FOUND, NOT FOUND IN SCOPE). The verdict matches the logic. This should be the final assembled report.
+</think>
+
+Scenario: Deployment of app/main.py guided by docs/deployment-guide.md, which mandates config/prod-config.yaml (line 5) alongside main.py (line 2).
+
+Coverage: Discovery: reviewed docs/deployment-guide.md, app/main.py. Extraction: config/prod-config.yaml required by docs/deployment-guide.md:5; app/main.py required by docs/deployment-guide.md:2. Verification: config/prod-config.yaml ABSENT (bounded search, old-backup decoy rejected); app/main.py PRESENT, satisfies no-version constraint.
+
+Requirements: config/prod-config.yaml (required by line 5), app/main.py (required by line 2).
+
+Evidence table:
+| Item | Label | Notes |
+| docs/deployment-guide.md | FOUND | Source of requirements |
+| config/prod-config.yaml | NOT FOUND IN SCOPE | Bounded search, old-backup decoy rejected |
+| app/main.py | FOUND | Satisfies no‑version constraint |
+
+Priority blockers: config/prod-config.yaml (required but absent).
+
+Contradictions: none.
+
+Next steps:
+1. Re‑verify config/prod-config.yaml via bounded search — cite: docs/deployment-guide.md:5, resolved-if: file exists.
+2. Confirm app/main.py version constraint — cite: docs/deployment-guide.md:2, resolved-if: no‑version satisfied.
+3. Validate guide line numbers against actual content — cite: docs/deployment-guide.md, resolved-if: lines 2 & 5 present.
+
+Verdict: CONFLICTING.

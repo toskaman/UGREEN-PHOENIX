@@ -31,9 +31,10 @@ Inaccessible sources (content never read): docs/locked.md
 - none observed
 
 ## 7. Next steps
-- P2: Request read access to 'docs/locked.md' or an approved copy. (evidence: docs/guide.md:4; authorization: access grant is the operator's decision)
-- P2: Resolve the '../escape.txt' evidence gap with a clearer source. (evidence: docs/guide.md:5; authorization: no Skill write needed)
-- P2: Resolve the 'C:/abs.txt' evidence gap with a clearer source. (evidence: docs/guide.md:6; authorization: no Skill write needed)
+- P2: [FIRST CHECK] Request read access to 'docs/locked.md' or an approved copy. (why: prevents a decision (evidence unread); evidence: docs/guide.md:4; resolved-if: read access is granted and the content is re-observed; authorization: access grant is the operator's decision)
+- P2: Resolve the '../escape.txt' evidence gap with a clearer source. (why: prevents a decision (evidence gap); evidence: docs/guide.md:5; resolved-if: a clearer source is observed and the requirement is re-extracted; authorization: no Skill write needed)
+- P2: Resolve the 'C:/abs.txt' evidence gap with a clearer source. (why: prevents a decision (evidence gap); evidence: docs/guide.md:6; resolved-if: a clearer source is observed and the requirement is re-extracted; authorization: no Skill write needed)
+- Regardless of results: whether the full project can actually be reconstructed stays unverified — only a real restoration test proves that.
 
 ## 8. Verdict: INSUFFICIENT EVIDENCE
 In plain terms: some evidence could not be read or confirmed, so no conclusion is possible yet.

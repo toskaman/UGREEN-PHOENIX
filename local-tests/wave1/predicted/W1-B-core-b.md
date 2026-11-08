@@ -26,7 +26,8 @@ Completion: COMPLETED.
 - runtime — Observed config/runtime.yaml:2 (2.4.1) contradicts required >= 3.0.
 
 ## 7. Next steps
-- P1: Confirm the intended 'runtime' version with the document owners. (evidence: docs/deployment-guide.md:5 vs observed facts (see §4); authorization: no Skill write needed)
+- P1: [FIRST CHECK] Confirm the intended 'runtime' version with the document owners. (why: blocks the verdict (sources disagree); evidence: docs/deployment-guide.md:5 vs observed facts (see §4); resolved-if: one authoritative version is confirmed and re-observed; authorization: no Skill write needed)
+- Regardless of results: whether the full project can actually be reconstructed stays unverified — only a real restoration test proves that.
 
 ## 8. Verdict: DOCUMENTARY BLOCKER IDENTIFIED
 In plain terms: at least one required item is contradicted or cannot be confirmed from the reviewed sources — do not assume the project is recoverable.
