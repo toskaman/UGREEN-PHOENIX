@@ -98,7 +98,9 @@ def main() -> int:
                                 dataset=args.dataset,
                                 base_unverified=v["unverified"])
     known = ds.known_files(args.case, labels)
-    r = agg.aggregate(merged, known=known)
+    r = agg.aggregate(merged, known=known,
+                      truncated_docs=ver.truncated_docs(
+                          args.case, args.dataset))
     gold = labels[args.case]["verdict"]
     print(f"{args.case} escalated -> {r['verdict']} | gold: {gold} | "
           f"{'PASS' if r['verdict'] == gold else 'FAIL'}")

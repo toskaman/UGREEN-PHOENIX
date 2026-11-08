@@ -123,14 +123,37 @@ def _alt_grounded(subject: str, options: list, rows: list, case: str,
     return False
 
 
+def _prose_shaped(lines: list[str]) -> bool:
+    """Prose vs key-value config: several long lines. The abrupt-ending
+    heuristic (missing terminal punctuation) only means truncation in
+    prose; a one-line 'port 9090' config is complete by nature."""
+    if len(lines) < 3:
+        return False
+    return sum(len(l) for l in lines) / len(lines) >= 30.0
+
+
+def truncated_docs(case: str, dataset: str = "trackb") -> set[str]:
+    """Public byte-grounded truncation net for a case (lets the scorer
+    confirm model-claimed TRUNC rows instead of trusting them)."""
+    ds = trackb if dataset == "trackb" else extset
+    labels = ds.labels()
+    return _truncated_docs(case, ds, ds.known_files(case, labels),
+                           labels.get(case, {}).get("unreadable", {}))
+
+
 def _truncated_docs(case: str, ds, known: dict, withheld: dict) -> set[str]:
-    """Deterministic truncation net: a guide-ish document (*.md) whose
-    last line lacks terminal punctuation, or that names absent content,
-    is treated as truncated even if the model did not flag it."""
+    """Deterministic truncation net: a guide-ish document whose last
+    line lacks terminal punctuation, or that names absent content, is
+    treated as truncated even if the model did not flag it. Explicit
+    markers apply to .md and .txt; the abrupt-ending heuristic applies
+    to .md and prose-shaped .txt only (short key-value configs are
+    complete without terminal punctuation)."""
     root = ds.ROOT / "corpus" / case
     out = set()
     for rel in known:
-        if rel in withheld or not rel.endswith(".md"):
+        if rel in withheld:
+            continue
+        if not (rel.endswith(".md") or rel.endswith(".txt")):
             continue
         try:
             text = (root / rel).read_text(encoding="utf-8")
@@ -145,6 +168,8 @@ def _truncated_docs(case: str, ds, known: dict, withheld: dict) -> set[str]:
             continue
         if re.search(r"page \d+.*missing|missing.*page|truncat", low):
             out.add(rel)
+            continue
+        if not rel.endswith(".md") and not _prose_shaped(lines):
             continue
         if not lines[-1].rstrip().endswith((".", "!", "?", ":", '"', "'")):
             out.add(rel)

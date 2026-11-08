@@ -2,14 +2,20 @@
 
 Pure function of the extraction text. No model calls. Rules:
 - stale markers (stale|superseded|deprecated|do not use) in OBSERVED_VALUE
-  and OBSERVED_PATH != REQUIRED_PATH -> CONFLICTING (cites both lines).
-- version constraints: 'N or newer' -> >= N; 'exactly V' -> == V;
-  unparseable constraint with a present file -> UNKNOWN (abstain, never
-  guess); numeric dot-separated comparison.
+  on a pathed row -> CONFLICTING, even when the required file itself is
+  stale-marked (stale-never-satisfies; '-' restatement rows exempt).
+- version constraints via normalize.py (EN/FR bounds, ranges, series,
+  strict/inclusive, exclusions): SATISFIED -> FOUND, VIOLATED ->
+  CONFLICTING, anything ambiguous -> UNKNOWN (abstain, never guess).
+  Operand selection is noun-aware; bare stated versions clear only on
+  equality and abstain on difference. Numeric dot-separated comparison.
 - same SUBJECT with differing REQUIRED_CONSTRAINT across rows -> CONFLICTING.
 - OBSERVED_PATH MISSING on a required path -> NOT FOUND IN SCOPE.
-- TRUNC rows make their subject UNKNOWN (truncated-only content).
-- ALT groups: subject passes if ANY option row passes fully.
+- TRUNC rows / TRUNCATED keywords make their subject UNKNOWN; when
+  truncated_docs is supplied, model-claimed truncation counts only for
+  byte-confirmed documents.
+- ALT groups: subject passes if ANY option row passes fully (an option
+  with a constraint passes only when provably SATISFIED).
 - malformed rows (whitespace or <> in a path cell: thinking-trace
   chatter shaped like TSV) -> UNKNOWN, never a FOUND/BLOCKER vote,
   and excluded from cross-row contradiction detection.
@@ -22,23 +28,20 @@ Pure function of the extraction text. No model calls. Rules:
 
 import re
 
+from evaluators import normalize as norm_mod
+
 STALE = re.compile(r"stale|superseded|deprecated|do not use", re.I)
 
 
-def parse_versions(text: str) -> tuple[int, ...] | None:
-    m = re.search(r"(\d+(?:\.\d+)*)", text)
-    if not m:
-        return None
-    return tuple(int(x) for x in m.group(1).split("."))
-
-
-def constraint_op(text: str) -> tuple[str, tuple[int, ...] | None]:
-    t = text.lower()
-    if "or newer" in t or "or later" in t or ">=" in t:
-        return (">=", parse_versions(text))
-    if "exactly" in t or "==" in t or re.match(r"^[\d.]+$", t.strip()):
-        return ("==", parse_versions(text))
-    return ("?", parse_versions(text))
+def _version_ok(req_constraint: str, obs_value: str) -> bool:
+    """True only when the observed version provably satisfies the
+    normalized constraint (shared by scoring and ALT relief)."""
+    norm = norm_mod.normalize_constraint(req_constraint)
+    code, _ = norm_mod.compare(
+        norm, norm_mod.pick_observed(
+            req_constraint, obs_value,
+            norm_op=norm["op"] if norm else None))
+    return code == "SATISFIED"
 
 
 CITE = re.compile(r"[\w./-]+\.\w+:\d+")
@@ -117,7 +120,8 @@ def _physical_lines(tsv: str) -> list[str]:
     return out
 
 
-def aggregate(tsv: str, known: dict | None = None) -> dict:
+def aggregate(tsv: str, known: dict | None = None,
+              truncated_docs: set | None = None) -> dict:
     rows, alts, truncs = [], {}, set()
     for line in _physical_lines(tsv):
         if line.startswith(("SUBJECT", "#")):
@@ -129,7 +133,12 @@ def aggregate(tsv: str, known: dict | None = None) -> dict:
                 (parts[2].strip(), parts[3].strip()))
             continue
         if tag == "TRUNC" and len(parts) >= 3:
-            truncs.add(parts[1].strip())
+            # Model-claimed truncation is honored only when the byte
+            # net confirms the document (when a net is supplied);
+            # otherwise any row could force-abstain its subject.
+            doc = parts[1].strip()
+            if truncated_docs is None or doc in truncated_docs:
+                truncs.add(doc)
             continue
         if len(parts) < 7:
             continue
@@ -164,25 +173,35 @@ def aggregate(tsv: str, known: dict | None = None) -> dict:
     conflicted = {s for (s, _), v in seen.items() if len(v) > 1}
     # observed-value disagreement: same subject stated with different
     # numeric values across readable sources (e.g. port 8080 vs 9090).
-    # Rows without numerics (guide restatements) do not participate.
-    obs_vals: dict[str, set[tuple[int, ...]]] = {}
+    # Values group by subject noun ('port 8080 schema 2' votes under
+    # both 'port' and 'schema'), with trailing zeros stripped so 2.4
+    # and 2.4.0 agree. Rows without numerics do not participate.
+    obs_groups: dict[str, dict[str | None, set]] = {}
     for r in rows:
         if r["obs_path"].upper() in ("MISSING", "UNREADABLE"):
             continue
         if r["suspect"]:
             continue
-        nums = parse_versions(r["obs_value"])
-        if nums is not None:
-            obs_vals.setdefault(r["subject"], set()).add(nums)
-    conflicted |= {s for s, v in obs_vals.items() if len(v) > 1}
+        for noun, tup in norm_mod.extract_tagged(
+                norm_mod.fold(r["obs_value"])):
+            while len(tup) > 1 and tup[-1] == 0:
+                tup = tup[:-1]
+            obs_groups.setdefault(r["subject"], {}).setdefault(
+                noun, set()).add(tup)
+    conflicted |= {s for s, g in obs_groups.items()
+                   if any(len(v) > 1 for v in g.values())}
 
     findings = []
     for r in rows:
         subj = r["subject"]
         src_paths = {s.split(":")[0].strip()
                      for s in r["sources"].split(",") if s.strip()}
-        truncated = ("TRUNCATED" in r["notes"].upper()
-                     or bool(src_paths & truncs))
+        kw_trunc = "TRUNCATED" in r["notes"].upper()
+        if kw_trunc and truncated_docs is not None:
+            # A model-typed TRUNCATED keyword counts only when a cited
+            # document is byte-confirmed truncated.
+            kw_trunc = bool(src_paths & truncated_docs)
+        truncated = (kw_trunc or bool(src_paths & truncs))
         if r["suspect"]:
             label, why = "UNKNOWN", "row cells malformed; not trusted"
         elif truncated:
@@ -193,23 +212,23 @@ def aggregate(tsv: str, known: dict | None = None) -> dict:
             label, why = "UNKNOWN", "file withheld as unreadable"
         elif r["obs_path"].upper() == "MISSING" and r["req_path"] != "-":
             label, why = "NOT FOUND IN SCOPE", "no candidate file observed"
-        elif STALE.search(r["obs_value"]) and r["obs_path"] != r["req_path"]:
-            label, why = "CONFLICTING", "only a stale-marked file observed"
+        elif r["req_path"] != "-" and STALE.search(r["obs_value"]):
+            # Stale-never-satisfies, including when the required file
+            # itself is stale-marked (not only a divergent decoy).
+            label, why = "CONFLICTING", "stale-marked evidence observed"
         elif r["req_constraint"] not in ("-", "") and \
                 r["obs_path"].upper() != "MISSING":
-            op, want = constraint_op(r["req_constraint"])
-            got = parse_versions(r["obs_value"])
-            if want is None or got is None:
-                label, why = "UNKNOWN", "unparseable version evidence"
-            elif op == "?" and got == want:
-                label, why = "FOUND", f"{got} matches stated {want}"
-            elif op == "?":
-                label, why = "UNKNOWN", \
-                    "bare version differs; comparison unknown"
-            elif (op == ">=" and got >= want) or (op == "==" and got == want):
-                label, why = "FOUND", f"{got} satisfies {op} {want}"
+            norm = norm_mod.normalize_constraint(r["req_constraint"])
+            code, why2 = norm_mod.compare(
+                norm, norm_mod.pick_observed(
+                    r["req_constraint"], r["obs_value"],
+                    norm_op=norm["op"] if norm else None))
+            if code == "SATISFIED":
+                label, why = "FOUND", why2
+            elif code == "VIOLATED":
+                label, why = "CONFLICTING", why2
             else:
-                label, why = "CONFLICTING", f"{got} violates {op} {want}"
+                label, why = "UNKNOWN", why2
         elif r["obs_path"].upper() == "MISSING":
             label, why = "UNKNOWN", "no evidence either way"
         else:
@@ -232,13 +251,9 @@ def aggregate(tsv: str, known: dict | None = None) -> dict:
                     if x["obs_path"] == o and not STALE.search(x["obs_value"]):
                         if x["req_constraint"] in ("-", ""):
                             passed = True
-                        else:
-                            op2, want2 = constraint_op(x["req_constraint"])
-                            got2 = parse_versions(x["obs_value"])
-                            if want2 and got2 and (
-                                    (op2 == ">=" and got2 >= want2) or
-                                    (op2 == "==" and got2 == want2)):
-                                passed = True
+                        elif _version_ok(x["req_constraint"],
+                                         x["obs_value"]):
+                            passed = True
             if passed:
                 label, why = "FOUND", "alternative option satisfied"
 

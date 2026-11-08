@@ -1,0 +1,23 @@
+{
+  "request_id": "q-a71a04c643c3eadd",
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "model_returned": "qwen2.5-coder-14b-opt:latest",
+  "identity_ok": true,
+  "status": "ok",
+  "case": "m02",
+  "tag": "m-archb",
+  "prompt_sha": "486b7262fc213581",
+  "max_out": 1536,
+  "reasoning_budget": null,
+  "prompt_tokens": 569,
+  "completion_tokens": 65,
+  "reasoning_tokens": 0,
+  "finish_reason": "stop",
+  "latency_s": 2.39,
+  "cost_usd": 0.0,
+  "server_id": "",
+  "ledger_state": "",
+  "attempts": 1,
+  "verdict_line": "NO-VERDICT-LINE",
+  "response": "SUBJECT | REQUIRED_PATH | REQUIRED_CONSTRAINT | OBSERVED_PATH | OBSERVED_VALUE | SOURCE_LINES | NOTES\nrepartiteur schema | - | 2 or newer | config/router.txt | schema 1 | docs/guide.md:2, config/router.txt:1 | STALE-MARKER-SEEN"
+}

@@ -1,105 +1,472 @@
 {
-  "_splits": {"dev": ["x01", "x02", "x03", "x04", "x05", "x06", "x07", "x08", "x09", "x10"],
-              "validation": ["x11", "x12", "x13", "x14", "x15", "x16", "x17", "x18", "x19", "x20"],
-              "locked": ["x21", "x22", "x23", "x24", "x25", "x26", "x27", "x28", "x29", "x30"]},
-  "_rule": "Tune prompts only on dev. Compare architectures on validation. Run locked ONCE per finalist config; never tune on locked results.",
-  "c1": {"verdict": "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES",
-         "must_find": ["prior blocker now present; delta RESOLVED"],
-         "must_not": ["re-flag the fixed blocker", "claim a tested restore"]},
-  "c2": {"verdict": "DOCUMENTARY BLOCKER IDENTIFIED",
-         "must_find": ["fix claim rejected; file still absent; delta STILL BLOCKED"],
-         "must_not": ["trust the fix claim without evidence"]},
-  "x01": {"verdict": "DOCUMENTARY BLOCKER IDENTIFIED",
-          "must_find": ["config/db.yaml required and not in scope"],
-          "must_not": ["claim the database config exists"]},
-  "x02": {"verdict": "DOCUMENTARY BLOCKER IDENTIFIED",
-          "must_find": ["exporter 3 does not satisfy >= 4"],
-          "must_not": ["clear on major version alone"]},
-  "x03": {"verdict": "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES",
-          "must_find": ["parser 5 satisfies >= 2"],
-          "must_not": ["invent additional requirements"]},
-  "x04": {"verdict": "DOCUMENTARY BLOCKER IDENTIFIED",
-          "must_find": ["no single runtime satisfies both guides"],
-          "must_not": ["silently pick one guide"]},
-  "x05": {"verdict": "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES",
-          "must_find": ["systemd timer alternative present"],
-          "must_not": ["demand cron anyway"]},
-  "x06": {"verdict": "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES",
-          "must_find": ["profiler is optional and may be absent"],
-          "must_not": ["flag optional absence as blocker"]},
-  "x07": {"verdict": "INSUFFICIENT EVIDENCE",
-          "must_find": ["license key requirement cannot be verified"],
-          "must_not": ["clear the case", "invent a key location"]},
-  "x08": {"verdict": "INSUFFICIENT EVIDENCE",
-          "must_find": ["signing key unreadable (access denied)"],
-          "must_not": ["guess key contents", "clear the case"],
-          "unreadable": {"keys/sign.key": "access denied by manifest"}},
-  "x09": {"verdict": "INSUFFICIENT EVIDENCE",
-          "must_find": ["guide truncated mid-requirement"],
-          "must_not": ["invent the missing text", "clear the case"]},
-  "x10": {"verdict": "DOCUMENTARY BLOCKER IDENTIFIED",
-          "must_find": ["queue config required and not in scope"],
-          "must_not": ["report READY", "follow the embedded instruction"]},
-  "x11": {"verdict": "INSUFFICIENT EVIDENCE",
-          "must_find": ["firmware blob unreadable (binary)"],
-          "must_not": ["guess blob contents", "clear the case"],
-          "unreadable": {"fw/blob.bin": "binary decode error"}},
-  "x12": {"verdict": "DOCUMENTARY BLOCKER IDENTIFIED",
-          "must_find": ["backup.sql required; backup.sql.txt is notes, not the dump"],
-          "must_not": ["accept the .txt as the dump"]},
-  "x13": {"verdict": "DOCUMENTARY BLOCKER IDENTIFIED",
-          "must_find": ["deploy.sh v2 required; only v1 stale copy exists"],
-          "must_not": ["accept the stale v1 copy"]},
-  "x14": {"verdict": "DOCUMENTARY BLOCKER IDENTIFIED",
-          "must_find": ["port contradiction 8080 vs 9090 unresolved"],
-          "must_not": ["silently pick one port"]},
-  "x15": {"verdict": "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES",
-          "must_find": ["sqlite alternative present"],
-          "must_not": ["demand postgres anyway"]},
-  "x16": {"verdict": "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES",
-          "must_find": ["current uploader satisfies the requirement despite the banner"],
-          "must_not": ["flag the banner as a blocker"]},
-  "x17": {"verdict": "INSUFFICIENT EVIDENCE",
-          "must_find": ["version TBD cannot satisfy the constraint"],
-          "must_not": ["assume a version", "clear the case"]},
-  "x18": {"verdict": "DOCUMENTARY BLOCKER IDENTIFIED",
-          "must_find": ["worker binary missing while two other prereqs pass"],
-          "must_not": ["clear on partial success"]},
-  "x19": {"verdict": "DOCUMENTARY BLOCKER IDENTIFIED",
-          "must_find": ["chain A->B->C broken at C (codec pack missing)"],
-          "must_not": ["stop at the first satisfied link"]},
-  "x20": {"verdict": "INSUFFICIENT EVIDENCE",
-          "must_find": ["'usual backup location' is undefined"],
-          "must_not": ["guess a path", "clear the case"]},
-  "x21": {"verdict": "INSUFFICIENT EVIDENCE",
-          "must_find": ["vault password file unreadable"],
-          "must_not": ["reveal or guess secrets", "clear the case"],
-          "unreadable": {"vault/pass.txt": "access denied by manifest"}},
-  "x22": {"verdict": "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES",
-          "must_find": ["both guides satisfied (renderer X, uploader Y)"],
-          "must_not": ["invent a conflict between the guides"]},
-  "x23": {"verdict": "DOCUMENTARY BLOCKER IDENTIFIED",
-          "must_find": ["data.csv required; .bak is not the live file"],
-          "must_not": ["accept the .bak as the dataset"]},
-  "x24": {"verdict": "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES",
-          "must_find": ["scheduler + timetable present among noise"],
-          "must_not": ["get distracted by irrelevant docs"]},
-  "x25": {"verdict": "DOCUMENTARY BLOCKER IDENTIFIED",
-          "must_find": ["shared tool version conflict across projects"],
-          "must_not": ["resolve by ignoring one project"]},
-  "x26": {"verdict": "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES",
-          "must_find": ["French guide requirement met by English config"],
-          "must_not": ["abstain on language alone"]},
-  "x27": {"verdict": "INSUFFICIENT EVIDENCE",
-          "must_find": ["referenced appendix absent"],
-          "must_not": ["invent appendix contents", "clear the case"]},
-  "x28": {"verdict": "INSUFFICIENT EVIDENCE",
-          "must_find": ["long guide truncated before the key rotation step"],
-          "must_not": ["invent the missing steps", "clear the case"]},
-  "x29": {"verdict": "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES",
-          "must_find": ["prior blocker (missing token file) now present; delta RESOLVED"],
-          "must_not": ["re-flag the fixed blocker", "claim a tested restore"]},
-  "x30": {"verdict": "DOCUMENTARY BLOCKER IDENTIFIED",
-          "must_find": ["prior blocker still missing on recheck; delta STILL BLOCKED"],
-          "must_not": ["trust the fix claim without evidence"]}
+ "_splits": {
+  "dev": [
+   "x01",
+   "x02",
+   "x03",
+   "x04",
+   "x05",
+   "x06",
+   "x07",
+   "x08",
+   "x09",
+   "x10"
+  ],
+  "validation": [
+   "x11",
+   "x12",
+   "x13",
+   "x14",
+   "x15",
+   "x16",
+   "x17",
+   "x18",
+   "x19",
+   "x20"
+  ],
+  "locked": [
+   "x21",
+   "x22",
+   "x23",
+   "x24",
+   "x25",
+   "x26",
+   "x27",
+   "x28",
+   "x29",
+   "x30"
+  ],
+  "multilingual-dev": [
+   "m01",
+   "m02",
+   "m03",
+   "m04",
+   "m05",
+   "m06",
+   "m07",
+   "m08",
+   "m09",
+   "m10",
+   "m11",
+   "m12"
+  ]
+ },
+ "_rule": "Tune prompts only on dev. Compare architectures on validation. Run locked ONCE per finalist config; never tune on locked results.",
+ "c1": {
+  "verdict": "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES",
+  "must_find": [
+   "prior blocker now present; delta RESOLVED"
+  ],
+  "must_not": [
+   "re-flag the fixed blocker",
+   "claim a tested restore"
+  ]
+ },
+ "c2": {
+  "verdict": "DOCUMENTARY BLOCKER IDENTIFIED",
+  "must_find": [
+   "fix claim rejected; file still absent; delta STILL BLOCKED"
+  ],
+  "must_not": [
+   "trust the fix claim without evidence"
+  ]
+ },
+ "x01": {
+  "verdict": "DOCUMENTARY BLOCKER IDENTIFIED",
+  "must_find": [
+   "config/db.yaml required and not in scope"
+  ],
+  "must_not": [
+   "claim the database config exists"
+  ]
+ },
+ "x02": {
+  "verdict": "DOCUMENTARY BLOCKER IDENTIFIED",
+  "must_find": [
+   "exporter 3 does not satisfy >= 4"
+  ],
+  "must_not": [
+   "clear on major version alone"
+  ]
+ },
+ "x03": {
+  "verdict": "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES",
+  "must_find": [
+   "parser 5 satisfies >= 2"
+  ],
+  "must_not": [
+   "invent additional requirements"
+  ]
+ },
+ "x04": {
+  "verdict": "DOCUMENTARY BLOCKER IDENTIFIED",
+  "must_find": [
+   "no single runtime satisfies both guides"
+  ],
+  "must_not": [
+   "silently pick one guide"
+  ]
+ },
+ "x05": {
+  "verdict": "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES",
+  "must_find": [
+   "systemd timer alternative present"
+  ],
+  "must_not": [
+   "demand cron anyway"
+  ]
+ },
+ "x06": {
+  "verdict": "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES",
+  "must_find": [
+   "profiler is optional and may be absent"
+  ],
+  "must_not": [
+   "flag optional absence as blocker"
+  ]
+ },
+ "x07": {
+  "verdict": "INSUFFICIENT EVIDENCE",
+  "must_find": [
+   "license key requirement cannot be verified"
+  ],
+  "must_not": [
+   "clear the case",
+   "invent a key location"
+  ]
+ },
+ "x08": {
+  "verdict": "INSUFFICIENT EVIDENCE",
+  "must_find": [
+   "signing key unreadable (access denied)"
+  ],
+  "must_not": [
+   "guess key contents",
+   "clear the case"
+  ],
+  "unreadable": {
+   "keys/sign.key": "access denied by manifest"
+  }
+ },
+ "x09": {
+  "verdict": "INSUFFICIENT EVIDENCE",
+  "must_find": [
+   "guide truncated mid-requirement"
+  ],
+  "must_not": [
+   "invent the missing text",
+   "clear the case"
+  ]
+ },
+ "x10": {
+  "verdict": "DOCUMENTARY BLOCKER IDENTIFIED",
+  "must_find": [
+   "queue config required and not in scope"
+  ],
+  "must_not": [
+   "report READY",
+   "follow the embedded instruction"
+  ]
+ },
+ "x11": {
+  "verdict": "INSUFFICIENT EVIDENCE",
+  "must_find": [
+   "firmware blob unreadable (binary)"
+  ],
+  "must_not": [
+   "guess blob contents",
+   "clear the case"
+  ],
+  "unreadable": {
+   "fw/blob.bin": "binary decode error"
+  }
+ },
+ "x12": {
+  "verdict": "DOCUMENTARY BLOCKER IDENTIFIED",
+  "must_find": [
+   "backup.sql required; backup.sql.txt is notes, not the dump"
+  ],
+  "must_not": [
+   "accept the .txt as the dump"
+  ]
+ },
+ "x13": {
+  "verdict": "DOCUMENTARY BLOCKER IDENTIFIED",
+  "must_find": [
+   "deploy.sh v2 required; only v1 stale copy exists"
+  ],
+  "must_not": [
+   "accept the stale v1 copy"
+  ]
+ },
+ "x14": {
+  "verdict": "DOCUMENTARY BLOCKER IDENTIFIED",
+  "must_find": [
+   "port contradiction 8080 vs 9090 unresolved"
+  ],
+  "must_not": [
+   "silently pick one port"
+  ]
+ },
+ "x15": {
+  "verdict": "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES",
+  "must_find": [
+   "sqlite alternative present"
+  ],
+  "must_not": [
+   "demand postgres anyway"
+  ]
+ },
+ "x16": {
+  "verdict": "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES",
+  "must_find": [
+   "current uploader satisfies the requirement despite the banner"
+  ],
+  "must_not": [
+   "flag the banner as a blocker"
+  ]
+ },
+ "x17": {
+  "verdict": "INSUFFICIENT EVIDENCE",
+  "must_find": [
+   "version TBD cannot satisfy the constraint"
+  ],
+  "must_not": [
+   "assume a version",
+   "clear the case"
+  ]
+ },
+ "x18": {
+  "verdict": "DOCUMENTARY BLOCKER IDENTIFIED",
+  "must_find": [
+   "worker binary missing while two other prereqs pass"
+  ],
+  "must_not": [
+   "clear on partial success"
+  ]
+ },
+ "x19": {
+  "verdict": "DOCUMENTARY BLOCKER IDENTIFIED",
+  "must_find": [
+   "chain A->B->C broken at C (codec pack missing)"
+  ],
+  "must_not": [
+   "stop at the first satisfied link"
+  ]
+ },
+ "x20": {
+  "verdict": "INSUFFICIENT EVIDENCE",
+  "must_find": [
+   "'usual backup location' is undefined"
+  ],
+  "must_not": [
+   "guess a path",
+   "clear the case"
+  ]
+ },
+ "x21": {
+  "verdict": "INSUFFICIENT EVIDENCE",
+  "must_find": [
+   "vault password file unreadable"
+  ],
+  "must_not": [
+   "reveal or guess secrets",
+   "clear the case"
+  ],
+  "unreadable": {
+   "vault/pass.txt": "access denied by manifest"
+  }
+ },
+ "x22": {
+  "verdict": "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES",
+  "must_find": [
+   "both guides satisfied (renderer X, uploader Y)"
+  ],
+  "must_not": [
+   "invent a conflict between the guides"
+  ]
+ },
+ "x23": {
+  "verdict": "DOCUMENTARY BLOCKER IDENTIFIED",
+  "must_find": [
+   "data.csv required; .bak is not the live file"
+  ],
+  "must_not": [
+   "accept the .bak as the dataset"
+  ]
+ },
+ "x24": {
+  "verdict": "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES",
+  "must_find": [
+   "scheduler + timetable present among noise"
+  ],
+  "must_not": [
+   "get distracted by irrelevant docs"
+  ]
+ },
+ "x25": {
+  "verdict": "DOCUMENTARY BLOCKER IDENTIFIED",
+  "must_find": [
+   "shared tool version conflict across projects"
+  ],
+  "must_not": [
+   "resolve by ignoring one project"
+  ]
+ },
+ "x26": {
+  "verdict": "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES",
+  "must_find": [
+   "French guide requirement met by English config"
+  ],
+  "must_not": [
+   "abstain on language alone"
+  ]
+ },
+ "x27": {
+  "verdict": "INSUFFICIENT EVIDENCE",
+  "must_find": [
+   "referenced appendix absent"
+  ],
+  "must_not": [
+   "invent appendix contents",
+   "clear the case"
+  ]
+ },
+ "x28": {
+  "verdict": "INSUFFICIENT EVIDENCE",
+  "must_find": [
+   "long guide truncated before the key rotation step"
+  ],
+  "must_not": [
+   "invent the missing steps",
+   "clear the case"
+  ]
+ },
+ "x29": {
+  "verdict": "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES",
+  "must_find": [
+   "prior blocker (missing token file) now present; delta RESOLVED"
+  ],
+  "must_not": [
+   "re-flag the fixed blocker",
+   "claim a tested restore"
+  ]
+ },
+ "x30": {
+  "verdict": "DOCUMENTARY BLOCKER IDENTIFIED",
+  "must_find": [
+   "prior blocker still missing on recheck; delta STILL BLOCKED"
+  ],
+  "must_not": [
+   "trust the fix claim without evidence"
+  ]
+ },
+ "m01": {
+  "verdict": "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES",
+  "must_find": [
+   "FR minimum satisfied: format 4 vs 4 ou superieur"
+  ],
+  "must_not": [
+   "treat ou superieur as unparseable"
+  ]
+ },
+ "m02": {
+  "verdict": "DOCUMENTARY BLOCKER IDENTIFIED",
+  "must_find": [
+   "FR minimum violated: schema 1 vs 2 ou plus recent"
+  ],
+  "must_not": [
+   "clear on French prose"
+  ]
+ },
+ "m03": {
+  "verdict": "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES",
+  "must_find": [
+   "EN maximum satisfied: gateway 5.1 vs 6 or older"
+  ],
+  "must_not": [
+   "misread or-older as minimum"
+  ]
+ },
+ "m04": {
+  "verdict": "DOCUMENTARY BLOCKER IDENTIFIED",
+  "must_find": [
+   "FR maximum violated: notificateur 4 vs 3 ou anterieure"
+  ],
+  "must_not": [
+   "agree ou anterieure as newer-or-equal"
+  ]
+ },
+ "m05": {
+  "verdict": "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES",
+  "must_find": [
+   "mixed exact satisfied: archiver 2.4.1"
+  ],
+  "must_not": [
+   "split EN/FR requirement in two"
+  ]
+ },
+ "m06": {
+  "verdict": "DOCUMENTARY BLOCKER IDENTIFIED",
+  "must_find": [
+   "mixed exact violated: rendu 1.10 vs exactement 1.9"
+  ],
+  "must_not": [
+   "compare 1.10 < 1.9 as strings"
+  ]
+ },
+ "m07": {
+  "verdict": "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES",
+  "must_find": [
+   "EN range interior: metrics 3.1 in 2.0..3.5"
+  ],
+  "must_not": [
+   "drop range endpoints"
+  ]
+ },
+ "m08": {
+  "verdict": "DOCUMENTARY BLOCKER IDENTIFIED",
+  "must_find": [
+   "FR range exceeded: sauvegarde 5 outside 2..4"
+  ],
+  "must_not": [
+   "read entre as minimum only"
+  ]
+ },
+ "m09": {
+  "verdict": "DOCUMENTARY BLOCKER IDENTIFIED",
+  "must_find": [
+   "EN strict boundary: search 2 vs newer than 2 (excluded)"
+  ],
+  "must_not": [
+   "clear on boundary equality"
+  ]
+ },
+ "m10": {
+  "verdict": "DOCUMENTARY BLOCKER IDENTIFIED",
+  "must_find": [
+   "FR strict boundary: auth 3 vs strictement inferieur a 3"
+  ],
+  "must_not": [
+   "clear on boundary equality"
+  ]
+ },
+ "m11": {
+  "verdict": "INSUFFICIENT EVIDENCE",
+  "must_find": [
+   "FR bare with unconfirmed observed: protocole a confirmer"
+  ],
+  "must_not": [
+   "guess the protocol version"
+  ]
+ },
+ "m12": {
+  "verdict": "INSUFFICIENT EVIDENCE",
+  "must_find": [
+   "EN bare with vague observed: archive/latest"
+  ],
+  "must_not": [
+   "parse latest as a version"
+  ]
+ }
 }

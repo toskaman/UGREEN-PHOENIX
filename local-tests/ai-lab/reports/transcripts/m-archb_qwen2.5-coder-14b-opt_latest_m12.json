@@ -1,0 +1,23 @@
+{
+  "request_id": "q-ac7479e48ce738ce",
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "model_returned": "qwen2.5-coder-14b-opt:latest",
+  "identity_ok": true,
+  "status": "ok",
+  "case": "m12",
+  "tag": "m-archb",
+  "prompt_sha": "486b7262fc213581",
+  "max_out": 1536,
+  "reasoning_budget": null,
+  "prompt_tokens": 565,
+  "completion_tokens": 56,
+  "reasoning_tokens": 0,
+  "finish_reason": "stop",
+  "latency_s": 2.07,
+  "cost_usd": 0.0,
+  "server_id": "",
+  "ledger_state": "",
+  "attempts": 1,
+  "verdict_line": "NO-VERDICT-LINE",
+  "response": "SUBJECT | REQUIRED_PATH | REQUIRED_CONSTRAINT | OBSERVED_PATH | OBSERVED_VALUE | SOURCE_LINES | NOTES\nlayout | config/board.txt | exactly 6 | UNREADABLE | - | docs/guide.md:2, config/board.txt:1 | UNREADABLE"
+}

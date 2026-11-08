@@ -11,6 +11,7 @@ sys.path.insert(0, str(AI_LAB))
 
 from evaluators import aggregate as agg
 from evaluators import delta as delta_mod
+from evaluators import normalize as norm_mod
 from evaluators import verify as ver
 
 B = "DOCUMENTARY BLOCKER IDENTIFIED"
@@ -202,4 +203,98 @@ if __name__ == "__main__":
     check("verified rowfix appended",
           "BLEND" in ver.merge_rowfix("tb1", base, good,
                                       dataset="trackb"))
+    # v6 adversarial TSV matrix a1-a15 (multilingual constraints)
+    def row(c, v):
+        return (f"s | f | {c} | c/f | {v} | g.md:1 | OK")
+    check("a1 inclusive le endpoint", agg.aggregate(
+        row("up to 5", "v 5"))["verdict"] == CLEAR)
+    check("a2 strict lt endpoint", agg.aggregate(
+        row("up to but not including 5", "v 5"))["verdict"] == B)
+    check("a3 bare vs port noise abstains", agg.aggregate(
+        row("8080", "service on 8080 (pid 12)"))["verdict"] == INSUF)
+    check("a4 fr strict gt boundary", agg.aggregate(
+        row("Doit être > 2", "v 2"))["verdict"] == B)
+    check("a5 fr range endpoint", agg.aggregate(
+        row("entre 2.0 et 4.2", "v 4.2"))["verdict"] == CLEAR)
+    check("a6 series satisfies", agg.aggregate(
+        row("serie 2.x", "v 2.7"))["verdict"] == CLEAR)
+    check("a7 contradictory cues abstain", agg.aggregate(
+        row("exactly 2 or newer", "v 3"))["verdict"] == INSUF)
+    check("a8 decimal comma abstains", agg.aggregate(
+        row("version 2,4", "v 2"))["verdict"] == INSUF)
+    check("a9 vague observed abstains", agg.aggregate(
+        row("format 6", "moved to archive/latest"))["verdict"] == INSUF)
+    check("a10 exclusion asymmetry", agg.aggregate(
+        row("up to 5", "v 5"))["verdict"] == CLEAR and agg.aggregate(
+        row("up to but not including 5", "v 5"))["verdict"] == B)
+    check("a11 folded uppercase fr", agg.aggregate(
+        row("OU SUPÉRIEUR 2", "v 3"))["verdict"] == CLEAR)
+    check("a12 edition noise tolerated", agg.aggregate(
+        row("at least 4", "edition 4"))["verdict"] == CLEAR)
+    check("a13 padded semver equal", agg.aggregate(
+        row("exactly 2.4", "v 2.4.0"))["verdict"] == CLEAR)
+    check("a14 headline beats patch note", agg.aggregate(
+        row("3 or newer", "v 3, patch 2 applied"))["verdict"] == CLEAR)
+    check("a15 fr alt relief", agg.aggregate(
+        "job | a/full | 2 ou superieur | MISSING | - | g.md:1 | OK\n"
+        "job | a/incr | 2 ou superieur | a/incr | v 3 | g.md:2 | OK\n"
+        "ALT | sauvegarde | a/full | a/incr")["verdict"] == CLEAR)
+    # v6 pinned normalizer contract (constraint, observed -> outcome)
+    contract = [
+        ("2 or newer", "portal schema 3", "SATISFIED"),
+        ("shop schema 2 ou plus récent", "shop schema 4", "SATISFIED"),
+        ("Le cache doit déclarer format 4 ou supérieur", "cache format 2",
+         "VIOLATED"),
+        ("gateway must be 6 or older", "gateway 5.1", "SATISFIED"),
+        ("doit etre version 3 ou anterieure", "notificateur version 4",
+         "VIOLATED"),
+        ("must be exactly 2.4.1", "archiver 2.4.1", "SATISFIED"),
+        ("doit etre exactement 1.9", "rendu 1.10", "VIOLATED"),
+        ("between 2.0 and 3.5", "metrics 3.1", "SATISFIED"),
+        ("doit etre entre 2 et 4", "sauvegarde 5", "VIOLATED"),
+        ("must be newer than 2 (2 excluded)", "search 2", "VIOLATED"),
+        ("doit etre strictement inferieur a 3", "auth 3", "VIOLATED"),
+        ("must declare layout 6", "dispatcher layout 5", "UNKNOWN"),
+        ("doit declarer protocole 3", "protocole: a confirmer", "UNKNOWN"),
+        ("> 2", "v 2", "VIOLATED"), (">= 2", "v 2", "SATISFIED"),
+        ("< 3", "v 3", "VIOLATED"), ("<= 3", "v 3", "SATISFIED"),
+        ("entre 2 et 4", "v 4", "SATISFIED"),
+        ("entre 2 et 4", "v 5", "VIOLATED"),
+        ("2.x", "v 2.7", "SATISFIED"), ("2.x", "v 3.0", "VIOLATED"),
+        ("format 6", "latest", "UNKNOWN"),
+        ("2 ou superieur", "v 10.1", "SATISFIED"),
+        ("format 6", "format 6", "SATISFIED"),
+        ("at least 4", "v 3", "VIOLATED"),
+        ("minimum 2", "v 2", "SATISFIED"),
+        ("3+", "v 4", "SATISFIED"), ("no newer than 5", "v 6", "VIOLATED"),
+        ("version 3 minimum, version 6 exclue", "v 6", "VIOLATED"),
+        ("version 3 minimum, version 6 exclue", "v 4", "SATISFIED"),
+        ("schema 3", "port 8080 schema 2", "UNKNOWN"),
+        ("schema exactly 3", "port 8080 schema 2", "VIOLATED"),
+        ("compatible with 2.x", "v 2.5", "SATISFIED"),
+        ("version inferieure a 5", "v 5", "VIOLATED"),
+        ("versions 2 à 4 incluses", "v 3", "SATISFIED"),
+    ]
+    for c, o, exp in contract:
+        n = norm_mod.normalize_constraint(c)
+        code, _ = norm_mod.compare(
+            n, norm_mod.pick_observed(c, o,
+                                     norm_op=n["op"] if n else None))
+        check(f"norm {c[:28]!r}", code == exp)
+    # v6 truncation grounding (model TRUNC needs byte confirmation)
+    check("tb5 net flags marked guide",
+          "docs/guide.md" in ver.truncated_docs("tb5", "trackb"))
+    check("short config not prose-flagged",
+          not ver._prose_shaped(["port 9090"]))
+    check("unconfirmed model trunc dropped", agg.aggregate(
+        "s | f | - | f | x | g.md:1 | OK\n"
+        "TRUNC | g.md | model says so",
+        truncated_docs=set())["findings"][0]["label"] == "FOUND")
+    check("confirmed trunc abstains", agg.aggregate(
+        "s | f | - | f | x | g.md:1 | OK\n"
+        "TRUNC | g.md | model says so",
+        truncated_docs={"g.md"})["findings"][0]["label"] == "UNKNOWN")
+    check("keyword needs byte confirmation", agg.aggregate(
+        "s | f | - | f | x | g.md:1 | TRUNCATED evidence",
+        truncated_docs=set())["findings"][0]["label"] == "FOUND")
     print(f"{PASS} aggregation checks passed, ALL GREEN (offline)")

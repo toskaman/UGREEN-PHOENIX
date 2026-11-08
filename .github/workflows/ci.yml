@@ -25,6 +25,11 @@ jobs:
         run: python local-tests/rehearse-wave1.py
       - name: Mutation testing (must kill 16/16)
         run: python local-tests/mutate.py
+      - name: AI-lab offline tests (harness/budget/aggregate, no creds)
+        run: |
+          python local-tests/ai-lab/tests/test_harness.py
+          python local-tests/ai-lab/tests/test_budget.py
+          python local-tests/ai-lab/tests/test_aggregate.py
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:

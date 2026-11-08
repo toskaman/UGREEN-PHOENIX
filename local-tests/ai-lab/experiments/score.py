@@ -52,7 +52,9 @@ def main() -> int:
                                    dataset=args.dataset,
                                    base_unverified=v["unverified"])
         known = ds.known_files(case, raw)
-        r = agg.aggregate(tsv, known=known)
+        r = agg.aggregate(tsv, known=known,
+                          truncated_docs=ver.truncated_docs(
+                              case, args.dataset))
         ok = r["verdict"] == labels[case]["verdict"]
         n += 1
         p += ok

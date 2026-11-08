@@ -1,0 +1,23 @@
+{
+  "request_id": "q-9cd0f7b9b4457de4",
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "model_returned": "qwen2.5-coder-14b-opt:latest",
+  "identity_ok": true,
+  "status": "ok",
+  "case": "m04",
+  "tag": "m-archb",
+  "prompt_sha": "486b7262fc213581",
+  "max_out": 1536,
+  "reasoning_budget": null,
+  "prompt_tokens": 577,
+  "completion_tokens": 72,
+  "reasoning_tokens": 0,
+  "finish_reason": "stop",
+  "latency_s": 2.68,
+  "cost_usd": 0.0,
+  "server_id": "",
+  "ledger_state": "",
+  "attempts": 1,
+  "verdict_line": "NO-VERDICT-LINE",
+  "response": "SUBJECT | REQUIRED_PATH | REQUIRED_CONSTRAINT | OBSERVED_PATH | OBSERVED_VALUE | SOURCE_LINES | NOTES  \nnotificateur | - | version 3 ou anterieure | config/notify.txt | notificateur version 4 | docs/guide.md:2, config/notify.txt:1 | STALE-MARKER-SEEN"
+}

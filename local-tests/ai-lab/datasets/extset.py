@@ -1,4 +1,5 @@
-"""Extended benchmark loader (x01..x30, dev/validation/locked splits).
+"""Extended benchmark loader (x01..x30 dev/validation/locked splits,
+plus m01..m12 multilingual-dev split).
 
 Same feeding contract as trackb.py. No model calls here.
 """
