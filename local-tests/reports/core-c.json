@@ -1,6 +1,7 @@
 {
   "verdict": "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES",
   "completion": "COMPLETED",
+  "scope": "core-c",
   "evidence": [
     {
       "subject": "app/main.py",

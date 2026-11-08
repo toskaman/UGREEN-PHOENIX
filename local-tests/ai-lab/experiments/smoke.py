@@ -7,13 +7,13 @@ Usage (from repo root): python local-tests/ai-lab/experiments/smoke.py
 """
 
 import sys
-import uuid
 from pathlib import Path
 
 AI_LAB = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(AI_LAB))
 
 import budget as budget_mod
+import call as call_mod
 import config
 from providers import vultr
 
@@ -24,23 +24,26 @@ def main() -> int:
     pricing = {m: (v["in_per_m"], v["out_per_m"])
                for m, v in config.MODELS.items()}
     ledger = budget_mod.Ledger(LEDGER, config.BUDGET_USD,
-                               config.MAX_REQUESTS, pricing)
-    spent, n = ledger.totals()
-    print(f"ledger: ${spent:.6f} spent, {n} requests")
+                               config.MAX_REQUESTS, pricing,
+                               ttl_s=config.RESERVATION_TTL_S)
+    spent, held, n, corrupt = ledger.totals()
+    print(f"ledger: ${spent:.6f} spent, ${held:.6f} held, {n} requests")
     failures = 0
     for model, spec in config.MODELS.items():
         if spec["provider"] != "vultr":
             continue
-        rid = f"smoke-{uuid.uuid4().hex[:8]}"
+        rid = f"smoke-{model}"
         messages = [{"role": "user", "content": "Reply with exactly: OK"}]
         prompt_chars = len(messages[0]["content"])
         try:
-            est = ledger.authorize(model, prompt_chars, 8)
+            res = call_mod.paid_chat(model, messages, 8, ledger, rid,
+                                     "smoke", "smoke", prompt_chars)
         except budget_mod.BudgetExceeded as exc:
             print(f"{model}: BUDGET REFUSED {exc}")
             return 1
-        try:
-            res = vultr.chat(model, messages, max_out=8, temperature=0.0)
+        except budget_mod.ReservationTerminal as exc:
+            print(f"{model}: already smoked ({exc}), skipped")
+            continue
         except vultr.VultrAuthError as exc:
             print(f"{model}: AUTH FAIL (no retry): {exc}")
             return 1
@@ -50,16 +53,6 @@ def main() -> int:
             continue
         cost = budget_mod.Ledger.actual_cost(
             model, res["prompt_tokens"], res["completion_tokens"], pricing)
-        ledger.record({"request_id": rid, "model": model,
-                       "model_returned": res["model_returned"],
-                       "identity_ok": res["identity_ok"],
-                       "status": "ok" if res["identity_ok"] else "mismatch",
-                       "prompt_tokens": res["prompt_tokens"],
-                       "completion_tokens": res["completion_tokens"],
-                       "reasoning_tokens": res["reasoning_tokens"],
-                       "finish_reason": res["finish_reason"],
-                       "latency_s": res["latency_s"], "cost_usd": cost,
-                       "est_max_usd": est})
         flag = "" if res["identity_ok"] else " IDENTITY-MISMATCH"
         print(f"{model}: ok text={res['text'].strip()[:20]!r} "
               f"in={res['prompt_tokens']} out={res['completion_tokens']} "
@@ -67,8 +60,9 @@ def main() -> int:
               f"{res['latency_s']}s{flag}")
         if not res["identity_ok"]:
             failures += 1
-    spent, n = ledger.totals()
-    print(f"ledger now: ${spent:.6f} spent, {n} requests")
+    spent, held, n, corrupt = ledger.totals()
+    print(f"ledger now: ${spent:.6f} spent, ${held:.6f} held, "
+          f"{n} requests, {corrupt} corrupt lines")
     return 1 if failures else 0
 
 

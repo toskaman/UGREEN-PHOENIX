@@ -35,7 +35,8 @@ def main() -> int:
         cites = verdict_mod.check_citations(
             d["response"], ds.known_files(case, raw))
         forb = verdict_mod.scan_forbidden(d["response"])
-        ok = (line == gold.get(case) and not cites["unresolved"]
+        ok = (line == gold.get(case) and cites["resolved"]
+              and not cites["unresolved"]
               and not forb and d.get("status") == "ok")
         n += 1
         gate_pass += ok

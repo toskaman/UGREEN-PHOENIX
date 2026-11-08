@@ -1,6 +1,7 @@
 {
   "verdict": "DOCUMENTARY BLOCKER IDENTIFIED",
   "completion": "COMPLETED",
+  "scope": "core-b",
   "evidence": [
     {
       "subject": "config/runtime.yaml",

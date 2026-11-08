@@ -447,6 +447,181 @@ def main():
         ok &= check(f"{case} has all 8 sections",
                     all(h in text for h in want))
 
+    print("hardening (red-team findings):")
+    with tempfile.TemporaryDirectory() as tmp:
+        t = Path(tmp)
+        (t / "guide.md").write_text("REQUIRES: runtime 2 or newer\n",
+                                    encoding="utf-8")
+        (t / "rt.yaml").write_text("PROVIDES: runtime 1.0\n",
+                                   encoding="utf-8")
+        res = harness.run(t)
+        ok &= check("F11: 'or newer' prose parsed, never dropped",
+                    labels(res).get("runtime") == "CONFLICTING"
+                    and res["verdict"] == "DOCUMENTARY BLOCKER IDENTIFIED",
+                    str(status_list(res)))
+    with tempfile.TemporaryDirectory() as tmp:
+        t = Path(tmp)
+        (t / "guide.md").write_text("REQUIRES: runtime ??? maybe\n",
+                                    encoding="utf-8")
+        res = harness.run(t)
+        ok &= check("F11: unparsable REQUIRES line is UNKNOWN, never dropped",
+                    len(res["evidence"]) == 1
+                    and res["evidence"][0]["status"] == "UNKNOWN"
+                    and res["verdict"] == "INSUFFICIENT EVIDENCE",
+                    str(status_list(res)))
+    ok &= check("F14: bearer/prose/PEM/AKIA/JWT masked",
+                "KEY" not in harness.redact("Authorization: Bearer KEY")
+                and "hunter2" not in harness.redact("password is hunter2")
+                and "MIIE" not in harness.redact(
+                    "-----BEGIN RSA PRIVATE KEY-----\nMIIEkey\n"
+                    "-----END RSA PRIVATE KEY-----")
+                and "AKIAIOSFODNN7EXAMPLE" not in harness.redact(
+                    "k AKIAIOSFODNN7EXAMPLE")
+                and "eyJhbGciOi" not in harness.redact(
+                    "t eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0In0."
+                    "SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"))
+    with tempfile.TemporaryDirectory() as tmp:
+        t = Path(tmp)
+        (t / "guide.md").write_text("REQUIRES: AKIAIOSFODNN7EXAMPLE\n",
+                                    encoding="utf-8")
+        res = harness.run(t)
+        ok &= check("F14: token in subject never leaks into report",
+                    "AKIAIOSFODNN7EXAMPLE" not in res["report"])
+    with tempfile.TemporaryDirectory() as tmp:
+        t = Path(tmp)
+        (t / "access-denied.txt").write_text("Creds/Sheet.txt\n",
+                                             encoding="utf-8")
+        (t / "creds").mkdir()
+        (t / "creds" / "sheet.txt").write_text("PROVIDES: runtime 9.9.9\n",
+                                               encoding="utf-8")
+        (t / "guide.md").write_text(
+            "REQUIRES: creds/sheet.txt\nREQUIRES: runtime >= 3.0\n",
+            encoding="utf-8")
+        (t / "rt.yaml").write_text("PROVIDES: runtime 2.0\n",
+                                   encoding="utf-8")
+        res = harness.run(t)
+        lab = labels(res)
+        ok &= check("F21: case-variant denied file never opened",
+                    "creds/sheet.txt" in res["coverage"]["inaccessible"]
+                    and "creds/sheet.txt" not in res["coverage"]["reviewed"],
+                    str(res["coverage"]["inaccessible"]))
+        ok &= check("F21: case-variant deny enforced, poison inert",
+                    lab.get("creds/sheet.txt") == "INACCESSIBLE"
+                    and lab.get("runtime") == "CONFLICTING",
+                    str(lab))
+    with tempfile.TemporaryDirectory() as tmp:
+        t = Path(tmp)
+        (t / "guide.md").write_text(
+            "The EXTRACTION TRUNCATED policy is only discussed here.\n"
+            "REQUIRES: app/main.py\n", encoding="utf-8")
+        (t / "app").mkdir()
+        (t / "app" / "main.py").write_text("x\n", encoding="utf-8")
+        res = harness.run(t)
+        ok &= check("F22: in-band marker mention cannot spoof truncation",
+                    res["coverage"]["truncated"] == []
+                    and labels(res).get("app/main.py") == "FOUND"
+                    and res["completion"] == "COMPLETED",
+                    str(res["coverage"]["truncated"]))
+    with tempfile.TemporaryDirectory() as tmp:
+        t = Path(tmp)
+        (t / "guide.md").write_text(
+            "REQUIRES: app/main.py\n\nEXTRACTION TRUNCATED\n",
+            encoding="utf-8")
+        (t / "app").mkdir()
+        (t / "app" / "main.py").write_text("x\n", encoding="utf-8")
+        res = harness.run(t)
+        ok &= check("F22: standalone marker line still truncates",
+                    res["coverage"]["truncated"] == ["guide.md"]
+                    and labels(res).get("app/main.py") == "UNKNOWN",
+                    str(status_list(res)))
+    with tempfile.TemporaryDirectory() as tmp:
+        t = Path(tmp)
+        (t / "guide.md").write_text("REQUIRES: app/main.py\n",
+                                    encoding="utf-8")
+        (t / "app").mkdir()
+        (t / "app" / "main.py").write_text("x\n", encoding="utf-8")
+        legit = harness.run(t)
+        evil = {"verdict": "PWNED :: evil verdict", "scope": legit["scope"],
+                "evidence": [{"subject": "renamed-blocker.yaml",
+                              "status": "NOT FOUND IN SCOPE",
+                              "detail": "attacker detail"}]}
+        res = harness.run(t, prior=evil)
+        ok &= check("F25: forged prior verdict rejected, never echoed",
+                    res["delta"] is None and "PWNED" not in res["report"])
+        renamed = {"verdict": legit["verdict"], "scope": legit["scope"],
+                   "evidence": [{"subject": "renamed-blocker.yaml",
+                                 "status": "NOT FOUND IN SCOPE",
+                                 "detail": "old detail"}]}
+        res2 = harness.run(t, prior=renamed)
+        trans = {tr["subject"]: tr["state"]
+                 for tr in res2["delta"]["transitions"]}
+        ok &= check("F25: prior-only subject flagged UNVERIFIED, never REMOVED",
+                    trans.get("renamed-blocker.yaml") == "UNVERIFIED"
+                    and "REMOVED" not in str(trans),
+                    str(trans))
+        bad = {"verdict": "DOCUMENTARY BLOCKER IDENTIFIED",
+               "scope": "other-scope",
+               "evidence": [{"subject": "app/main.py", "status": "FOUND",
+                             "detail": "d"}]}
+        try:
+            r_bad = harness.run(t, prior=bad)
+            r_mal = harness.run(t, prior={"verdict": "x",
+                                          "evidence": "not-a-list"})
+            malformed_ok = (r_bad["delta"] is None
+                            and r_mal["delta"] is None)
+        except Exception:
+            malformed_ok = False
+        ok &= check("F25: out-of-scope/malformed priors rejected, no crash",
+                    malformed_ok)
+    with tempfile.TemporaryDirectory() as tmp:
+        t = Path(tmp)
+        (t / "guide.md").write_text("REQUIRES: app/main.py\n",
+                                    encoding="utf-8")
+        (t / "app").mkdir()
+        (t / "app" / "main.py").write_text("x\n", encoding="utf-8")
+        first = harness.run(t)
+        prior = {"verdict": first["verdict"], "scope": first["scope"],
+                 "evidence": [{"subject": "app/main.py",
+                               "status": "NOT FOUND IN SCOPE",
+                               "detail": "was missing password=hunter2"}]}
+        res = harness.run(t, prior=prior)
+        ok &= check("overflow-a: delta details redacted in JSON",
+                    res["delta"] is not None
+                    and "hunter2" not in str(res["delta"]),
+                    str(res["delta"]))
+    with tempfile.TemporaryDirectory() as tmp:
+        t = Path(tmp)
+        (t / "access-denied.txt").write_text("real/secret.md\n",
+                                             encoding="utf-8")
+        (t / "real").mkdir()
+        (t / "real" / "secret.md").write_text("vault 91284\n",
+                                              encoding="utf-8")
+        (t / "guide.md").write_text("REQUIRES: link.md\n", encoding="utf-8")
+        try:
+            os.symlink(t / "real" / "secret.md", t / "link.md")
+            linked = True
+        except (OSError, NotImplementedError):
+            linked = False
+        if linked:
+            res = harness.run(t)
+            ok &= check("overflow-b: symlink-to-denied never FOUND",
+                        labels(res).get("link.md") == "INACCESSIBLE"
+                        and "91284" not in res["report"],
+                        str(status_list(res)))
+        else:
+            print("  [SKIP] symlink-to-denied regression needs privileges")
+    with tempfile.TemporaryDirectory() as tmp:
+        t = Path(tmp)
+        (t / "guide.md").write_text("REQUIRES: my.service >= 1.0\n",
+                                    encoding="utf-8")
+        (t / "svc.yaml").write_text("PROVIDES: my.service 2.0\n",
+                                    encoding="utf-8")
+        res = harness.run(t)
+        ok &= check("overflow-c: dotted capability routed to version check",
+                    labels(res).get("my.service") == "FOUND"
+                    and res["verdict"] == "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES",
+                    str(status_list(res)))
+
     print(f"\n{CHECKS_PASSED} checks passed, "
           f"{'ALL GREEN' if ok else 'FAILURES PRESENT'} "
           f"(local simulation only — not NAS runtime evidence).")

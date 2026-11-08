@@ -13,12 +13,32 @@ GENERIC = {"file", "files", "config", "folder", "document", "required",
            "the", "a"}
 
 
-def _match(prior_subject: str, finding_subject: str) -> bool:
-    pa = {w for w in prior_subject.lower().split()
-          if len(w) >= 3 and w not in GENERIC}
-    fa = {w for w in finding_subject.lower().split()
-          if len(w) >= 3 and w not in GENERIC}
-    return bool(pa & fa)
+def _tokens(text: str) -> set[str]:
+    return {w for w in text.lower().split()
+            if len(w) >= 3 and w not in GENERIC}
+
+
+def _path_hit(prior_path: str, finding: dict) -> bool:
+    if not prior_path or prior_path == "-":
+        return False
+    if prior_path in (finding.get("req_path", ""),
+                      finding.get("obs_path", "")):
+        return True
+    srcs = {s.split(":")[0].strip()
+            for s in finding.get("sources", "").split(",") if s.strip()}
+    return prior_path in srcs
+
+
+def _match(prior: dict, finding: dict) -> bool:
+    """Path-anchored match: the prior path must appear in the finding
+    (required/observed path or sources), or subject tokens must overlap
+    on at least TWO significant words. A single shared word ('token',
+    'file') never resolves a blocker by itself."""
+    if _path_hit(prior.get("path", ""), finding):
+        return True
+    overlap = _tokens(prior.get("subject", "")) & \
+        _tokens(finding.get("subject", ""))
+    return len(overlap) >= 2
 
 
 def compute(prior_verdict: str, prior_blockers: list,
@@ -27,19 +47,16 @@ def compute(prior_verdict: str, prior_blockers: list,
     deltas = []
     for pb in prior_blockers:
         cands = [f_ for f_ in current["findings"]
-                 if _match(pb["subject"], f_["subject"])]
+                 if _match(pb, f_)]
         if not cands:
-            # subject vanished from findings: blocker gone only if the
-            # file now verifies elsewhere; conservative: UNCERTAIN unless
-            # current verdict is fully clear with no unknowns.
-            if current["verdict"] == \
-                    "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES":
-                deltas.append({"prior": pb["subject"], "state": "RESOLVED",
-                               "why": "no current finding contests it"})
-            else:
-                deltas.append({"prior": pb["subject"],
-                               "state": "STILL UNCERTAIN",
-                               "why": "subject absent from current findings"})
+            # Subject vanished from findings. Absence of a finding is
+            # never evidence of re-verification: a recheck that does
+            # not mention the subject at all is a coverage gap, so the
+            # state stays UNCERTAIN even when the rest reads clear.
+            # (A genuine fix shows up as a matched FOUND row instead.)
+            deltas.append({"prior": pb["subject"],
+                           "state": "STILL UNCERTAIN",
+                           "why": "subject absent from current findings"})
             continue
         labels = {c["label"] for c in cands}
         if labels <= {"FOUND"}:

@@ -6,9 +6,10 @@ only: it is NOT a NAS runtime test and proves nothing about Uliya experts,
 NAS permissions, or model quality on a real device.
 
 Marker spec (parsed from .md/.yaml/.txt documents, never from free text):
-  REQUIRES: <path-or-name> [==|>=|<=|>|< <version>]
+  REQUIRES: <path-or-name> [==|>=|<=|>|< <version> | <version> or newer]
   PROVIDES: <name> <version>
-  EXTRACTION TRUNCATED            -> marks the whole document as partial
+  EXTRACTION TRUNCATED            -> alone on its own line, marks the whole
+                                     document as partial
   access-denied.txt (manifest)    -> listed paths are INACCESSIBLE, never read
 
 Scope safety (all enforced, all tested):
@@ -27,6 +28,8 @@ import sys
 from pathlib import Path
 
 REQUIRES_RE = re.compile(r"^REQUIRES:\s*(\S+)(?:\s*(==|>=|<=|>|<)\s*(\S+))?\s*$")
+REQUIRES_OR_NEWER_RE = re.compile(
+    r"^REQUIRES:\s*(\S+)\s+(\S+)\s+or\s+(newer|later)\s*$", re.IGNORECASE)
 PROVIDES_RE = re.compile(r"^PROVIDES:\s*(\S+)\s+(\S+)\s*$")
 TRUNCATED_MARKER = "EXTRACTION TRUNCATED"
 PARSED_SUFFIXES = {".md", ".yaml", ".yml", ".txt"}
@@ -72,27 +75,42 @@ MAX_DEPTH = 12
 SECRET_RE = re.compile(r"(?i)\b(password|passwd|secret|api[\s_-]?key|"
                        r"access[\s_-]?token|private[\s_-]?key|"
                        r"client[\s_-]?secret|connection[\s_-]?string|"
-                       r"bearer)\s*[:=]\s*\S+")
+                       r"bearer)\s*(?:[:=]|\bis\b)\s*\S+")
+BEARER_RE = re.compile(r"(?i)\bBearer\s+\S+")
+PEM_RE = re.compile(r"-----BEGIN [^-]*PRIVATE KEY[^-]*-----"
+                    r".*?-----END [^-]*PRIVATE KEY[^-]*-----", re.DOTALL)
+PEM_MARKER_RE = re.compile(r"-----[A-Z ]*PRIVATE KEY[^-]*-----")
 TOKEN_RE = re.compile(r"\b(ghp_[A-Za-z0-9_]+|gho_[A-Za-z0-9_]+|"
-                      r"xox[bpars]-[A-Za-z0-9-]+|sk-[A-Za-z0-9]{8,})\b")
+                      r"xox[bpars]-[A-Za-z0-9-]+|sk-[A-Za-z0-9]{8,}|"
+                      r"AKIA[0-9A-Z]{16}|"
+                      r"eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+)\b")
 
 
 def redact(text: str) -> str:
     """Mask obvious secret assignments and well-known token prefixes."""
     def _mask(match):
-        head = re.sub(r"\s*[:=]\s*\S+$", "", match.group(0))
+        head = re.sub(r"(?:\s*[:=]\s*|\s+is\s+)\S+$", "", match.group(0),
+                      flags=re.IGNORECASE)
         return head + "=[REDACTED]"
     masked = SECRET_RE.sub(_mask, text)
+    masked = BEARER_RE.sub("Bearer [REDACTED]", masked)
+    masked = PEM_RE.sub("[REDACTED-PEM]", masked)
+    masked = PEM_MARKER_RE.sub("[REDACTED-PEM]", masked)
     return TOKEN_RE.sub("[REDACTED-TOKEN]", masked)
 
 
 def norm_rel(entry: str):
-    """Normalize a manifest/relative path; return None if it escapes."""
+    """Normalize a manifest/relative path; return None if it escapes.
+
+    Comparison form is lowercased: norm_rel feeds deny-list checks only
+    (never display or resolution), so case variants of a denied path on
+    case-insensitive filesystems still match the manifest.
+    """
     parts = [q for q in entry.strip().replace("\\", "/").split("/")
              if q not in ("", ".")]
     if not parts or any(q == ".." for q in parts):
         return None
-    return "/".join(parts)
+    return "/".join(parts).lower()
 
 
 def safe_join(scope: Path, user_path: str):
@@ -148,6 +166,45 @@ def compare(op: str, actual: str, wanted: str) -> bool:
             ">": a > w, "<": a < w}[op]
 
 
+KNOWN_VERDICTS = frozenset(PLAIN_VERDICT)
+KNOWN_STATES = frozenset({FOUND, CONFLICTING, NOT_FOUND, INACCESSIBLE,
+                          UNKNOWN})
+
+
+def _sanitize_prior(prior, scope_name):
+    """Validate a user-supplied prior report for delta comparison.
+
+    Returns (verdict, prev_map) of validated data, or (None, None) when
+    the prior is malformed or bound to a different scope: the delta is
+    then withheld instead of echoing untrusted content.
+    """
+    if not isinstance(prior, dict):
+        return None, None
+    verdict = prior.get("verdict")
+    if verdict not in KNOWN_VERDICTS:
+        return None, None
+    if prior.get("scope") != scope_name:
+        return None, None
+    raw = prior.get("evidence")
+    if not isinstance(raw, list):
+        return None, None
+    prev_map = {}
+    for entry in raw:
+        if not isinstance(entry, dict):
+            return None, None
+        subject = entry.get("subject")
+        status = entry.get("status")
+        detail = entry.get("detail")
+        if not isinstance(subject, str) or not subject:
+            return None, None
+        if status not in KNOWN_STATES:
+            return None, None
+        if not isinstance(detail, str):
+            return None, None
+        prev_map[subject] = {"status": status, "detail": detail}
+    return verdict, prev_map
+
+
 def run(scope: Path, mode: str = "full", prior: dict | None = None) -> dict:
     """Run the decision procedure. mode='full', or ablation 'no_reconcile'
     (contradictions degrade to UNKNOWN) or 'no_verify' (basename match).
@@ -195,7 +252,8 @@ def run(scope: Path, mode: str = "full", prior: dict | None = None) -> dict:
         if text is None:
             discovery_errors.append(entry["path"] + " (unreadable)")
             continue
-        truncated = TRUNCATED_MARKER in text
+        truncated = any(line.strip() == TRUNCATED_MARKER
+                        for line in text.splitlines())
         if truncated:
             truncated_docs.append(entry["path"])
         for lineno, line in enumerate(text.splitlines(), 1):
@@ -208,16 +266,31 @@ def run(scope: Path, mode: str = "full", prior: dict | None = None) -> dict:
                                      "source": entry["path"], "line": lineno,
                                      "truncated_source": truncated})
                 continue
+            m = REQUIRES_OR_NEWER_RE.match(line)
+            if m:
+                requirements.append({"subject": m.group(1), "op": ">=",
+                                     "version": m.group(2),
+                                     "source": entry["path"], "line": lineno,
+                                     "truncated_source": truncated})
+                continue
             m = PROVIDES_RE.match(line)
             if m:
                 name, version = m.groups()
                 provisions.append({"name": name, "version": version,
                                    "source": entry["path"], "line": lineno})
+                continue
+            if line.startswith("REQUIRES:"):
+                requirements.append({
+                    "subject": line.split(":", 1)[1].strip() or line,
+                    "op": None, "version": None,
+                    "source": entry["path"], "line": lineno,
+                    "truncated_source": truncated, "unparsed": True})
 
     # Step 3 — verification (simulates targeted file-agent checks).
     evidence = []
     all_basenames = {p.name for p in scope.rglob("*", recurse_symlinks=False)
                      if p.is_file() and not p.is_symlink()}
+    provision_names = {p["name"] for p in provisions}
     for req in requirements:
         subj = req["subject"]
         if req["truncated_source"]:
@@ -225,7 +298,13 @@ def run(scope: Path, mode: str = "full", prior: dict | None = None) -> dict:
                              "detail": "Source document is truncated; "
                                        "requirement cannot be confirmed."})
             continue
-        if "/" in subj or "." in subj:  # file reference
+        if req.get("unparsed"):
+            evidence.append({**req, "status": UNKNOWN,
+                             "detail": "Requirement line could not be "
+                                       "parsed; no confirmation possible."})
+            continue
+        if "/" in subj or ("." in subj and req["op"] is None
+                           and subj not in provision_names):  # file reference
             norm = norm_rel(subj)
             if norm is not None and norm in denied:
                 evidence.append({**req, "status": INACCESSIBLE,
@@ -249,9 +328,19 @@ def run(scope: Path, mode: str = "full", prior: dict | None = None) -> dict:
                                            f"path; rejected without resolving "
                                            f"outside the scope."})
             elif target.exists():
-                evidence.append({**req, "status": FOUND,
-                                 "detail": f"'{subj}' verified present in "
-                                           f"scope."})
+                # Aliased references only (symlinks, dot-segments): direct
+                # references are owned by the name check above, so a
+                # resolved target is re-checked only when aliasing made it
+                # differ from the requested name.
+                resolved = norm_rel(target.relative_to(scope).as_posix())
+                if resolved != norm and resolved in denied:
+                    evidence.append({**req, "status": INACCESSIBLE,
+                                     "detail": f"'{subj}' cannot be read "
+                                               f"(access denied)."})
+                else:
+                    evidence.append({**req, "status": FOUND,
+                                     "detail": f"'{subj}' verified present in "
+                                               f"scope."})
             else:
                 evidence.append({**req, "status": NOT_FOUND,
                                  "detail": f"Bounded scope search returned "
@@ -305,7 +394,10 @@ def run(scope: Path, mode: str = "full", prior: dict | None = None) -> dict:
     # re-observed from the scope on this run.
     delta = None
     if prior:
-        prev_map = {e["subject"]: e for e in prior.get("evidence", [])}
+        prior_verdict, prev_map = _sanitize_prior(prior, scope.name)
+    else:
+        prior_verdict, prev_map = None, None
+    if prev_map is not None:
         new_map = {e["subject"]: e["status"] for e in evidence}
         prev_status = {s: e["status"] for s, e in prev_map.items()}
         transitions = []
@@ -325,18 +417,20 @@ def run(scope: Path, mode: str = "full", prior: dict | None = None) -> dict:
                 state = "UNCHANGED"
             elif old is None:
                 state = "NEW"
+            elif new is None:
+                state = "UNVERIFIED"
             else:
                 state = "REMOVED"
             transitions.append({
                 "subject": subject, "previous": old, "current": new,
                 "state": state,
-                "prior_detail": (prev_map[subject]["detail"]
+                "prior_detail": (redact(prev_map[subject]["detail"])
                                  if subject in prev_map else None),
-                "new_detail": next((e["detail"] for e in evidence
+                "new_detail": next((redact(e["detail"]) for e in evidence
                                     if e["subject"] == subject), None)})
         resolved = [t["subject"] for t in transitions
                     if t["state"] == "RESOLVED"]
-        delta = {"prior_verdict": prior.get("verdict"), "verdict": verdict,
+        delta = {"prior_verdict": prior_verdict, "verdict": verdict,
                  "transitions": transitions, "resolved": resolved,
                  "resolved_count": len(resolved)}
 
@@ -436,7 +530,7 @@ def run(scope: Path, mode: str = "full", prior: dict | None = None) -> dict:
                      "above, then run one more recheck with this report "
                      "as prior.")
 
-    return {"verdict": verdict, "completion": completion,
+    return {"verdict": verdict, "completion": completion, "scope": scope.name,
             "evidence": evidence, "recommendations": recommendations,
             "delta": delta,
             "coverage": {"reviewed": [d["path"] for d in discovered],
@@ -452,7 +546,12 @@ def run(scope: Path, mode: str = "full", prior: dict | None = None) -> dict:
 if __name__ == "__main__":
     prior = None
     if len(sys.argv) > 3:
-        prior = json.loads(Path(sys.argv[3]).read_text(encoding="utf-8"))
+        try:
+            prior = json.loads(Path(sys.argv[3]).read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            print("prior report unreadable; continuing without delta",
+                  file=sys.stderr)
+            prior = None
     result = run(Path(sys.argv[1]), prior=prior)
     print(result["report"])
     if len(sys.argv) > 2:

@@ -13,13 +13,31 @@ from pathlib import Path
 AI_LAB = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(AI_LAB))
 
+import budget as budget_mod
+import call as call_mod
 import config
 from datasets import extset, trackb
 from evaluators import aggregate as agg
+from evaluators import redact as redact_mod
 from evaluators import verify as ver
-from providers import ollama, vultr
+from providers import ollama
 
 TRANSCRIPTS = AI_LAB / "reports" / "transcripts"
+LEDGER = AI_LAB / "reports" / "ledger.jsonl"
+
+
+def _safe_span(text: str, limit: int = 120) -> str:
+    """Single-line printable span for prompt interpolation. Model-
+    derived paths/subjects are never spliced raw into a prompt."""
+    one = " ".join(str(text).split())
+    one = "".join(c for c in one if c.isprintable())
+    return one[:limit] if one else "(unverified source)"
+
+
+def _allowlisted(path: str, known: dict) -> str:
+    if path in known:
+        return path
+    return "(unverified source)"
 
 
 def main() -> int:
@@ -39,14 +57,34 @@ def main() -> int:
         print("nothing to escalate")
         return 0
     rowfix = (AI_LAB / "prompts/rowfix.md").read_text(encoding="utf-8")
+    spec = config.MODELS[args.model]
+    paid = spec["provider"] == "vultr"
+    ledger = None
+    if paid:
+        pricing = {m: (v["in_per_m"], v["out_per_m"])
+                   for m, v in config.MODELS.items()}
+        ledger = budget_mod.Ledger(LEDGER, config.BUDGET_USD,
+                                   config.MAX_REQUESTS, pricing,
+                                   ttl_s=config.RESERVATION_TTL_S)
+    known = ds.known_files(args.case, labels)
     extra = []
     for subj, path in v["unverified"]:
-        full = (rowfix + path + f" (requirement: {subj})\n\n"
+        safe_subj = _safe_span(subj)
+        safe_path = _safe_span(_allowlisted(path, known))
+        full = (rowfix + safe_path + f" (requirement: {safe_subj})\n\n"
                 + ds.case_input(args.case, labels))
-        spec = config.MODELS[args.model]
-        if spec["provider"] == "vultr":
-            res = vultr.chat(args.model, [{"role": "user", "content": full}],
-                             max_out=512, temperature=0.0)
+        if paid:
+            rid = call_mod.deterministic_req_id(
+                args.tag + "-esc", args.model, args.case, safe_subj,
+                safe_path)
+            try:
+                res = call_mod.paid_chat(
+                    args.model, [{"role": "user", "content": full}], 512,
+                    ledger, rid, args.case, args.tag + "-esc",
+                    len(full))
+            except budget_mod.BudgetExceeded as exc:
+                print(f"rowfix {safe_subj}: BUDGET REFUSED {exc}")
+                return 1
             text = res["text"]
         else:
             res = ollama.generate(args.model, full)
@@ -56,15 +94,19 @@ def main() -> int:
         print(f"rowfix {subj}: {line[:120]}")
         if line:
             extra.append(line)
-    merged = v["tsv"] + "\n" + "\n".join(extra)
-    r = agg.aggregate(merged)
+    merged = ver.merge_rowfix(args.case, v["tsv"], extra,
+                                dataset=args.dataset,
+                                base_unverified=v["unverified"])
+    known = ds.known_files(args.case, labels)
+    r = agg.aggregate(merged, known=known)
     gold = labels[args.case]["verdict"]
     print(f"{args.case} escalated -> {r['verdict']} | gold: {gold} | "
           f"{'PASS' if r['verdict'] == gold else 'FAIL'}")
     out = TRANSCRIPTS / \
         f"{args.tag}-esc_{args.model.replace(':', '_')}_{args.case}.json"
     out.write_text(json.dumps({"base": base.name, "unverified": v["unverified"],
-                               "rowfix_lines": extra,
+                               "rowfix_lines": [redact_mod.redact(line)
+                                                for line in extra],
                                "verdict": r["verdict"],
                                "findings": r["findings"]}, indent=2),
                    encoding="utf-8")

@@ -10,6 +10,12 @@ Pure function of the extraction text. No model calls. Rules:
 - OBSERVED_PATH MISSING on a required path -> NOT FOUND IN SCOPE.
 - TRUNC rows make their subject UNKNOWN (truncated-only content).
 - ALT groups: subject passes if ANY option row passes fully.
+- malformed rows (whitespace or <> in a path cell: thinking-trace
+  chatter shaped like TSV) -> UNKNOWN, never a FOUND/BLOCKER vote,
+  and excluded from cross-row contradiction detection.
+- when known (path -> max line) is supplied, a row scores only if at
+  least one of its path:line citations resolves into it; forged
+  citations to absent paths/lines are dropped (never scored).
 - verdict: any required CONFLICTING/NOT-FOUND -> BLOCKER; elif any
   required UNKNOWN/INACCESSIBLE -> INSUFFICIENT; else NO BLOCKER.
 """
@@ -36,6 +42,27 @@ def constraint_op(text: str) -> tuple[str, tuple[int, ...] | None]:
 
 
 CITE = re.compile(r"[\w./-]+\.\w+:\d+")
+
+
+def _cite_resolves(sources: str, known: dict) -> bool:
+    """True if any path:line citation resolves into path->max-line."""
+    for s in sources.split(","):
+        p, _, num = s.strip().partition(":")
+        p = p.strip()
+        num = num.strip()
+        if p in known and num.isdigit() and 1 <= int(num) <= known[p]:
+            return True
+    return False
+
+
+def _path_cells_ok(req_path: str, obs_path: str) -> bool:
+    """Path cells are single tokens: whitespace or angle brackets mark
+    thinking-trace chatter ('the plates folder', '<subject>'), never a
+    real transcribed path (which may still be '-' or MISSING)."""
+    for cell in (req_path, obs_path):
+        if any(c.isspace() for c in cell) or "<" in cell or ">" in cell:
+            return False
+    return True
 
 
 def split_row(line: str) -> list[str]:
@@ -90,7 +117,7 @@ def _physical_lines(tsv: str) -> list[str]:
     return out
 
 
-def aggregate(tsv: str) -> dict:
+def aggregate(tsv: str, known: dict | None = None) -> dict:
     rows, alts, truncs = [], {}, set()
     for line in _physical_lines(tsv):
         if line.startswith(("SUBJECT", "#")):
@@ -109,6 +136,8 @@ def aggregate(tsv: str) -> dict:
         sources = parts[5].strip()
         if not CITE.search(sources):
             continue  # chatter line, not a cited row
+        if known is not None and not _cite_resolves(sources, known):
+            continue  # forged or misaddressed citation, never scored
         if "*" in parts[0] or "`" in parts[0]:
             continue  # markdown-quoted chatter, not a real row
         req_path = parts[1].strip()
@@ -119,14 +148,17 @@ def aggregate(tsv: str) -> dict:
             "subject": parts[0].strip(), "req_path": req_path,
             "req_constraint": req_constraint, "obs_path": parts[3].strip(),
             "obs_value": parts[4].strip(), "sources": sources,
-            "notes": parts[6].strip()})
+            "notes": parts[6].strip(),
+            "suspect": not _path_cells_ok(
+                req_path, parts[3].strip())})
 
     # contradiction: same subject AND same observed file, but differing
     # required constraints. (Same subject on different files is two
     # requirements sharing a name, not a contradiction.)
     seen: dict[tuple[str, str], set[str]] = {}
     for r in rows:
-        if r["obs_path"].upper() not in ("MISSING", "UNREADABLE"):
+        if r["obs_path"].upper() not in ("MISSING", "UNREADABLE") \
+                and not r["suspect"]:
             seen.setdefault((r["subject"], r["obs_path"]),
                             set()).add(r["req_constraint"])
     conflicted = {s for (s, _), v in seen.items() if len(v) > 1}
@@ -136,6 +168,8 @@ def aggregate(tsv: str) -> dict:
     obs_vals: dict[str, set[tuple[int, ...]]] = {}
     for r in rows:
         if r["obs_path"].upper() in ("MISSING", "UNREADABLE"):
+            continue
+        if r["suspect"]:
             continue
         nums = parse_versions(r["obs_value"])
         if nums is not None:
@@ -149,7 +183,9 @@ def aggregate(tsv: str) -> dict:
                      for s in r["sources"].split(",") if s.strip()}
         truncated = ("TRUNCATED" in r["notes"].upper()
                      or bool(src_paths & truncs))
-        if truncated:
+        if r["suspect"]:
+            label, why = "UNKNOWN", "row cells malformed; not trusted"
+        elif truncated:
             label, why = "UNKNOWN", "requirement truncated"
         elif subj in conflicted:
             label, why = "CONFLICTING", "differing requirements across rows"
@@ -207,7 +243,9 @@ def aggregate(tsv: str) -> dict:
                 label, why = "FOUND", "alternative option satisfied"
 
         findings.append({"subject": subj, "label": label, "reason": why,
-                         "sources": r["sources"]})
+                         "sources": r["sources"],
+                         "req_path": r["req_path"],
+                         "obs_path": r["obs_path"]})
 
     # Fail-closed: an empty extraction proves nothing and must never
     # clear a case.
@@ -215,7 +253,8 @@ def aggregate(tsv: str) -> dict:
         return {"findings": [{"subject": "(extraction empty)",
                               "label": "UNKNOWN",
                               "reason": "no requirements transcribed",
-                              "sources": "-"}],
+                              "sources": "-", "req_path": "-",
+                              "obs_path": "-"}],
                 "verdict": "INSUFFICIENT EVIDENCE"}
 
     # Verdict derives from FINAL labels (after ALT relief), never from

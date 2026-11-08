@@ -1,6 +1,7 @@
 {
   "verdict": "INSUFFICIENT EVIDENCE",
   "completion": "PARTIAL",
+  "scope": "edge",
   "evidence": [
     {
       "subject": "app/tool.py",

@@ -22,8 +22,10 @@ AI_LAB = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(AI_LAB))
 
 import budget as budget_mod
+import call as call_mod
 import config
 from datasets import extset, trackb
+from evaluators import redact as redact_mod
 from evaluators import verdict as verdict_mod
 from providers import ollama, vultr
 
@@ -32,25 +34,16 @@ TRANSCRIPTS = AI_LAB / "reports" / "transcripts"
 
 
 def call_model(model: str, full_prompt: str, max_out: int,
-               reasoning_budget: int | None) -> dict:
+               reasoning_budget: int | None, ledger, req_id: str,
+               case: str, tag: str) -> dict:
+    """Paid models go through the single ledger-gated accounting path
+    (reserve -> attempts -> one terminal); local models stay direct."""
     spec = config.MODELS[model]
     if spec["provider"] == "vultr":
         messages = [{"role": "user", "content": full_prompt}]
-        last: Exception | None = None
-        for _ in range(config.MAX_RETRIES + 1):
-            try:
-                return vultr.chat(model, messages, max_out=max_out,
-                                  temperature=0.0,
-                                  reasoning_budget=reasoning_budget)
-            except vultr.VultrAuthError:
-                raise
-            except vultr.VultrError as exc:
-                last = exc
-                msg = str(exc)
-                if "429" not in msg and "500" not in msg \
-                        and "502" not in msg and "503" not in msg:
-                    raise
-        raise last  # type: ignore[misc]
+        return call_mod.paid_chat(
+            model, messages, max_out, ledger, req_id, case, tag,
+            len(full_prompt), reasoning_budget=reasoning_budget)
     return ollama.generate(model, full_prompt)
 
 
@@ -86,7 +79,8 @@ def main() -> int:
     pricing = {m: (v["in_per_m"], v["out_per_m"])
                for m, v in config.MODELS.items()}
     ledger = budget_mod.Ledger(LEDGER, config.BUDGET_USD,
-                               config.MAX_REQUESTS, pricing)
+                               config.MAX_REQUESTS, pricing,
+                               ttl_s=config.RESERVATION_TTL_S)
     TRANSCRIPTS.mkdir(parents=True, exist_ok=True)
     spec = config.MODELS[args.model]
     paid = spec["provider"] == "vultr"
@@ -100,21 +94,45 @@ def main() -> int:
         tpath = TRANSCRIPTS / \
             f"{args.tag}_{args.model.replace(':', '_')}_{case}.json"
         if tpath.exists() and not args.overwrite:
+            if paid:
+                # Resume cross-check: a transcript without a COMPLETED
+                # ledger terminal is not proof of a paid call (ledger
+                # may have been lost); fail closed, require --overwrite.
+                try:
+                    old = json.loads(tpath.read_text(encoding="utf-8"))
+                    st = ledger.request_state(old.get("request_id", ""))
+                except (OSError, ValueError):
+                    st = None
+                if not st or st.get("state") != "COMPLETED":
+                    print(f"{case}: transcript lacks a COMPLETED "
+                          f"ledger terminal, refusing to skip "
+                          f"(pass --overwrite to re-spend explicitly)")
+                    continue
             print(f"{case}: transcript exists, skipped")
             continue
         full = prompt + "\n" + ds.case_input(case, ds.labels())
-        rid = f"{args.tag}-{uuid.uuid4().hex[:8]}"
-        if paid:
-            try:
-                est = ledger.authorize(args.model, len(full), args.max_out)
-            except budget_mod.BudgetExceeded as exc:
-                print(f"{case}: BUDGET REFUSED {exc}")
-                return 1
-        else:
-            est = 0.0
+        rid = call_mod.deterministic_req_id(
+            args.tag, args.model, case, phash, str(args.max_out))
+        if paid and args.overwrite:
+            # Explicit, auditable re-spend under a fresh request id.
+            rid = f"{rid}-o{uuid.uuid4().hex[:8]}"
         try:
             res = call_model(args.model, full, args.max_out,
-                             args.reasoning_budget)
+                             args.reasoning_budget, ledger, rid, case,
+                             args.tag)
+        except budget_mod.BudgetExceeded as exc:
+            print(f"{case}: BUDGET REFUSED {exc}")
+            return 1
+        except vultr.VultrAuthError as exc:
+            print(f"{case}: AUTH REFUSED {str(exc)[:200]} (aborting)")
+            return 1
+        except budget_mod.ReservationTerminal as exc:
+            # COMPLETED in ledger but transcript missing (crash between
+            # record and transcript write): the response is lost and the
+            # money is spent; only an explicit --overwrite re-spends.
+            print(f"{case}: LEDGER TERMINAL {exc} (pass --overwrite "
+                  f"to re-spend explicitly)")
+            continue
         except Exception as exc:  # noqa: BLE001 - runner reports, not crash
             print(f"{case}: ERROR {str(exc)[:200]}")
             continue
@@ -124,17 +142,6 @@ def main() -> int:
         cost = budget_mod.Ledger.actual_cost(
             args.model, res["prompt_tokens"], res["completion_tokens"],
             pricing) if paid else 0.0
-        if paid:
-            ledger.record({"request_id": rid, "model": args.model,
-                           "model_returned": res["model_returned"],
-                           "identity_ok": res["identity_ok"],
-                           "status": status, "case": case, "tag": args.tag,
-                           "prompt_tokens": res["prompt_tokens"],
-                           "completion_tokens": res["completion_tokens"],
-                           "reasoning_tokens": res["reasoning_tokens"],
-                           "finish_reason": res["finish_reason"],
-                           "latency_s": res["latency_s"], "cost_usd": cost,
-                           "est_max_usd": est})
         tpath.write_text(json.dumps({
             "request_id": rid, "model": args.model,
             "model_returned": res["model_returned"],
@@ -147,12 +154,17 @@ def main() -> int:
             "reasoning_tokens": res["reasoning_tokens"],
             "finish_reason": res["finish_reason"],
             "latency_s": res["latency_s"], "cost_usd": cost,
+            "server_id": res.get("request_id", "") if paid else "",
+            "ledger_state": res.get("ledger_state", "") if paid else "",
+            "attempts": len(res.get("attempts", [])) if paid else 1,
             "verdict_line": verdict_mod.parse_verdict(res["text"]),
-            "response": res["text"]}, indent=2), encoding="utf-8")
+            "response": redact_mod.redact(res["text"])}, indent=2),
+            encoding="utf-8")
         print(f"{case}: {verdict_mod.parse_verdict(res['text'])} "
               f"[{status}] ({res['latency_s']}s, ${cost:.6f})", flush=True)
-    spent, n = ledger.totals()
-    print(f"ledger: ${spent:.6f} spent, {n} paid requests")
+    spent, held, n, corrupt = ledger.totals()
+    print(f"ledger: ${spent:.6f} spent, ${held:.6f} held, {n} requests, "
+          f"{corrupt} corrupt lines")
     return 0
 
 

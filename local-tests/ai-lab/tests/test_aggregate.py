@@ -10,6 +10,8 @@ AI_LAB = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(AI_LAB))
 
 from evaluators import aggregate as agg
+from evaluators import delta as delta_mod
+from evaluators import verify as ver
 
 B = "DOCUMENTARY BLOCKER IDENTIFIED"
 CLEAR = "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES"
@@ -141,4 +143,63 @@ if __name__ == "__main__":
         "cron | a/cron | - | MISSING | - | g.md:1 | OK\n"
         "timer | a/timer | - | a/timer | x | g.md:2 | OK\n"
         "ALT | job group | a/cron | a/timer")["verdict"] == CLEAR)
+    # v6: malformed (thinking-chatter) rows -> UNKNOWN, never a vote
+    check("chatter req abstains", agg.aggregate(
+        "plates | the plates folder | - | MISSING | - | g.md:1 | OK")
+        ["findings"][0]["label"] == "UNKNOWN")
+    check("chatter obs abstains", agg.aggregate(
+        "s | f | - | <option B> | x | g.md:1 | OK")
+        ["findings"][0]["label"] == "UNKNOWN")
+    check("suspect excluded from conflict", agg.aggregate(
+        "s | f | 3 or newer | c/f | v 5 | g.md:1 | OK\n"
+        "s | bad req | exactly 9 | c/f | v 5 | g.md:2 | OK")
+        ["verdict"] == INSUF)  # FOUND + suspect-UNKNOWN, no conflict
+    # v6: known= citation resolution (F5)
+    known = {"g.md": 5, "f.txt": 2}
+    check("forged cite dropped", agg.aggregate(
+        "s | f | - | f | x | nope/x.md:9 | OK", known=known)
+        ["verdict"] == INSUF)
+    check("misaddressed line dropped", agg.aggregate(
+        "s | f | - | f | x | g.md:99 | OK", known=known)
+        ["verdict"] == INSUF)
+    check("resolved cite scores", agg.aggregate(
+        "s | f | - | f | x | g.md:3 | OK", known=known)
+        ["verdict"] == CLEAR)
+    check("no-known backward compat", agg.aggregate(
+        "s | f | - | f | x | g.md:99 | OK")["verdict"] == CLEAR)
+    # v6: delta path anchoring (F2/F4)
+    cur_clear = {"verdict": CLEAR, "findings": [
+        {"subject": "token banner", "label": "FOUND",
+         "req_path": "web/banner.txt", "obs_path": "web/banner.txt",
+         "sources": "web/banner.txt:1"}]}
+    check("single shared word never resolves", delta_mod.compute(
+        B, [{"subject": "token file", "path": "config/token.txt"}],
+        cur_clear)["deltas"][0]["state"] == "STILL UNCERTAIN")
+    cur_matched = {"verdict": CLEAR, "findings": [
+        {"subject": "seed check", "label": "FOUND",
+         "req_path": "config/seed.txt", "obs_path": "config/seed.txt",
+         "sources": "config/seed.txt:1"}]}
+    check("path-anchored match resolves", delta_mod.compute(
+        B, [{"subject": "seed file", "path": "config/seed.txt"}],
+        cur_matched)["deltas"][0]["state"] == "RESOLVED")
+    check("vanish + clear stays uncertain", delta_mod.compute(
+        B, [{"subject": "seed file", "path": "config/seed.txt"}],
+        cur_clear)["deltas"][0]["state"] == "STILL UNCERTAIN")
+    check("vanish + nonclear stays uncertain", delta_mod.compute(
+        B, [{"subject": "seed file", "path": "config/seed.txt"}],
+        {"verdict": INSUF, "findings": []})["deltas"][0]["state"]
+        == "STILL UNCERTAIN")
+    # v6: rowfix re-verified before merge (F3)
+    base = ("dashboard port | - | - | config/service.txt:1 | port 9090 | "
+            "docs/guide.md:3 | OK")
+    forged = ["evil | f | - | nope/missing.txt | pwned | nope/missing.txt:1"
+              " | OK"]
+    check("fabricated rowfix dropped",
+          "pwned" not in ver.merge_rowfix("tb1", base, forged,
+                                          dataset="trackb"))
+    good = ["shot | scenes/shot01.blend | - | scenes/shot01.blend | BLEND | "
+            "scenes/shot01.blend:1 | OK"]
+    check("verified rowfix appended",
+          "BLEND" in ver.merge_rowfix("tb1", base, good,
+                                      dataset="trackb"))
     print(f"{PASS} aggregation checks passed, ALL GREEN (offline)")

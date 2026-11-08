@@ -48,8 +48,11 @@ def main() -> int:
         tsv = v["tsv"]
         for epath in sorted(TRANSCRIPTS.glob(f"{args.tag}-esc_*_{case}.json")):
             e = json.loads(epath.read_text(encoding="utf-8"))
-            tsv += "\n" + "\n".join(e["rowfix_lines"])
-        r = agg.aggregate(tsv)
+            tsv = ver.merge_rowfix(case, tsv, e["rowfix_lines"],
+                                   dataset=args.dataset,
+                                   base_unverified=v["unverified"])
+        known = ds.known_files(case, raw)
+        r = agg.aggregate(tsv, known=known)
         ok = r["verdict"] == labels[case]["verdict"]
         n += 1
         p += ok

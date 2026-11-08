@@ -1,6 +1,7 @@
 {
   "verdict": "DOCUMENTARY BLOCKER IDENTIFIED",
   "completion": "COMPLETED",
+  "scope": "core-a",
   "evidence": [
     {
       "subject": "app/main.py",

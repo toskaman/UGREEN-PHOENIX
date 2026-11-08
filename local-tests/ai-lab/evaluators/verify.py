@@ -46,6 +46,49 @@ def _cites(sources: str, path: str, known: dict) -> bool:
     return False
 
 
+def _any_cite(sources: str, known: dict) -> bool:
+    """True if any path:line citation resolves into the corpus."""
+    for s in sources.split(","):
+        p, _, num = s.strip().partition(":")
+        p = p.strip()
+        num = num.strip()
+        if p in known and num.isdigit() and 1 <= int(num) <= known[p]:
+            return True
+    return False
+
+
+def merge_rowfix(case: str, base_tsv: str, rowfix_lines: list,
+                 dataset: str = "trackb", base_unverified=()) -> str:
+    """Verified-append merge of escalation rows into verified base TSV.
+
+    - Rowfix rows are re-verified; still-unverified ones are dropped
+      (a fabricated OBSERVED_PATH or citation never reaches the
+      aggregator).
+    - Verified rowfix rows are APPENDED, never substituted: base rows
+      carry independent evidence (x14: a malformed-path row still
+      voted the genuine 9090-vs-8080 disagreement), and substitution
+      would let escalation silently destroy it. Escalation adds
+      evidence; only a fresh base run retracts base evidence.
+    TRUNC/ALT lines pass through (verify already grounded them).
+    """
+    extra = "\n".join(line for line in rowfix_lines if line.strip())
+    if not extra:
+        return base_tsv
+    fix = verify(case, extra, dataset=dataset)
+    bad = {s for s, _ in fix["unverified"]}
+    keep = []
+    for line in fix["tsv"].splitlines():
+        parts = split_row(line.strip())
+        tag = parts[0].strip().upper() if parts else ""
+        if len(parts) >= 7 and tag not in ("ALT", "TRUNC") \
+                and parts[0].strip() in bad:
+            continue  # still unverified: dropped with prejudice
+        keep.append(line)
+    if not keep:
+        return base_tsv
+    return base_tsv + "\n" + "\n".join(keep)
+
+
 ALT_MARKERS = ("either", "one of", "alternatively", "option")
 
 
@@ -162,5 +205,10 @@ def verify(case: str, tsv: str, dataset: str = "trackb") -> dict:
             if obs not in known:
                 unverified.append((subj, _src_path(parts[5], known)))
             corrected.append(line)
+        if not _any_cite(parts[5], known):
+            # No resolvable citation: escalation-eligible, but the row
+            # still scores as transcribed (status quo; the scorer may
+            # additionally pass known= to aggregate() to drop it).
+            unverified.append((subj, _src_path(parts[5], known)))
     return {"tsv": "\n".join(corrected),
             "unverified": sorted(set(unverified))}
