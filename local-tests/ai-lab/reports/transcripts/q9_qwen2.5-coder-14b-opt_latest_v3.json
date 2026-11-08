@@ -1,0 +1,14 @@
+{
+  "model": "qwen2.5-coder-14b-opt:latest",
+  "model_returned": "qwen2.5-coder-14b-opt:latest",
+  "identity_ok": true,
+  "case": "v3",
+  "tag": "q9",
+  "prompt_sha": "9e4c21d90a59d75d",
+  "num_ctx": 8192,
+  "finish_reason": "stop",
+  "latency_s": 0.1,
+  "expected": "UNKNOWN",
+  "verdict": "UNKNOWN",
+  "response": "UNKNOWN"
+}

@@ -15,7 +15,9 @@ Pure function of the extraction text. No model calls. Rules:
   truncated_docs is supplied, model-claimed truncation counts only for
   byte-confirmed documents.
 - ALT groups: subject passes if ANY option row passes fully (an option
-  with a constraint passes only when provably SATISFIED).
+  with a constraint passes unless provably VIOLATED; a
+  non-evaluable prose condition on a present option is not a
+  proven violation).
 - malformed rows (whitespace or <> in a path cell: thinking-trace
   chatter shaped like TSV) -> UNKNOWN, never a FOUND/BLOCKER vote,
   and excluded from cross-row contradiction detection.
@@ -42,6 +44,18 @@ def _version_ok(req_constraint: str, obs_value: str) -> bool:
             req_constraint, obs_value,
             norm_op=norm["op"] if norm else None))
     return code == "SATISFIED"
+
+
+def _violated(req_constraint: str, obs_value: str) -> bool:
+    """True only when the observed value provably violates the
+    constraint. Non-evaluable prose ('current', 'before Friday')
+    is never a proven violation."""
+    norm = norm_mod.normalize_constraint(req_constraint)
+    code, _ = norm_mod.compare(
+        norm, norm_mod.pick_observed(
+            req_constraint, obs_value,
+            norm_op=norm["op"] if norm else None))
+    return code == "VIOLATED"
 
 
 CITE = re.compile(r"[\w./-]+\.\w+:\d+")
@@ -251,8 +265,12 @@ def aggregate(tsv: str, known: dict | None = None,
                     if x["obs_path"] == o and not STALE.search(x["obs_value"]):
                         if x["req_constraint"] in ("-", ""):
                             passed = True
-                        elif _version_ok(x["req_constraint"],
-                                         x["obs_value"]):
+                        elif not _violated(x["req_constraint"],
+                                           x["obs_value"]):
+                            # Grounded alternative branch: observed
+                            # present with no proven violation (a
+                            # non-evaluable prose condition such as
+                            # 'current' is not evidence of failure).
                             passed = True
             if passed:
                 label, why = "FOUND", "alternative option satisfied"

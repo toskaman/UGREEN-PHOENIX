@@ -174,3 +174,16 @@ What did not change: no pilot, no NAS verdict-quality data, no
 residency confirmation, no buyer conversation. The v7 evidence
 raises confidence that the product survives first contact with a
 real folder; it does not replace that contact.
+
+## 16. v8 addendum: both-model reliability + complete demo loop
+
+What changed: the small-model leg is closed (9B 6/6 on Track B,
+12/12 on conditional transfer beside the 14B) — a pilot can no
+longer be dismissed as large-model-only. All three demo scenarios
+render before/after artifacts deterministically, so the pilot pitch
+is showable end-to-end (blocker, fix, delta, honest abstention).
+The report-contract fixes the graph/passport serialization a pilot
+grader would check outputs against.
+What did not change: no pilot, no NAS verdict-quality data, no
+residency confirmation, no buyer conversation. Pilot design (§11)
+and go/no-go (precision ≥ 0.8) stand.

@@ -62,6 +62,9 @@ check("contract: protocol defines Category A/B/C",
       "Category A" in proto and "Category B" in proto
       and "Category C" in proto,
       "references/decision-protocol.md must mirror the contract")
+check("contract: protocol mirrors citation re-read",
+      "re-read" in proto and "literal" in proto,
+      "Category-B content confirmation must be in the protocol too")
 
 # --- 5. v7 conditional-dependency transfer ------------------------------------
 # Gated requirements (unless/only-if/si...) must abstain unless the gating
@@ -86,6 +89,43 @@ check("contract: step-3 states gated-requirement rule",
 check("contract: step-3 states XOR rule",
       "but not both" in step3 and "exactly one" in step3,
       "extraction must state exactly-one exclusivity in-context")
+
+# --- 7. v8 label-mapping + citation re-read --------------------------------
+# Step-4 RESULTs OUT OF SCOPE/UNSAFE must map to a step-5 label
+# (UNKNOWN), never vanish; and a Category-B cite must be confirmed
+# by re-reading the cited line for the literal path string, so a
+# forged range-valid citation cannot launder a Category-C path.
+step5 = skill.split("5. Pass the completed")[1].split("6. Present")[0]
+check("contract: step-5 maps UNSAFE/OUT OF SCOPE to UNKNOWN",
+      "UNSAFE" in step5 and "OUT OF SCOPE" in step5
+      and "UNKNOWN" in step5,
+      "every step-4 RESULT needs a step-5 label")
+check("contract: step-4 requires cited-line re-read",
+      "re-read" in step4 and "literal" in step4,
+      "Category B needs content confirmation, not range trust")
+
+# --- 8. v8 native report contract ------------------------------------------
+# The knowledge-agent must serialize the Evidence table as a Proof Graph
+# and close with a Readiness Passport per references/report-contract.md,
+# mirroring the locally validated renderer shapes (no invented edges).
+rep = (ROOT / "references" / "report-contract.md").read_text(
+    encoding="utf-8")
+check("contract: SKILL links the report contract",
+      "references/report-contract.md" in skill
+      and "Proof Graph" in step5 and "Passport" in step5,
+      "step-5 must point the knowledge-agent at the graph format")
+check("contract: report contract defines graph vocabulary",
+      "[REQ:" in rep and "stated-by" in rep and "satisfied-by" in rep
+      and "contested" in rep and "blocked-by" in rep
+      and "[GAP:" in rep and "[CLASH:" in rep,
+      "native graph shapes must mirror the validated renderer")
+check("contract: report contract forbids invented edges",
+      "never invent" in rep.lower() or "forbidden" in rep,
+      "every native edge needs an upstream source")
+check("contract: report contract defines delta + passport",
+      "STILL UNCERTAIN" in rep and "not a tested restoration" in rep
+      and "7 sections" in rep,
+      "recheck delta states and passport closure must be specified")
 
 print(f"\n{PASS} skill-contract checks passed"
       + (f", {FAIL} FAILED" if FAIL else ", ALL GREEN (offline)"))

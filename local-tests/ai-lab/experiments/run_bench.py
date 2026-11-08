@@ -35,7 +35,7 @@ TRANSCRIPTS = AI_LAB / "reports" / "transcripts"
 
 def call_model(model: str, full_prompt: str, max_out: int,
                reasoning_budget: int | None, ledger, req_id: str,
-               case: str, tag: str) -> dict:
+               case: str, tag: str, num_ctx: int) -> dict:
     """Paid models go through the single ledger-gated accounting path
     (reserve -> attempts -> one terminal); local models stay direct."""
     spec = config.MODELS[model]
@@ -44,7 +44,7 @@ def call_model(model: str, full_prompt: str, max_out: int,
         return call_mod.paid_chat(
             model, messages, max_out, ledger, req_id, case, tag,
             len(full_prompt), reasoning_budget=reasoning_budget)
-    return ollama.generate(model, full_prompt)
+    return ollama.generate(model, full_prompt, num_ctx=num_ctx)
 
 
 def main() -> int:
@@ -58,6 +58,7 @@ def main() -> int:
     ap.add_argument("--prompt", default=None,
                     help="v1|v2|v3 prompt name or explicit path")
     ap.add_argument("--reasoning-budget", type=int, default=None)
+    ap.add_argument("--num-ctx", type=int, default=8192)
     args = ap.parse_args()
 
     if args.model not in config.MODELS:
@@ -119,7 +120,7 @@ def main() -> int:
         try:
             res = call_model(args.model, full, args.max_out,
                              args.reasoning_budget, ledger, rid, case,
-                             args.tag)
+                             args.tag, args.num_ctx)
         except budget_mod.BudgetExceeded as exc:
             print(f"{case}: BUDGET REFUSED {exc}")
             return 1
@@ -149,6 +150,7 @@ def main() -> int:
             "case": case, "tag": args.tag, "prompt_sha": phash,
             "max_out": args.max_out,
             "reasoning_budget": args.reasoning_budget,
+            "num_ctx": args.num_ctx,
             "prompt_tokens": res["prompt_tokens"],
             "completion_tokens": res["completion_tokens"],
             "reasoning_tokens": res["reasoning_tokens"],

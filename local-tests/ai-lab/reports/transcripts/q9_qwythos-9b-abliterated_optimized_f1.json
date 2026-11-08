@@ -1,0 +1,14 @@
+{
+  "model": "qwythos-9b-abliterated:optimized",
+  "model_returned": "qwythos-9b-abliterated:optimized",
+  "identity_ok": true,
+  "case": "f1",
+  "tag": "q9",
+  "prompt_sha": "9e4c21d90a59d75d",
+  "num_ctx": 8192,
+  "finish_reason": "stop",
+  "latency_s": 4.95,
+  "expected": "UNKNOWN",
+  "verdict": "UNKNOWN",
+  "response": "The requirement is a French conditional: \"Le rapport est requis **lorsque** la cl\u00f4ture mensuelle est active.\" The gating word \"lorsque\" (when) signals that the truth of the whole statement hinges on whether the monthly closure is actually active. According to PHOENIX rules, any gated requirement whose condition isn\u2019t verified from evidence must be marked UNKNOWN\u2014never silently assume it\u2019s satisfied or dropped.\n\nThe observed evidence tells us two things: first, that \"rapport.pdf\" exists (so the report itself is present), and second, that there is **no** proof concerning the state of the monthly closure (\"Aucune preuve sur la cl\u00f4ture mensuelle\"). Because the gating condition\u2014whether the closure is active\u2014is unverified, we cannot decide if the requirement holds. The existence of the report doesn\u2019t resolve the gate; it only satisfies the consequent once the antecedent is known.\n\nThus, applying the PHOENIX decision protocol to this scenario yields a single verdict line: VERDICT: UNKNOWN.\n</think>\n\nVERDICT: UNKNOWN"
+}

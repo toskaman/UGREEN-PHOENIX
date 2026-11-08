@@ -239,6 +239,24 @@ if __name__ == "__main__":
         "job | a/full | 2 ou superieur | MISSING | - | g.md:1 | OK\n"
         "job | a/incr | 2 ou superieur | a/incr | v 3 | g.md:2 | OK\n"
         "ALT | sauvegarde | a/full | a/incr")["verdict"] == CLEAR)
+    # v8 Q2: verbatim prose conditions on an observed option must not
+    # block ALT relief (tb6: "current"/"before Friday" transcribed
+    # faithfully by the 9B model, gold = CLEAR)
+    check("a16 alt prose-condition relief", agg.aggregate(
+        "pg | db/snap | before Friday | db/snap | SQLite format 3 | "
+        "g.md:3 | OK\n"
+        "snap | db/snap | current | db/snap | SQLite format 3 | "
+        "g.md:4 | OK\n"
+        "ALT | backup | db/pgdump | db/snap")["verdict"] == CLEAR)
+    check("a17 alt violated-option no relief", agg.aggregate(
+        "req | f | 2 or newer | f | version 1 | g.md:1 | OK\n"
+        "ALT | req | f | h")["verdict"] == B)
+    check("a18 alt missing-options no relief", agg.aggregate(
+        "s | f | - | MISSING | - | g.md:1 | OK\n"
+        "ALT | s | f | h")["verdict"] == B)
+    check("a19 alt stale-option no relief", agg.aggregate(
+        "s | f | current | f | stale copy, do not use | g.md:1 | OK\n"
+        "ALT | s | f | h")["verdict"] == B)
     # v6 pinned normalizer contract (constraint, observed -> outcome)
     contract = [
         ("2 or newer", "portal schema 3", "SATISFIED"),
@@ -316,6 +334,17 @@ if __name__ == "__main__":
         ("use 5 if node count is 2", "v 5", "UNKNOWN"),
         ("version 5 when cluster mode", "v 5", "UNKNOWN"),
         ("version 5 a moins que mode legacy", "v 5", "UNKNOWN"),
+        # v8 Q1: provided/except/condition markers abstain (never BARE)
+        ("schema 4 provided that audit mode is on", "v 4", "UNKNOWN"),
+        ("layout 3 except when offline cache", "v 3", "UNKNOWN"),
+        ("protocole 13 a condition que le mode audit soit actif",
+         "v 13", "UNKNOWN"),
+        ("version 5 pourvu que le cache soit vide", "v 5", "UNKNOWN"),
+        ("use 6 except if legacy flag", "v 6", "UNKNOWN"),
+        # v8 Q1 purple: bare 'provided'/'except N' are NOT gates
+        ("use the provided config version 5", "v 5", "SATISFIED"),
+        ("all versions except 3", "v 4", "SATISFIED"),
+        ("all versions except 3", "v 3", "VIOLATED"),
     ]
     for i, (c, o, exp) in enumerate(contract):
         n = norm_mod.normalize_constraint(c)

@@ -11,6 +11,9 @@ a documentary blocker faster and more reliably than manual review.
   one with a PHOENIX first-run report + one recheck. Order randomized.
 - Fixtures: closure-demo scenarios A (missing) and B (conflict),
   rebuilt in temp dirs so the "fix" step is real file work.
+  Optional calibration: scenario C render (false reassurance) to test
+  whether participants accept INSUFFICIENT EVIDENCE instead of a
+  comforting clear.
 
 ## Tasks (from system directive Objective 5)
 

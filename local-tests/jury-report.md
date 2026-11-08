@@ -340,3 +340,86 @@ flagship scenario), but correctness recovered is not a new
 breakthrough, and Round 1 ceilings without NAS traces or users hold
 firm. The confidence upgrade (medium → medium-high) reflects a
 strictly stronger, contradiction-free evidence base.
+
+---
+
+# v8 re-evaluation (adversarial, post-TB6-closure + conditional transfer)
+
+Same posture, Round 1 rules (absent NAS runtime must not itself reduce
+the score). New evidence since v7: the 9B TB6 residual is CLOSED — not
+by tuning the model but by finding the real defect in the deterministic
+scorer (ALT relief demanded provably-SATISFIED options, rejecting
+faithful verbatim prose conditions the gold semantics accept; fix
+pinned by a16-a19, 147/147 green, full 25-tag × 2-dataset rescore sweep
+flips ONLY the two 9B tb6 transcripts to their gold verdicts, zero
+other flips, gold labels untouched) plus a b1d output-opener that ends
+9B non-termination (44s stop vs length-truncation); 9B now 6/6 on
+Track B. Second: v7's explicit gap U11 (no local-model conditional
+run) is CLOSED with a fresh 12-case Q9 suite on TWO models (14B 12/12
+in 24.7s, 9B 12/12 in 81.1s, committed transcripts, explicit VERDICT
+lines; a first-substring parser artifact was caught and fixed, not
+hidden). Third: native transfer extended — protocol gains the
+branch-split transcription rule, the full gate-marker list (provided
+that / except when / à condition que / pourvu que / lorsque / quand),
+and a new report-contract.md specifying the knowledge-agent's Proof
+Graph + Passport format (4 new contract pins, 19/19). Fourth: flagship
+demo completed (B/C renders, 7-beat spine, P1/P2 blocks, deterministic
+rebuild verified by hash). Fifth: baseline re-run stable (phoenix 8/8
+vs retrieval_plus 6/8, ablations 6/8). Still missing: any NAS trace,
+any Vultr run (BLOCKED-CREDENTIALS, $0), any user-study participant.
+
+## User Value: 8 -> 8 (hold)
+
+Evidence: all three demo scenarios now render before/after artifacts
+with P1/P2 actions and honest deltas (C stays STILL UNCERTAIN); the
+7-beat spine answers "what will I see" concretely.
+Against: zero observed users, unchanged; frequency/scope friction
+unchanged.
+Strongest remaining objection: richer designed value, still not
+observed outcomes.
+Higher needs: user-study runs + NAS UX traces.
+
+## Innovation & Differentiation: 7 -> 7 (hold)
+
+Evidence: the ALT-relief semantics (presence + no proven violation
+satisfies a grounded alternative branch) and the branch-split rule are
+real reasoning contributions, and the Q9 suite is the first two-model
+conditional-transfer measurement in the repo.
+Against: still no second product breakthrough and no demonstrated
+NAS-only mechanism; the v8 wins are reliability + validation depth on
+the v4-shaped product.
+Strongest remaining objection: a better-proven PHOENIX, not a new one.
+Higher needs: NAS-execution ablation proving the loop collapses
+without tool access.
+
+## Technical Quality: 9 -> 9 (hold)
+
+Evidence: TDD held (a16 RED-before-GREEN, caught a wrong pin a18 by
+tracing rather than by weakening the code); scorer change proven
+regression-free by exhaustive rescore sweep; Q9 artifact caught by
+inspecting raw responses; 147 + 91 + 19 + 37 checks green; renders
+hash-stable; baseline stable.
+Strongest remaining objection: native core still unexecuted on target.
+Higher needs: finalist-day traces. 10/10 explicitly not claimed.
+
+## AI NAS Fit & Validation: 7 -> 8
+
+Evidence: everything measurable before NAS access is now measured —
+both local models 6/6 on Track B, both 12/12 on conditional transfer,
+locked results intact, native contracts cover extraction (branches,
+gates, XOR), verification (A/B/C), and serialization (graph,
+passport, delta), each with staged finalist tests. Under Round 1
+rules, holding Fit at 7 until NAS traces would penalize exactly the
+absence the rules say not to penalize.
+Against: fit is still designed; every T-row awaits the NAS.
+Strongest remaining objection: the validation program is complete on
+paper, but paper is all it is until finalist day.
+Higher needs: NAS traces (tests T1-T10 staged and ready). 9+ needs them.
+
+Reassessed v8 average: 8.0/10 (medium-high confidence), up from 7.75.
+The +0.25 comes from one justified move (Fit 7->8: pre-NAS validation
+now complete and native contracts closed) plus held scores on a
+strictly stronger base (both residuals from v7 — 9B tb6 and U11 —
+closed with measurements, not narratives). Three holds are deliberate:
+without NAS traces, users, or a second breakthrough, higher would be
+grade inflation.

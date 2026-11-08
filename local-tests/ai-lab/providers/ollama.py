@@ -7,8 +7,13 @@ import urllib.request
 
 def generate(model: str, prompt: str, num_ctx: int = 8192,
              timeout: int = 900) -> dict:
+    # repeat_penalty 1.1 (v8 Q2): the 9B thinking model falls into
+    # verbatim deliberation loops on branch-split prompts at penalty
+    # 1.0 (tb6: 7534 tokens, no TSV, finish=length); 1.1 breaks the
+    # loop while staying deterministic at temperature 0.
     body = json.dumps({"model": model, "prompt": prompt, "stream": False,
-                       "options": {"temperature": 0, "num_ctx": num_ctx}}
+                       "options": {"temperature": 0, "num_ctx": num_ctx,
+                                   "repeat_penalty": 1.1}}
                       ).encode("utf-8")
     req = urllib.request.Request("http://127.0.0.1:11434/api/generate",
                                  data=body,

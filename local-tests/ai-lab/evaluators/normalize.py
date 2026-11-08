@@ -59,7 +59,9 @@ NEQ_RE = re.compile(r"!=|≠")
 # depends on an unexamined predicate -> abstain (None), never BARE.
 CONDITIONAL_RE = re.compile(
     r"unless|only\s+if|sauf\s+si|uniquement\s+si|seulement\s+si|"
-    r"a\s+moins\s+que|\bif\b|\bsi\b|\bwhen\b|lorsque|\bquand\b")
+    r"a\s+moins\s+que|provided\s+that|on\s+condition\s+that|"
+    r"except\s+when|a\s+(la\s+)?condition\s+que|pourvu\s+que|"
+    r"\bif\b|\bsi\b|\bwhen\b|lorsque|\bquand\b")
 # Explicit exclusivity markers -> XOR struct (checked BEFORE the
 # exclusion machinery, so 'but not' never swallows the members).
 XOR_RE = re.compile(

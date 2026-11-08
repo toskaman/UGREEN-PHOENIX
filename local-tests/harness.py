@@ -113,6 +113,57 @@ def norm_rel(entry: str):
     return "/".join(parts).lower()
 
 
+def canon_rel(entry: str):
+    """Canonical alias-insensitive key; None when escaping root.
+
+    Unlike norm_rel, inner '..' segments are RESOLVED (popped) instead
+    of rejecting, and case is PRESERVED: 'docs//x.md', './docs/x.md'
+    and 'docs/../docs/x.md' all key as 'docs/x.md'. Used for finding
+    dedupe and delta matching only, never for resolution (safe_join
+    still guards scope) or deny checks (norm_rel stays lowercase).
+    """
+    parts = []
+    for q in entry.strip().replace("\\", "/").split("/"):
+        if q in ("", "."):
+            continue
+        if q == "..":
+            if not parts:
+                return None
+            parts.pop()
+            continue
+        parts.append(q)
+    return "/".join(parts) if parts else None
+
+
+def _case_exact(scope: Path, subj: str) -> bool:
+    """True when every requested component matches on-disk case exactly.
+
+    Compares the REQUESTED spelling (Path.resolve() already folds
+    case on Windows, so the resolved form cannot be trusted). Makes
+    resolution case-exact on every platform: 'DOCS/X.MD' never
+    resolves to on-disk 'docs/x.md'.
+    """
+    parts = []
+    for q in subj.replace("\\", "/").split("/"):
+        if q in ("", "."):
+            continue
+        if q == "..":
+            if not parts:
+                return False
+            parts.pop()
+            continue
+        parts.append(q)
+    cursor = scope
+    for part in parts:
+        try:
+            if part not in [p.name for p in cursor.iterdir()]:
+                return False
+        except OSError:
+            return False
+        cursor = cursor / part
+    return True
+
+
 def safe_join(scope: Path, user_path: str):
     """Resolve user_path inside scope; return None if unsafe/out-of-scope."""
     text = user_path.replace("\\", "/")
@@ -286,6 +337,20 @@ def run(scope: Path, mode: str = "full", prior: dict | None = None) -> dict:
                     "source": entry["path"], "line": lineno,
                     "truncated_source": truncated, "unparsed": True})
 
+    # Alias collapse (v8 Q10): one file, one finding. Requirements
+    # naming the same canonical target collapse to the first
+    # occurrence (first source:line wins); display keeps the raw
+    # requested spelling.
+    seen = set()
+    unique = []
+    for req in requirements:
+        key = (canon_rel(req["subject"]) or req["subject"],
+               req["op"], req["version"])
+        if key not in seen:
+            seen.add(key)
+            unique.append(req)
+    requirements = unique
+
     # Step 3 — verification (simulates targeted file-agent checks).
     evidence = []
     all_basenames = {p.name for p in scope.rglob("*", recurse_symlinks=False)
@@ -328,6 +393,12 @@ def run(scope: Path, mode: str = "full", prior: dict | None = None) -> dict:
                                            f"path; rejected without resolving "
                                            f"outside the scope."})
             elif target.exists():
+                if not _case_exact(scope, subj):
+                    evidence.append({**req, "status": NOT_FOUND,
+                                     "detail": f"No file named exactly "
+                                               f"'{subj}' (case-exact "
+                                               f"match required)."})
+                    continue
                 # Aliased references only (symlinks, dot-segments): direct
                 # references are owned by the name check above, so a
                 # resolved target is re-checked only when aliasing made it
@@ -381,7 +452,12 @@ def run(scope: Path, mode: str = "full", prior: dict | None = None) -> dict:
 
     # Step 4 — report assembly (simulates knowledge-agent collect-evidence).
     statuses = {e["status"] for e in evidence}
-    if statuses & {NOT_FOUND, CONFLICTING}:
+    if not evidence:
+        # T6 local mirror: an empty extraction never clears. Zero
+        # requirements means nothing was confirmed, not that the
+        # scope is healthy (v8 Q8: empty/json-only scopes cleared).
+        verdict = "INSUFFICIENT EVIDENCE"
+    elif statuses & {NOT_FOUND, CONFLICTING}:
         verdict = "DOCUMENTARY BLOCKER IDENTIFIED"
     elif (statuses & {INACCESSIBLE, UNKNOWN} or inaccessible_files
           or discovery_errors or depth_capped):
@@ -404,11 +480,25 @@ def run(scope: Path, mode: str = "full", prior: dict | None = None) -> dict:
     else:
         prior_verdict, prev_map = None, None
     if prev_map is not None:
-        new_map = {e["subject"]: e["status"] for e in evidence}
-        prev_status = {s: e["status"] for s, e in prev_map.items()}
+        # Canonical keys (v8 Q10): a respelt subject ('./docs//x.md'
+        # vs 'docs/x.md') matches instead of UNVERIFIED+NEW. Display
+        # keeps the current run's raw spelling.
+        new_map, new_disp = {}, {}
+        for e in evidence:
+            k = canon_rel(e["subject"]) or e["subject"]
+            if k not in new_map:
+                new_map[k] = e["status"]
+                new_disp[k] = e["subject"]
+        prev_status, prev_disp = {}, {}
+        for s, e in prev_map.items():
+            k = canon_rel(s) or s
+            if k not in prev_status:
+                prev_status[k] = e["status"]
+                prev_disp[k] = s
         transitions = []
-        for subject in sorted(set(prev_status) | set(new_map)):
-            old, new = prev_status.get(subject), new_map.get(subject)
+        for key in sorted(set(prev_status) | set(new_map)):
+            subject = new_disp.get(key, prev_disp.get(key))
+            old, new = prev_status.get(key), new_map.get(key)
             if new == FOUND and old in (BLOCKER_STATES | GAP_STATES):
                 # A cleared blocker AND a confirmed gap both resolve:
                 # evidence now supports the subject. (Red-team v6:
@@ -433,10 +523,11 @@ def run(scope: Path, mode: str = "full", prior: dict | None = None) -> dict:
             transitions.append({
                 "subject": subject, "previous": old, "current": new,
                 "state": state,
-                "prior_detail": (redact(prev_map[subject]["detail"])
-                                 if subject in prev_map else None),
+                "prior_detail": (redact(prev_map[prev_disp[key]]["detail"])
+                                 if key in prev_disp else None),
                 "new_detail": next((redact(e["detail"]) for e in evidence
-                                    if e["subject"] == subject), None)})
+                                    if (canon_rel(e["subject"])
+                                        or e["subject"]) == key), None)})
         resolved = [t["subject"] for t in transitions
                     if t["state"] == "RESOLVED"]
         delta = {"prior_verdict": prior_verdict, "verdict": verdict,
@@ -493,6 +584,10 @@ def run(scope: Path, mode: str = "full", prior: dict | None = None) -> dict:
     if symlinks:
         lines.append("Symlinked entries skipped (never followed): "
                      + ", ".join(symlinks))
+    if skipped and not evidence:
+        lines.append("Unreviewed files with unsupported suffix "
+                     "(requirements may hide here, content never "
+                     "parsed): " + ", ".join(skipped))
     if discovery_errors:
         lines.append("Unreadable files (OS error, content never used): "
                      + ", ".join(discovery_errors))

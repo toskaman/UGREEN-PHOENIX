@@ -1,0 +1,14 @@
+{
+  "model": "qwythos-9b-abliterated:optimized",
+  "model_returned": "qwythos-9b-abliterated:optimized",
+  "identity_ok": true,
+  "case": "v1",
+  "tag": "q9",
+  "prompt_sha": "9e4c21d90a59d75d",
+  "num_ctx": 8192,
+  "finish_reason": "stop",
+  "latency_s": 4.82,
+  "expected": "UNKNOWN",
+  "verdict": "UNKNOWN",
+  "response": "The requirement is a conditional statement: \"If the runtime is below 3, compat/shim-v1.zip is required.\" This translates to a logical implication (A \u2192 B), where A = \"runtime < 3\" and B = \"compat/shim-v1.zip exists\".\n\nFrom the observed evidence we know that B is true (the zip file exists). However, we have no information about A; the runtime version was never stated. According to the PHOENIX decision rules for gated requirements: a plain implication with an unverified antecedent (A) and a verified consequent (B) should be treated as UNKNOWN, because the gate (the \"if\") is not resolved\u2014only the result of the gate is known. The rule says never silently drop the gate; treat an unverified gate as satisfied only if the gating condition itself is verified true or false. Since we don't know whether the runtime is below 3, the implication remains ambiguous.\n\nThus the verdict should be UNKNOWN.\n</think>\n\nVERDICT: UNKNOWN"
+}

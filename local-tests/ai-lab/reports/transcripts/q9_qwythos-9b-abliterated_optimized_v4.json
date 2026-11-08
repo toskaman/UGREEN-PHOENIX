@@ -1,0 +1,14 @@
+{
+  "model": "qwythos-9b-abliterated:optimized",
+  "model_returned": "qwythos-9b-abliterated:optimized",
+  "identity_ok": true,
+  "case": "v4",
+  "tag": "q9",
+  "prompt_sha": "9e4c21d90a59d75d",
+  "num_ctx": 8192,
+  "finish_reason": "stop",
+  "latency_s": 5.63,
+  "expected": "UNKNOWN",
+  "verdict": "UNKNOWN",
+  "response": "The requirement is a gated statement: \"Le protocole 13 est requis **seulement si** le mode audit est actif.\" In French, \"seulement si\" translates to an exclusive conditional gate (like \"only if\"). According to the PHOENIX decision rules, any gated requirement that contains words such as \u201cunless\u201d, \u201conly if\u201d, \u201cif\u201d, etc., is treated as UNKNOWN unless we have explicit evidence confirming the gating condition itself. The rule emphasizes never silently dropping the gate; we must verify whether the condition (mode audit active) holds true or false from observed evidence.\n\nNow look at the observed evidence: we know that \"protocole-13.pdf\" exists, which satisfies the predicate of protocol 13 being present. However, there is no mention of the state of the \u201cmode audit\u201d \u2013 it could be on, off, or perhaps even undefined. Since the gating condition (mode audit active) is not evidenced, we cannot assert that the requirement is satisfied nor can we claim it\u2019s violated; the gate remains unresolved.\n\nThus, applying the PHOENIX rule for gated requirements with an unverified condition yields a VERDICT of UNKNOWN.\n</think>\n\nVERDICT: UNKNOWN"
+}

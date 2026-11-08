@@ -1,0 +1,14 @@
+{
+  "model": "qwythos-9b-abliterated:optimized",
+  "model_returned": "qwythos-9b-abliterated:optimized",
+  "identity_ok": true,
+  "case": "d4",
+  "tag": "q9",
+  "prompt_sha": "9e4c21d90a59d75d",
+  "num_ctx": 8192,
+  "finish_reason": "stop",
+  "latency_s": 2.66,
+  "expected": "UNKNOWN",
+  "verdict": "UNKNOWN",
+  "response": "The requirement is a plain disjunction: \"cache/a.bin OR cache/b.bin\". According to the PHOENIX rules, a simple \u201cA or B\u201d with zero evidenced members is UNKNOWN (the gate isn\u2019t satisfied by exactly one member, nor is it contradicted). The observed evidence tells us that neither file was shown\u2014i.e., we have no positive evidence for either side. That matches the rule: \u201cA plain \u2018A or B\u2019 with zero evidenced members is UNKNOWN.\u201d Therefore the verdict should be UNKNOWN.\n</think>\n\nVERDICT: UNKNOWN"
+}

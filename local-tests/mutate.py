@@ -19,10 +19,15 @@ ROOT = Path(__file__).resolve().parent
 # the suite still fails when two defects land at once.
 MUTANTS = [
     ("verdict-blocker-swapped", [("harness.py",
-      '    if statuses & {NOT_FOUND, CONFLICTING}:\n'
+      '    elif statuses & {NOT_FOUND, CONFLICTING}:\n'
       '        verdict = "DOCUMENTARY BLOCKER IDENTIFIED"',
-      '    if statuses & {NOT_FOUND, CONFLICTING}:\n'
+      '    elif statuses & {NOT_FOUND, CONFLICTING}:\n'
       '        verdict = "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES"')]),
+    ("empty-evidence-clears", [("harness.py",
+      '        verdict = "INSUFFICIENT EVIDENCE"\n'
+      '    elif statuses & {NOT_FOUND, CONFLICTING}:',
+      '        verdict = "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES"\n'
+      '    elif statuses & {NOT_FOUND, CONFLICTING}:')]),
     ("denied-check-removed", [("harness.py",
       "            if norm is not None and norm in denied:",
       "            if False:  # MUTANT")]),
@@ -38,9 +43,13 @@ MUTANTS = [
     ("redact-neutered", [("harness.py",
       '    return TOKEN_RE.sub("[REDACTED-TOKEN]", masked)',
       "    return text  # MUTANT")]),
-    ("existence-oracle-true", [("harness.py",
-      "            elif target.exists():",
-      "            elif True:  # MUTANT")]),
+    ("existence-oracle-true", [
+      ("harness.py",
+       "            elif target.exists():",
+       "            elif True:  # MUTANT"),
+      ("harness.py",
+       "                if not _case_exact(scope, subj):",
+       "                if False:  # MUTANT (both existence gates)")]),
     ("abstention-verdict-swapped", [("harness.py",
       '    elif (statuses & {INACCESSIBLE, UNKNOWN} or inaccessible_files\n'
       '          or discovery_errors or depth_capped):\n'
@@ -67,16 +76,16 @@ MUTANTS = [
       "ABSTAIN = CLEAR  # MUTANT")]),
     ("double-verdict-plus-redact", [
       ("harness.py",
-       '    if statuses & {NOT_FOUND, CONFLICTING}:\n'
+       '    elif statuses & {NOT_FOUND, CONFLICTING}:\n'
        '        verdict = "DOCUMENTARY BLOCKER IDENTIFIED"',
-       '    if statuses & {NOT_FOUND, CONFLICTING}:\n'
+       '    elif statuses & {NOT_FOUND, CONFLICTING}:\n'
        '        verdict = "NO DOCUMENTARY BLOCKER FOUND IN REVIEWED SOURCES"'),
       ("harness.py",
        '    return TOKEN_RE.sub("[REDACTED-TOKEN]", masked)',
        "    return text  # MUTANT")]),
     ("delta-stale-reuse", [("harness.py",
-      '        new_map = {e["subject"]: e["status"] for e in evidence}',
-      '        new_map = {e["subject"]: e["status"] for e in prior.get("evidence", [])}  # MUTANT')]),
+      '        new_map, new_disp = {}, {}\n        for e in evidence:',
+      '        new_map, new_disp = {}, {}\n        for e in prior.get("evidence", []):  # MUTANT')]),
     ("delta-inversion", [("harness.py",
       '            state = "RESOLVED"',
       '            state = "STILL BLOCKED"  # MUTANT')]),
@@ -91,6 +100,10 @@ def main():
             shutil.copytree(ROOT, work,
                             ignore=shutil.ignore_patterns(
                                 "wave1", "reports", "__pycache__"))
+            # run-tests.py reads the repo-root SKILL.md (vocabulary
+            # guard); without it every mutant run crashes before the
+            # late F-cases execute (v8: F27 never ran in scratch).
+            shutil.copy2(ROOT.parent / "SKILL.md", Path(tmp) / "SKILL.md")
             for rel, find, replace in edits:
                 target = work / rel
                 text = target.read_text(encoding="utf-8")

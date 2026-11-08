@@ -23,6 +23,9 @@ SUBJECT | REQUIRED_PATH | REQUIRED_CONSTRAINT | OBSERVED_PATH | OBSERVED_VALUE |
   AMBIGUOUS-REQUIREMENT, whichever fits best.
 Transcribe EVERY requirement noun phrase in the guide. Never skip a
 requirement because its evidence file is withheld or missing.
+For "either X or Y" / "one of the two" clauses, output ONE line PER
+branch (X gets its own line, Y gets its own line); each line carries
+only its own branch's constraint, never the other branch's.
 
 Extra line types (same block, after the requirement lines):
 - If the guide offers alternatives ("either/or", "one of the two is

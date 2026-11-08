@@ -147,3 +147,14 @@ predictions from local-model behavior, not observations.
 - Local model scores (§3) must never be quoted as NAS Skill accuracy.
 - Original locked 9/10 (x26 fail) stands alongside the 10/10 rescore.
 - 9B tb6 residual: OPEN — small-model risk for native deployment.
+- v8 Q6: ai-lab citation checks stay range-only (path exists + line
+  in range). Measured on all committed archb transcripts: a naive
+  subject-in-cited-line rule would drop 44/128 rows (34%),
+  including legitimate paraphrase citations (e.g. tb6 BACKUP →
+  guide.md:3 "back the database up"). Wiring it into the scorer
+  post-hoc would invalidate the published 28/28 + locked scores,
+  so content-grounding stays limited to ALT lines (byte-verified)
+  and to the native Skill's Category-B rule (literal path string
+  must appear in the re-read cited line — appropriate because a
+  path is a literal, not a paraphrase). Scorer-side content
+  checks: OPEN, research-tooling only, no user-facing impact.

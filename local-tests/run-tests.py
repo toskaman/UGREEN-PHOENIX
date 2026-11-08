@@ -593,6 +593,58 @@ def main():
                     str(trans))
     with tempfile.TemporaryDirectory() as tmp:
         t = Path(tmp)
+        res = harness.run(t)
+        ok &= check("F27: empty scope abstains, never CLEAR",
+                    res["verdict"] == "INSUFFICIENT EVIDENCE",
+                    res["verdict"])
+    with tempfile.TemporaryDirectory() as tmp:
+        t = Path(tmp)
+        (t / "config").mkdir()
+        (t / "config" / "app.json").write_text(
+            '{"requires": "db.sql", "version": "3"}', encoding="utf-8")
+        res = harness.run(t)
+        ok &= check("F27: unreviewed-suffix-only scope abstains with warning",
+                    res["verdict"] == "INSUFFICIENT EVIDENCE"
+                    and "config/app.json" in res["report"]
+                    and "unsupported suffix" in res["report"],
+                    res["verdict"])
+    with tempfile.TemporaryDirectory() as tmp:
+        t = Path(tmp)
+        (t / "docs").mkdir()
+        (t / "docs" / "x.md").write_text("spec\n", encoding="utf-8")
+        (t / "guide.md").write_text(
+            "REQUIRES: docs/x.md\nREQUIRES: docs//x.md\n"
+            "REQUIRES: ./docs/x.md\nREQUIRES: docs/../docs/x.md\n",
+            encoding="utf-8")
+        res = harness.run(t)
+        found = [e for e in res["evidence"] if e["status"] == "FOUND"]
+        ok &= check("F28: alias spellings collapse to one finding",
+                    len(found) == 1
+                    and found[0]["subject"] == "docs/x.md",
+                    str([(e["subject"], e["status"])
+                         for e in res["evidence"]]))
+        prior = {"verdict": res["verdict"], "scope": res["scope"],
+                 "evidence": [{"subject": "./docs//x.md",
+                               "status": "FOUND", "detail": "respelt"}]}
+        res2 = harness.run(t, prior=prior)
+        states = {tr["subject"]: tr["state"]
+                  for tr in res2["delta"]["transitions"]}
+        ok &= check("F28: respelt subject matches in delta, never UNVERIFIED",
+                    states.get("docs/x.md") == "UNCHANGED"
+                    and "UNVERIFIED" not in set(states.values()),
+                    str(states))
+    with tempfile.TemporaryDirectory() as tmp:
+        t = Path(tmp)
+        (t / "docs").mkdir()
+        (t / "docs" / "x.md").write_text("spec\n", encoding="utf-8")
+        (t / "guide.md").write_text("REQUIRES: DOCS/X.MD\n",
+                                    encoding="utf-8")
+        res = harness.run(t)
+        ok &= check("F28: case-exact resolution (FS-independent)",
+                    labels(res).get("DOCS/X.MD") == "NOT FOUND IN SCOPE",
+                    str(labels(res)))
+    with tempfile.TemporaryDirectory() as tmp:
+        t = Path(tmp)
         (t / "guide.md").write_text("REQUIRES: app/main.py\n",
                                     encoding="utf-8")
         (t / "app").mkdir()

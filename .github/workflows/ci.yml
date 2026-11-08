@@ -23,7 +23,7 @@ jobs:
         run: python local-tests/run-baseline.py
       - name: Wave-1 rehearsal validations
         run: python local-tests/rehearse-wave1.py
-      - name: Mutation testing (must kill 16/16)
+      - name: Mutation testing (must kill 17/17)
         run: python local-tests/mutate.py
       - name: AI-lab offline tests (harness/budget/aggregate, no creds)
         run: |

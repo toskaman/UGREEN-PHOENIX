@@ -1,0 +1,14 @@
+{
+  "model": "qwythos-9b-abliterated:optimized",
+  "model_returned": "qwythos-9b-abliterated:optimized",
+  "identity_ok": true,
+  "case": "d6",
+  "tag": "q9",
+  "prompt_sha": "9e4c21d90a59d75d",
+  "num_ctx": 8192,
+  "finish_reason": "stop",
+  "latency_s": 4.95,
+  "expected": "UNKNOWN",
+  "verdict": "UNKNOWN",
+  "response": "The requirement is a conditional gate: \"Use net/proxy.yaml **unless** maintenance mode is on, in which case use net/direct.yaml.\" The gating condition is the state of *maintenance mode*. According to PHOENIX rules, any gated requirement (including \u201cunless\u201d) is UNKNOWN unless we have explicit evidence that the gate is true or false.\n\nObserved evidence: we know that **net/proxy.yaml exists**. That tells us something about the proxy file but says nothing about whether maintenance mode is active. No statement about maintenance mode was shown in the observed data. Therefore, the gating condition (maintenance mode) remains unverified.\n\nApplying the rule: \u201cGated requirements \u2026 are UNKNOWN unless the gating condition itself is verified true or false from the observed evidence.\u201d Since we have no direct evidence of maintenance mode, the gate cannot be resolved to SATISFIED or VIOLATED; it must be marked UNKNOWN.\n\nThus the final output should be a single line with the verdict: **VERDICT: UNKNOWN**.\n</think>\n\nVERDICT: UNKNOWN"
+}

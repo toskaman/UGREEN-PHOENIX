@@ -1,0 +1,14 @@
+{
+  "model": "qwythos-9b-abliterated:optimized",
+  "model_returned": "qwythos-9b-abliterated:optimized",
+  "identity_ok": true,
+  "case": "f2",
+  "tag": "q9",
+  "prompt_sha": "9e4c21d90a59d75d",
+  "num_ctx": 8192,
+  "finish_reason": "stop",
+  "latency_s": 6.33,
+  "expected": "UNKNOWN",
+  "verdict": "UNKNOWN",
+  "response": "The requirement is a French conditional: \"La sauvegarde est requise **quand** le mode hors\u2011ligne est actif.\" The gating word *quand* (when) makes the whole statement contingent on the truth of \u201cmode hors\u2011ligne est actif.\u201d According to PHOENIX step\u202f3, any gated requirement is UNKNOWN unless we have explicit evidence that the gate itself is true or false.\n\nThe observed evidence tells us two things:\n1. *sauvegarde.tar* exists \u2013 this confirms that a backup file is present.\n2. \u201cOn ignore si le mode hors\u2011ligne est actif\u201d \u2013 literally, \u201cwe ignore if the offline mode is active.\u201d This clause suggests that the system does not care whether the offline mode is on; it effectively treats the gate as irrelevant or perhaps even false, but the wording is ambiguous and does not give a definitive truth value to the predicate *mode hors\u2011ligne est actif*.\n\nBecause the gate\u2019s condition (the state of \u201cmode hors\u2011ligne\u201d) is not cleanly verified\u2014only hinted at by an ignore clause\u2014the gated requirement cannot be confidently marked SATISFIED or VIOLATED. The safest PHOENIX verdict for a gated statement with an unverified gate is UNKNOWN.\n\nThus, the single line output should be:\nVERDICT: UNKNOWN\n</think>\n\nVERDICT: UNKNOWN"
+}

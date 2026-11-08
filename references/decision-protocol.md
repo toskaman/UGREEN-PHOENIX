@@ -12,7 +12,7 @@
 ## Verification sources (Category A/B/C)
 
 - **Category A**: paths already present in the step-2 discovery result.
-- **Category B**: document-referenced paths named with an exact path:line citation by the completed document assessment. A bounded existence check inside the authorized scope is allowed; absence from initial discovery never proves absence.
+- **Category B**: document-referenced paths named with an exact path:line citation by the completed document assessment. Before checking, re-read the cited path:line and confirm the literal path string appears there; otherwise the candidate is Category C. A bounded existence check inside the authorized scope is allowed; absence from initial discovery never proves absence.
 - **Category C**: paths with neither source (invented or unsupported). Refuse without accessing.
 
 ## Output contract
@@ -48,7 +48,7 @@ Transcribe facts before judging them: first extract each requirement with its ex
 - Delta discipline (Recovery Closure): a subject named in the prior report but absent from current findings is STILL UNCERTAIN, never silently resolved; only a matched current finding can mark it resolved.
 - Superseded files: a file marked stale, superseded, deprecated, or "do not use" never satisfies a requirement. When only a stale same-named file exists elsewhere, label CONFLICTING and cite both the guide line and the stale marker line.
 - Truncation: a document cut off mid-sentence, naming absent pages, or ending abruptly states UNKNOWN requirements only. Name what is missing; never clear a truncated requirement.
-- Alternatives: when a guide offers A OR B ("either/or", "one of the two is enough"), one evidenced alternative suffices. Never demand the other; never invent an either/or the guide does not offer.
-- Gated requirements: when a requirement applies only under a condition ("unless", "only if", "if", "when", French "sauf si", "uniquement si", "si", "a moins que"), the requirement is UNKNOWN unless the condition itself is verified true or false from authorized evidence. Never silently drop the gate and never treat an unverified gate as satisfied.
+- Alternatives: when a guide offers A OR B ("either/or", "one of the two is enough"), transcribe each branch as its own evidence row with its verbatim condition; never fuse branches into one row. One evidenced alternative suffices: a branch whose file is observed present with no contrary marker satisfies the alternative even when its prose condition ("current", "before Friday") is not machine-checkable. Never demand the other; never invent an either/or the guide does not offer.
+- Gated requirements: when a requirement applies only under a condition ("unless", "only if", "if", "when", "provided that", "except when", French "sauf si", "uniquement si", "si", "a moins que", "a condition que", "pourvu que", "lorsque", "quand"), the requirement is UNKNOWN unless the condition itself is verified true or false from authorized evidence. Never silently drop the gate and never treat an unverified gate as satisfied.
 - Exclusive alternatives: when a guide offers A or B "but not both" ("mais pas les deux", "ou exclusif"), exactly one evidenced member satisfies the requirement; zero members is NOT FOUND IN SCOPE and any other version is CONFLICTING.
 - Unreadable files are UNKNOWN, never FOUND and never proof of absence. A verdict follows the worst label among required items: any CONFLICTING or NOT FOUND IN SCOPE blocks; otherwise any UNKNOWN or INACCESSIBLE abstains; otherwise the scope is clear. A clear verdict is still not a tested restore.
