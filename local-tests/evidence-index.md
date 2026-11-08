@@ -1,11 +1,12 @@
 # Evidence index (content hashes + provenance)
 
-Working tree verified 2026-11-08 on `main` (v8; content hashes below
-are commit-independent — verify with `sha256sum`). CI run for the v8
+Working tree verified 2026-11-08 on `main` (v9; content hashes below
+are commit-independent — verify with `sha256sum`). CI run for the v9
 commit is confirmed post-push in `A SOUMETTRE/PROVENANCE.txt`.
 All hashes SHA-256 of the verified bytes (lowercase hex). Checker
 file hashes agree with the tree hashes below. Previous release values
-live in git history of this file (v7: ZIP 10592 B, PDF 4541 B,
+live in git history of this file (v8: ZIP 12488 B, PDF 4608 B,
+492 words, built from `223b78c`; v7: ZIP 10592 B, PDF 4541 B,
 483 words, built from `583b7cd`; v6: ZIP 9960 B, PDF 4482 B,
 476 words, built from `e127a0f`; v5: ZIP 9135 B, PDF 4468 B,
 475 words, built from `6985a6a`).
@@ -14,23 +15,23 @@ live in git history of this file (v7: ZIP 10592 B, PDF 4541 B,
 
 | File | SHA-256 |
 |---|---|
-| SKILL.md | `b736e0ae89a557711d2aadadf33fae432a3acb613051c9f550531c0193045333` |
-| references/decision-protocol.md | `b88d8b3063e8bd02e53afda2d97f881525c324e9b3f403b077d7adf5baf6498b` |
+| SKILL.md | `7e75e0cfb76e852ada8a2a0a84a5a667bf6c916ad138188e093632ccaabf7f1c` |
+| references/decision-protocol.md | `3daeebc97fa0a5bbf49eaeb40de64ed3c63a823a955378a59b7530702cc89e04` |
 | references/validation-plan.md | `e0d825d4991866508a69fa54a44585814b8cd2326bbafd8c0f988d34f6b423ca` |
 | references/disclosures.md | `31e97f60205cef92e7773ee6aef847ae76f8d0704f8a61f419f9b33839308804` |
-| references/report-contract.md | `b18e9c3d6931a2fe748638368665b63c060016fc2f5cbe00b3c733a7e34c7bb9` |
+| references/report-contract.md | `ffa6c978e8a7240335293b1b5ec8860299a76f93790fdb335963508e6728c270` |
 
 Checker: `static-pass`, 0 errors, 0 warnings, catalog 2.0.0
 (`local-tests/evidence-check-result.json`,
 `a15d5f6483f2c6a48e7fbc232fe43e44477f18c9ecdee55656f3ed66caefc333`,
 regenerated UTF-8 from the current tree 2026-11-08).
 
-## Release artifacts (`A SOUMETTRE/`, gitignored, v8)
+## Release artifacts (`A SOUMETTRE/`, gitignored, v9)
 
 | Artifact | SHA-256 | Size | Notes |
 |---|---|---|---|
-| phoenix-recovery-intelligence.zip | `7747b71e890aff36c790f3396523473fd4b11518f8130ab9a32056d3bc7a7a9b` | 12488 B (< 10 MB) | 5 files, per-file verified, official checker static-pass on exact bytes |
-| PHOENIX_UGREEN_Round1_Proposal.pdf | `9625008dbbd6a00bb5696b36903fea4dca0cec619ae01c24a635eadf893baaba` | 4608 B (< 1 MB) | 2 pages, 492 answer words (≤ 500), hash varies by build timestamp only |
+| phoenix-recovery-intelligence.zip | `58b6ff5426804338d512536a946043ca87bfd9c790eb1641c1b782acdff1ddb1` | 13411 B (< 10 MB) | 5 files, per-file verified, official checker static-pass on exact bytes |
+| PHOENIX_UGREEN_Round1_Proposal.pdf | `f19eb92ab5386f868494cf5665284b64ccabd290842a7dda6d921838d620670a` | 4362 B (< 1 MB) | 2 pages, 456 answer words (≤ 500), hash varies by build timestamp only |
 | SHA256SUMS.txt | (manifest of the above) | — | Previous releases preserved in `previous/` + notes |
 
 Rebuild: `python "A SOUMETTRE/build_zip.py"` then
@@ -40,15 +41,15 @@ Rebuild: `python "A SOUMETTRE/build_zip.py"` then
 
 | File | SHA-256 |
 |---|---|
-| local-tests/harness.py | `3d0cbfcccbbbef065cb83f87528f537409e3e94aec0f93bdcee67f9517eb68fb` |
-| local-tests/run-tests.py | `359543d4cc14bc73ba093eed426665e363b9b0736b541bb2c692cf2b0c9c74a0` |
+| local-tests/harness.py | `8b579af75a3e68b576acc51a66a13fd1682651dbe2daf75326a5efb0841402ed` |
+| local-tests/run-tests.py | `6bb6ee3cd12789eb4d662a6d38ecd6fb0a265fe338ae07e12711022a22438ded` |
 | local-tests/baselines.py | `3fb911a9b0254864f8f88f89ff6ce66b176c1ff7d7656766f50f0f4d6b87c816` |
 | local-tests/mutate.py | `4ffbdacd61e847f8d1f6d392ad4742236732d1637d9d2b021666495e482cd03d` |
 | local-tests/labels.json | `f52152d8dbdd99193414ee4f4c90e211473fb0458593f13b50109200486a8e46` |
-| local-tests/reports/baseline-comparison.md | `df2bf706ee90e09f44b0704934b5bbb36e181ebdab780789d39586f0cb73a021` |
-| local-tests/proofgraph.py | `0089470babe3c1e9e3c6394953e166db2de60c2e6e19278731a44ca17b4c9e58` |
-| local-tests/test_proofgraph.py | `d5926eedc3760c100a7f0a82602091194c0dd10459fd899be096a2d82492765f` |
-| local-tests/native-transfer-report.md | `244f2f4c698afa51d9a6eb04bf8af436f4e745eb2b488d21e1fb02e977b4113d` |
+| local-tests/reports/baseline-comparison.md | `3fbe0cf4dfe6d28dbc0e91f3c73efbe1de07cd329584b738104a0664a887450c` |
+| local-tests/proofgraph.py | `32f8b03372b28d45251f285b1f1f724348cd5c521406bb6bf0365250b1cd33a1` |
+| local-tests/test_proofgraph.py | `648e6a02d160b7f1ef4af470b14e47a412b376dc65309b2b9bfb93796f90cd50` |
+| local-tests/native-transfer-report.md | `58ba1da03f357119ae53571aa611a8350aea77a234a5ecc963671913b8ac20e8` |
 
 ## Track B bytes (held-out inference evaluation)
 
@@ -68,15 +69,15 @@ Transcripts are committed evidence; re-grade from them any time.
 
 | File | SHA-256 |
 |---|---|
-| README.md | `d1e1622edde06312449ae758b7d4df8db43bc0efe85971169e16bc4ae992eb8b` |
+| README.md | `3515601ebbbc157d73056d22553a4fcbb387a850995d936fe83c42f82ead4ac2` |
 | LICENSE | `9eb48619fbc193ab7bb327b090cfcc703000265b83e670f81f231d0b1c43c56e` |
 | local-tests/README.md | `a610f4f2a1241f2aad6b2f9fc19966e523a5b2ddd557d90caff377ccab49bd12` |
 | local-tests/perf-matrix.md | `24aace7dbfedea2ef694966561c7c13e25d3053c94c645355a7074bef88baac2` |
-| local-tests/audit-matrix.md | `65cc2756c1b01a3c7ffdd02b08cd3c5a361d7168d71b9feddd0825047b8aa457` |
+| local-tests/audit-matrix.md | `963fd902fcbdbc8f44e721dfa457d3be9f39cdecba53e5f53fb0a5b16c19118d` |
 | local-tests/commercial-thesis.md | `7c2e508f3b141dc8dbdde6e1ede6a6fff0157e3577273338b0f44a7396f3597e` |
 | local-tests/jury-report.md | `8e7f5c480147da8ec071a12cc42394314947f7ac15944452c55eea70dcfe338b` |
 | local-tests/assistant-vs-phoenix.md | `e79eee0ca9a47c10db1b28ceb0cc8ba84ad496701348851e1a2dee440009e6e1` |
-| local-tests/user-study-protocol.md | `1b83f6354b54bac107db86f3beeede764a74dc4066ff2c59c2bd0cbc3410251d` |
+| local-tests/user-study-protocol.md | `209f59a3a73dba75a6857c43c4b7dacab2be9f239070133ea3e264c9da81d387` |
 
 ## v5 reliability program bytes
 
@@ -99,8 +100,8 @@ Transcripts under `local-tests/ai-lab/reports/transcripts/`.
 
 ## CI
 
-Run 42439222409 (commit `223b78c`): 7/7 success — checker (with kit
+Run 42479416422 (commit `da7908a`): 7/7 success — checker (with kit
 SHA-256 verification) + tests on ubuntu/windows/macos × Python
-3.13/3.14. Prior greens: 42434288731, 42434030405, 42412827209,
-42405031294, 42404824165. The run id is recorded in
-`A SOUMETTRE/PROVENANCE.txt` and the closing report.
+3.13/3.14. Prior greens: 42439390834, 42439222409, 42434288731,
+42434030405, 42412827209, 42405031294, 42404824165. The run id is
+recorded in `A SOUMETTRE/PROVENANCE.txt` and the closing report.
