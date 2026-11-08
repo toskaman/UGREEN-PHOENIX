@@ -31,7 +31,7 @@ regenerated UTF-8 from the current tree 2026-11-08).
 | Artifact | SHA-256 | Size | Notes |
 |---|---|---|---|
 | phoenix-recovery-intelligence.zip | `58b6ff5426804338d512536a946043ca87bfd9c790eb1641c1b782acdff1ddb1` | 13411 B (< 10 MB) | 5 files, per-file verified, official checker static-pass on exact bytes |
-| PHOENIX_UGREEN_Round1_Proposal.pdf | `f19eb92ab5386f868494cf5665284b64ccabd290842a7dda6d921838d620670a` | 4362 B (< 1 MB) | 2 pages, 456 answer words (≤ 500), hash varies by build timestamp only |
+| PHOENIX_UGREEN_Round1_Proposal.pdf | `f0410513331c6a7b9feef6207f52169ff259144222a1cf7c223af91871b14096` | 4452 B (< 1 MB) | 2 pages, 471 answer words (≤ 500; v9.1 planner sentence), hash varies by build timestamp only |
 | SHA256SUMS.txt | (manifest of the above) | — | Previous releases preserved in `previous/` + notes |
 
 Rebuild: `python "A SOUMETTRE/build_zip.py"` then

@@ -5,7 +5,9 @@
 
 PHOENIX assesses whether a project's documentation and essential assets are
 sufficient to prepare its recovery after a computer loss or a team departure.
-It identifies missing and conflicting dependencies with source-backed evidence —
+It identifies missing and conflicting dependencies with source-backed evidence,
+names the single first verification per blocker (Evidence Gain Planner),
+rechecks fresh evidence after the user acts (Recovery Closure) —
 and never confuses documentary readiness with a verified restoration.
 
 ## How it works

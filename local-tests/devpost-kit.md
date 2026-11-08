@@ -23,6 +23,9 @@ cross-document version claims, verifies exact paths, and refuses recovery
 percentages and "restored" claims. Locally measured 8/8 verdicts with 2/2
 abstentions and 22/22 citations vs 6/8 and 0/2 for a strong cited retrieval
 baseline — NAS runtime honestly untested, finalist runbook ready.
+Its Evidence Gain Planner names the single first verification per
+blocker and states what observed result counts as resolved, then
+Recovery Closure re-verifies after the user acts.
 
 Yes: this is currently prompt orchestration over stock Uliya experts with
 zero NAS execution traces — that is precisely why the product bet is
@@ -43,6 +46,32 @@ verification tooling only), GitHub Actions.
 ## Track
 
 Open Innovation.
+
+## Narrative hierarchy (v9.1 — all claims map to shipped behavior)
+
+One-sentence pitch: PHOENIX tells you what to verify next to make a
+disrupted project recoverable, and proves whether the blocker cleared.
+
+30 seconds: Backed-up files do not mean a recoverable project.
+PHOENIX checks your authorized NAS files against the project's own
+documents, reports cited blockers, names the single first
+verification, and re-verifies after you fix it — never claiming a
+restore it did not test.
+
+90 seconds: a studio loses its main machine; the NAS copy looks
+complete. File search finds every name, so everyone assumes the
+project is safe. PHOENIX reads the deployment guide, finds it
+requires `config/prod-config.yaml`, verifies the exact path is
+absent, and reports a documentary blocker with the proof. Its
+planner says: first, supply that exact file; resolved if a scoped
+check finds it. The operator adds the file; PHOENIX re-inspects
+fresh evidence and appends a Recovery Delta: resolved — while
+stating this is still not a tested restore.
+
+Differentiation: chatbots match words; PHOENIX verifies exact paths,
+arbitrates version conflicts against observed files, abstains on
+denied or truncated sources, and re-observes after fixes (locally
+8/8 with 0 false clears vs 1/8 with 5 for pasted-text QA).
 
 ## Try it out
 

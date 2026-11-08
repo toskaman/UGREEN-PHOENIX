@@ -132,6 +132,21 @@ Suggested 3-minute outline (adapt to final rules):
 
 Record narration separately if live audio is risky; keep raw footage.
 
+### Publishing (Round 2, if selected — human only)
+
+1. Edit to under 3 minutes; English narration or full English
+   subtitles; no simulated footage, no stock NAS clips presented
+   as the session.
+2. Export 1080p MP4 (H.264); filename
+   `PHOENIX_UGREEN_Round2_Demo.mp4`; keep the raw footage file.
+3. Upload to YouTube as Unlisted first; watch it back fully for
+   secrets (paths, IPs, tokens) and audio sync.
+4. Set to Public; add title "PHOENIX — Recovery Intelligence on
+   UGREEN AI NAS (live demo)", description with repo link +
+   "filmed live on the assigned NAS, <date>", no misleading tags.
+5. Paste the Public URL into the Devpost final update; keep the
+   video Public through judging + 3 months.
+
 ## Hour 20–24 — package and buffer
 
 - [ ] Freeze the final Skill package; final checker run.
