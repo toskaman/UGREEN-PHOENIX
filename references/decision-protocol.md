@@ -36,7 +36,9 @@ Return a human-readable report with:
 
 Transcribe facts before judging them: first extract each requirement with its exact path, verbatim constraint, observed file, and source lines; only then assign labels. Never decide and extract in one step.
 
-- Version comparison: split versions into dot-separated numbers and compare left to right numerically. X satisfies "N or newer" if and only if X >= N (3 satisfies "2 or newer"). A satisfying version is FOUND, never CONFLICTING. Write the numeric comparison in the evidence row.
+- Version comparison: split versions into dot-separated numbers and compare left to right numerically. X satisfies "N or newer" if and only if X >= N (3 satisfies "2 or newer"). A satisfying version is FOUND, never CONFLICTING. Write the numeric comparison in the evidence row. Read constraints in the document's own language (English: N-or-newer / minimum / at-least / strict-more-than; French: ou superieur / ou plus recent / au minimum / inferieur a / ranges "2 a 4 incluses"); when the constraint wording is ambiguous, abstain rather than guess.
+- Citation discipline: every requirement MUST carry at least one resolvable path:line citation. Uncited requirements are UNRESOLVED and support nothing; zero cited requirements means INSUFFICIENT EVIDENCE, never a clear verdict.
+- Delta discipline (Recovery Closure): a subject named in the prior report but absent from current findings is STILL UNCERTAIN, never silently resolved; only a matched current finding can mark it resolved.
 - Superseded files: a file marked stale, superseded, deprecated, or "do not use" never satisfies a requirement. When only a stale same-named file exists elsewhere, label CONFLICTING and cite both the guide line and the stale marker line.
 - Truncation: a document cut off mid-sentence, naming absent pages, or ending abruptly states UNKNOWN requirements only. Name what is missing; never clear a truncated requirement.
 - Alternatives: when a guide offers A OR B ("either/or", "one of the two is enough"), one evidenced alternative suffices. Never demand the other; never invent an either/or the guide does not offer.
