@@ -1,0 +1,200 @@
+1
+00:00:01,010 --> 00:00:02,900
+Your files are backed up.
+
+2
+00:00:02,940 --> 00:00:04,970
+But if your computer disappeared tomorrow…
+
+3
+00:00:05,010 --> 00:00:08,030
+could you actually rebuild your project?
+
+4
+00:00:12,610 --> 00:00:15,050
+A project can contain thousands
+
+5
+00:00:15,090 --> 00:00:16,960
+of saved files, and still be
+
+6
+00:00:17,000 --> 00:00:19,680
+missing one critical dependency.
+
+7
+00:00:19,720 --> 00:00:22,700
+Ordinary search can tell you what exists.
+
+8
+00:00:22,740 --> 00:00:23,960
+It cannot always tell you
+
+9
+00:00:24,000 --> 00:00:25,940
+whether the pieces agree.
+
+10
+00:00:27,580 --> 00:00:28,990
+This is PHOENIX.
+
+11
+00:00:29,030 --> 00:00:31,100
+An evidence-driven recovery-readiness
+
+12
+00:00:31,140 --> 00:00:35,340
+assistant, designed for UGREEN AI NAS.
+
+13
+00:00:35,380 --> 00:00:38,260
+Three expert agents discover, extract,
+
+14
+00:00:38,300 --> 00:00:40,660
+verify, and explain what your
+
+15
+00:00:40,790 --> 00:00:43,460
+project's own documents say is required.
+
+16
+00:00:44,540 --> 00:00:47,190
+In this local test, the deployment guide
+
+17
+00:00:47,230 --> 00:00:50,420
+requires a production configuration file.
+
+18
+00:00:50,460 --> 00:00:52,800
+The authorized search cannot confirm it
+
+19
+00:00:52,840 --> 00:00:55,540
+at that exact path, and a stale copy
+
+20
+00:00:55,580 --> 00:00:58,620
+in an old backup folder does not count.
+
+21
+00:00:58,660 --> 00:01:01,860
+PHOENIX identifies the documentary blocker,
+
+22
+00:01:01,900 --> 00:01:04,750
+and cites the source, instead of guessing.
+
+23
+00:01:06,290 --> 00:01:07,790
+Then it goes further.
+
+24
+00:01:07,830 --> 00:01:09,560
+The Evidence Gain Planner names
+
+25
+00:01:09,600 --> 00:01:12,100
+one first check for each blocker.
+
+26
+00:01:12,140 --> 00:01:13,370
+Why it matters.
+
+27
+00:01:13,410 --> 00:01:15,410
+What evidence would resolve it.
+
+28
+00:01:15,450 --> 00:01:17,420
+And what will still remain unknown,
+
+29
+00:01:17,460 --> 00:01:19,320
+even after it passes.
+
+30
+00:01:22,150 --> 00:01:24,770
+After the operator supplies the file,
+
+31
+00:01:24,850 --> 00:01:26,990
+PHOENIX checks the evidence again.
+
+32
+00:01:27,030 --> 00:01:28,500
+It does not simply accept a
+
+33
+00:01:28,540 --> 00:01:30,910
+claim that the problem was fixed.
+
+34
+00:01:30,950 --> 00:01:33,560
+The Recovery Delta shows what changed,
+
+35
+00:01:33,660 --> 00:01:35,550
+and what is now supported.
+
+36
+00:01:35,590 --> 00:01:36,1000
+But a resolved blocker
+
+37
+00:01:37,040 --> 00:01:39,150
+is not a restored system.
+
+38
+00:01:40,580 --> 00:01:42,340
+When documents disagree,
+
+39
+00:01:42,380 --> 00:01:44,580
+PHOENIX preserves the conflict.
+
+40
+00:01:44,620 --> 00:01:46,700
+When evidence is incomplete,
+
+41
+00:01:46,740 --> 00:01:49,300
+it refuses to invent certainty.
+
+42
+00:01:49,340 --> 00:01:51,100
+Reliable intelligence must
+
+43
+00:01:51,140 --> 00:01:53,210
+know when not to claim success.
+
+44
+00:01:54,560 --> 00:01:57,270
+In eight predefined local test cases,
+
+45
+00:01:57,310 --> 00:01:58,780
+PHOENIX matched all eight
+
+46
+00:01:58,820 --> 00:02:01,320
+expected verdicts, compared with six
+
+47
+00:02:01,360 --> 00:02:03,640
+for the retrieval-plus baseline.
+
+48
+00:02:03,680 --> 00:02:07,410
+Real NAS validation is the next milestone.
+
+49
+00:02:09,160 --> 00:02:11,060
+Don't just back up your files.
+
+50
+00:02:11,100 --> 00:02:13,680
+Know what the evidence says you can rebuild.
+

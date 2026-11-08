@@ -69,7 +69,7 @@ Transcripts are committed evidence; re-grade from them any time.
 
 | File | SHA-256 |
 |---|---|
-| README.md | `3515601ebbbc157d73056d22553a4fcbb387a850995d936fe83c42f82ead4ac2` |
+| README.md | `4f91e0568984243764a931b083e1230218cd6a687139c72cae6aed5f662c9b1e` |
 | LICENSE | `9eb48619fbc193ab7bb327b090cfcc703000265b83e670f81f231d0b1c43c56e` |
 | local-tests/README.md | `a610f4f2a1241f2aad6b2f9fc19966e523a5b2ddd557d90caff377ccab49bd12` |
 | local-tests/perf-matrix.md | `24aace7dbfedea2ef694966561c7c13e25d3053c94c645355a7074bef88baac2` |

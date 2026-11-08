@@ -1,7 +1,17 @@
 # PHOENIX — Recovery Intelligence for UGREEN AI NAS
 
 > **UGREEN AI NAS Hackathon 2026 — Open Innovation — Round 1 submission**
-> Status: static checker passed with zero diagnostics · real NAS runtime **not tested yet**.
+> Status: **v9.1 Final** · static checker passed with zero diagnostics · real NAS runtime **not tested yet**.
+
+**Backed up. But recoverable?** PHOENIX tells you what to verify next
+to make a disrupted project recoverable — and proves whether the
+documentary blocker cleared.
+
+<video src="brag-output/UGREEN-PHOENIX-ROUND1/final/PHOENIX_UGREEN_ROUND1_FINAL.mp4" poster="brag-output/UGREEN-PHOENIX-ROUND1/final/PHOENIX_UGREEN_COVER.jpg" controls preload="none">Watch the 2-minute concept video (with <a href="brag-output/UGREEN-PHOENIX-ROUND1/final/PHOENIX_UGREEN_SUBTITLES.srt">subtitles</a>).</video>
+
+*Concept video (2:18, 1080p): every screen is labeled — local prototype
+simulation with verbatim report excerpts, not NAS runtime footage.
+Real-device demo follows only if selected as a finalist.*
 
 PHOENIX assesses whether a project's documentation and essential assets are
 sufficient to prepare its recovery after a computer loss or a team departure.
@@ -40,9 +50,11 @@ Mapped to the official judging criteria (equally weighted, per the
   disruption: "do our saved files actually let us resume?" with a clear
   workflow and a cited, actionable report.
 - **Innovation & Differentiation** — reframes recovery as documentary
-  evidence: fixed evidence labels, abstention on incomplete data, and an
-  explicit refusal to confuse "files found" with "restored" — a function
-  conventional file search and backup dashboards do not offer.
+  evidence: fixed evidence labels, abstention on incomplete data, an
+  Evidence Gain Planner (one first verification per blocker, with
+  resolved-if criteria), and an explicit refusal to confuse "files
+  found" with "restored" — a function conventional file search and
+  backup dashboards do not offer.
 - **Technical Quality** — sound orchestration through registered experts and
   supported CLI capabilities, with permission and approval handling:
   `static-pass` (0 errors, 0 warnings), 92/92 local workflow-logic checks,
@@ -128,9 +140,10 @@ and the measured baseline comparison. This validates
 the workflow logic only. The 24-hour finalist session plan is in
 [local-tests/finalist-runbook.md](local-tests/finalist-runbook.md).
 No NAS runtime results are claimed;
-static checker success is not a runtime pass. If selected as a finalist, the
+static checker success is not a runtime pass. The concept video above
+shows simulated screens only. If selected as a finalist, the
 planned tests will run during the assigned remote NAS session and this
-section will be updated with real evidence, logs, and a demo video. Open
+section will be updated with real evidence, logs, and NAS footage. Open
 platform questions for UGREEN support are listed in
 [local-tests/open-questions-for-ugreen.md](local-tests/open-questions-for-ugreen.md).
 
