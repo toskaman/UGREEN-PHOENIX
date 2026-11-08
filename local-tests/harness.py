@@ -369,9 +369,15 @@ def run(scope: Path, mode: str = "full", prior: dict | None = None) -> dict:
                                                f"contradicts required "
                                                f"{req['op']} {req['version']}."})
             else:
+                satisfied = ", ".join(
+                    f"{p['source']}:{p['line']} ({p['version']})"
+                    for p in matches
+                    if not req["op"] or compare(
+                        req["op"], p["version"], req["version"]))
                 evidence.append({**req, "status": FOUND,
                                  "detail": f"Version fact satisfies "
-                                           f"requirement."})
+                                           f"requirement (observed "
+                                           f"{satisfied})."})
 
     # Step 4 — report assembly (simulates knowledge-agent collect-evidence).
     statuses = {e["status"] for e in evidence}
@@ -403,7 +409,10 @@ def run(scope: Path, mode: str = "full", prior: dict | None = None) -> dict:
         transitions = []
         for subject in sorted(set(prev_status) | set(new_map)):
             old, new = prev_status.get(subject), new_map.get(subject)
-            if old in BLOCKER_STATES and new == FOUND:
+            if new == FOUND and old in (BLOCKER_STATES | GAP_STATES):
+                # A cleared blocker AND a confirmed gap both resolve:
+                # evidence now supports the subject. (Red-team v6:
+                # gap->FOUND used to fall through to "REMOVED".)
                 state = "RESOLVED"
             elif new in BLOCKER_STATES and old not in BLOCKER_STATES:
                 state = "NEW BLOCKER"

@@ -21,6 +21,7 @@ with tempfile.TemporaryDirectory() as tmp:
     t = Path(tmp) / "a"
     shutil.copytree("local-tests/corpus/core-a", t)
     before = harness.run(t)                      # BLOCKER
+    (t / "config").mkdir(parents=True, exist_ok=True)
     (t / "config" / "prod-config.yaml").write_text("# fix\n")
     after = harness.run(t, prior=before)         # CLEAR + section 9
     print(after["report"].split("## 9. Recovery Delta")[1])

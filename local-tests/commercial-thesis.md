@@ -141,3 +141,18 @@ Defensibility update: still no hard moat; new potentially defensible
 assets are the graded verdict-quality dataset (Track B transcripts +
 rubric) and the closure-state evaluation harness. No UGREEN interest
 claimed; nothing production-ready claimed.
+
+## 14. v6 addendum: rendered artifacts + reasoning assets
+
+What changed: the Passport/Proof Graph are no longer slideware —
+`proofgraph.py` generates them deterministically from findings (37
+checks), and scenario-A before/after artifacts ship in the repo. For
+the commercial story this matters: the passport is the auditable
+handover artifact IT/compliance buyers keep, and it now demonstrably
+renders instead of being promised. The EN/FR constraint normalizer
+(122-case contract, red/purple-verified) is a second portable asset:
+dependency semantics competitors would have to re-derive.
+What did not change: no pilot, no NAS verdict-quality data, no
+residency confirmation, no buyer conversation. Pilot design (§11)
+and go/no-go (precision ≥ 0.8) stand; the v6 evidence only raises
+confidence that the pilot instrument is sound.

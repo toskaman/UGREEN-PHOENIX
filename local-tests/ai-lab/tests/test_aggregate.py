@@ -274,13 +274,40 @@ if __name__ == "__main__":
         ("compatible with 2.x", "v 2.5", "SATISFIED"),
         ("version inferieure a 5", "v 5", "VIOLATED"),
         ("versions 2 à 4 incluses", "v 3", "SATISFIED"),
+        # v6 red-team: negation exclusions (false-clear fixes)
+        ("must not be 5", "v 5", "VIOLATED"),
+        ("must not be 5", "v 6", "SATISFIED"),
+        ("not including versions 5 and 6", "v 6", "VIOLATED"),
+        ("not including versions 5 and 6", "v 7", "SATISFIED"),
+        ("versions 5 et 6 exclues", "v 5", "VIOLATED"),
+        ("versions 5, 6 exclues", "v 6", "VIOLATED"),
+        ("version 5 (4 excluded)", "v 5", "SATISFIED"),
+        ("version 5 (4 excluded)", "v 6", "UNKNOWN"),
+        ("except 5", "v 5", "VIOLATED"),
+        ("version different from 5", "v 5", "VIOLATED"),
+        ("ne doit pas etre 5", "v 5", "VIOLATED"),
+        ("not including 5", "v 7", "SATISFIED"),
+        ("requires 2, version 6 exclue", "v 2", "SATISFIED"),
+        ("requires 2, version 6 exclue", "v 6", "VIOLATED"),
+        ("at least 2, not including 5", "v 5", "VIOLATED"),
+        ("at least 2, not including 5", "v 3", "SATISFIED"),
+        ("version \u2265 4", "v 5", "SATISFIED"),
+        ("version \u2264 4", "v 3", "SATISFIED"),
+        ("version \u2260 5", "v 5", "VIOLATED"),
+        # v6 purple: chain guard + colon form (regression pins)
+        ("excluded: 5, 6 and 7", "v 7", "VIOLATED"),
+        ("must be 5, 6 excluded", "v 5", "SATISFIED"),
+        ("must be 5, 6 excluded", "v 6", "VIOLATED"),
+        ("5, 6, 7 excluded", "v 8", "SATISFIED"),
+        ("schema 2 ou superieur, sauf 3", "v 3", "VIOLATED"),
     ]
-    for c, o, exp in contract:
+    for i, (c, o, exp) in enumerate(contract):
         n = norm_mod.normalize_constraint(c)
         code, _ = norm_mod.compare(
             n, norm_mod.pick_observed(c, o,
                                      norm_op=n["op"] if n else None))
-        check(f"norm {c[:28]!r}", code == exp)
+        check(f"norm-case-{i:02d}", code == exp,
+              f"{ascii(c)} vs {ascii(o)} -> {code}, want {exp}")
     # v6 truncation grounding (model TRUNC needs byte confirmation)
     check("tb5 net flags marked guide",
           "docs/guide.md" in ver.truncated_docs("tb5", "trackb"))

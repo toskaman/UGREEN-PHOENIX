@@ -49,13 +49,13 @@ VAGUE_RE = re.compile(
 STRONG_EXACT_RE = re.compile(r"exactly|exactement|precisement|==")
 WEAK_EXACT_RE = re.compile(r"must be|doit etre|pinned at")
 EQ_SYMBOL_RE = re.compile(r"(?<![<>=!])=(?![=])")
-NEQ_RE = re.compile(r"!=")
+NEQ_RE = re.compile(r"!=|≠")
 MIN_RE = re.compile(
-    r"or newer|or later|at least|minimum|au moins|>=|"
+    r"or newer|or later|at least|minimum|au moins|>=|≥|"
     r"ou\s+superieur\w*|ou\s+plus\s+recent\w*|ou\s+ulterieur\w*")
 MAX_RE = re.compile(
     r"or older|or earlier|at most|maximum|up to|no newer than|"
-    r"no later than|not\s+newer than|not\s+later than|<=|"
+    r"no later than|not\s+newer than|not\s+later than|<=|≤|"
     r"ou\s+anterieur\w*|ou\s+plus\s+ancien\w*|au\s+plus|jusqu['\.]?a")
 STRICT_GT_RE = re.compile(
     r"(?<![<>=!])>(?![=])|(?<!no\s)(?<!not\s)newer than|"
@@ -66,7 +66,26 @@ STRICT_LT_RE = re.compile(
     r"strictement\s+inferieur\w*|anterieur\w*\s+a\b|"
     r"inferieur\w*\s+a\b|"
     r"plus\s+ancien\s+que|plus\s+vieux\s+que")
-EXCLUDE_RE = re.compile(r"not\s+including|exclu\w*|excluded|but\s+not")
+EXCLUDE_RE = re.compile(
+    r"not\s+including|exclu\w*|excluded|but\s+not|except|sauf|"
+    r"must\s+not\s+be|should\s+not\s+be|is\s+not\b|are\s+not\b|"
+    r"doit\s+pas\s+etre|different\s+from|differente?\s+de|"
+    r"other\s+than|pas\s+la\s+version")
+CHAIN_SEP_RE = re.compile(r"\s*(?:,|\band\b|\bor\b|\bet\b|\bou\b)\s*")
+LEADING_CHAIN_RE = re.compile(
+    r"^[\s:;\-]*(?:[a-z]+\s+)?"
+    r"(NUM(?:\s*(?:,|\band\b|\bor\b|\bet\b|\bou\b)\s*NUM)*)"
+    .replace("NUM", NUM))
+# A backward exclusion chain must stop before a number owned by a
+# bound/exactness cue ('must be 5, 6 excluded' excludes 6 only).
+CHAIN_GUARD_RE = re.compile(
+    r"(must\s+be|doit\s+etre|exact\w*|exactement|precisement|"
+    r"at\s+least|au\s+moins|minimum|maximum|at\s+most|up\s+to|"
+    r"au\s+plus|or\s+newer|or\s+later|or\s+older|or\s+earlier|"
+    r"ou\s+superieur\w*|ou\s+plus\s+recent\w*|ou\s+ulterieur\w*|"
+    r"ou\s+anterieur\w*|ou\s+plus\s+ancien\w*|"
+    r"newer\s+than|older\s+than|later\s+than|earlier\s+than|"
+    r">=|<=|==|!=|>|<|=)\s*$")
 RANGE_RES = (
     re.compile(r"between\s+(NUM)\s+and\s+(NUM)".replace("NUM", NUM)),
     re.compile(r"entre\s+(NUM)\s+et\s+(NUM)".replace("NUM", NUM)),
@@ -80,6 +99,10 @@ RANGE_RES = (
 
 def fold(text: str) -> str:
     """NFKC + lowercase + accent/apostrophe folding. Digits/dots kept."""
+    # Unicode math operators are rewritten BEFORE NFKC: compatibility
+    # folding would otherwise turn U+2260 into '=' ('version ≠ 5'
+    # misread as 'equals 5' — a false clear).
+    text = text.replace("≥", ">=").replace("≤", "<=").replace("≠", "!=")
     text = unicodedata.normalize("NFKC", text).lower()
     text = text.replace("’", "'").replace("‘", "'").replace("`", "'")
     out = []
@@ -123,18 +146,32 @@ def extract_tagged(text: str) -> list:
 def _excluded_numbers(folded: str) -> set:
     """Version numbers named by an exclusion cue, either side
     ('not including 5', 'version 6 exclue', '(2 excluded)').
-    Windows are tight so a distant bound is never swallowed."""
+    Plural chains ('5 and 6', '5 et 6', '5, 6') are captured whole;
+    anything past a non-separator is never swallowed, so a distant
+    bound ('requires 2, version 6 exclue') keeps its meaning."""
     out = set()
     for m in EXCLUDE_RE.finditer(folded):
-        fwd = folded[m.end():m.end() + 12]
-        nm = NUM_RE.search(fwd)
-        if nm:
-            out.add(_tup(nm.group(0)))
+        fwd = folded[m.end():m.end() + 24]
+        chain = LEADING_CHAIN_RE.match(fwd)
+        if chain:
+            out.update(_tup(n) for n in
+                       NUM_RE.findall(chain.group(1)))
             continue
-        back = folded[max(0, m.start() - 14):m.start()]
+        back = folded[max(0, m.start() - 24):m.start()]
         nms = list(NUM_RE.finditer(back))
         if nms:
+            # Trailing run linked by separators only; stop before a
+            # number owned by a bound/exactness cue.
             out.add(_tup(nms[-1].group(0)))
+            for prev, cur in zip(reversed(nms[:-1]),
+                                 reversed(nms[1:])):
+                gap = back[prev.end():cur.start()]
+                before = back[max(0, prev.start() - 18):prev.start()]
+                if CHAIN_SEP_RE.fullmatch(gap) \
+                        and not CHAIN_GUARD_RE.search(before):
+                    out.add(_tup(prev.group(0)))
+                else:
+                    break
     return out
 
 
@@ -198,8 +235,14 @@ def normalize_constraint(text: str):
         return struct
     if sum(lower) + sum(upper) > 1:
         return None  # mixed bounds without a range parse
-    if has_neq and not sum(lower) and not sum(upper) and not has_strong \
-            and not has_weak:
+    pure_exclusion = bool(excluded) and bool(numbers) and all(
+        n in excluded for n in numbers)
+    if (has_neq or pure_exclusion) and not sum(lower) \
+            and not sum(upper) and not has_strong and not has_weak:
+        # Pure exclusions ('!= 3', 'must not be 5', 'not including
+        # 5') accept anything not excluded. A bare version alongside
+        # an exclusion ('version 5 (4 excluded)') is NOT pure: it
+        # stays BARE below so a differing version abstains.
         return _struct("ANY", exclusions=frozenset(excluded or set(
             numbers)))
     # Excluded numbers are holes, not bounds ('version 3 minimum,

@@ -12,11 +12,14 @@ evidence table.
 - DOC: a source document (path + line range).
 - GAP: a missing/inaccessible/unverifiable requirement.
 - CLASH: a contradiction between two sources.
+- FACT: an observed version fact satisfying a named-capability requirement
+  (carries the provision's path:line citation).
 
 ## Edge types
 
 - `REQ --stated-by--> DOC:path:line`
 - `REQ --satisfied-by--> FILE:path` (with version note)
+- `REQ --satisfied-by--> FACT: <provision citation>` (named capabilities)
 - `REQ --blocked-by--> GAP` (with reason)
 - `REQ --contested--> CLASH` (DOC A vs DOC B)
 - `REQ --alternative--> REQ` (OR-group)

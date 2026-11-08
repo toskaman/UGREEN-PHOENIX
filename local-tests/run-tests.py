@@ -580,6 +580,24 @@ def main():
         (t / "app").mkdir()
         (t / "app" / "main.py").write_text("x\n", encoding="utf-8")
         first = harness.run(t)
+        gap_prior = {"verdict": first["verdict"], "scope": first["scope"],
+                     "evidence": [{"subject": "app/main.py",
+                                   "status": "UNKNOWN",
+                                   "detail": "was unreadable"}]}
+        res = harness.run(t, prior=gap_prior)
+        trans = {tr["subject"]: tr["state"]
+                 for tr in res["delta"]["transitions"]}
+        ok &= check("F26: confirmed gap is RESOLVED, never REMOVED",
+                    trans.get("app/main.py") == "RESOLVED"
+                    and "REMOVED" not in str(trans),
+                    str(trans))
+    with tempfile.TemporaryDirectory() as tmp:
+        t = Path(tmp)
+        (t / "guide.md").write_text("REQUIRES: app/main.py\n",
+                                    encoding="utf-8")
+        (t / "app").mkdir()
+        (t / "app" / "main.py").write_text("x\n", encoding="utf-8")
+        first = harness.run(t)
         prior = {"verdict": first["verdict"], "scope": first["scope"],
                  "evidence": [{"subject": "app/main.py",
                                "status": "NOT FOUND IN SCOPE",

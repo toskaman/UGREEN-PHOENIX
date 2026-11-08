@@ -197,3 +197,73 @@ Reassessed v5 average: 7.5/10 (medium confidence), up from 6.5.
 The +1.0 comes from measured reliability (28/28 + locked 9/10), a
 transferred reasoning upgrade in the Skill itself, and honest
 boundaries (locked discipline, blocked Vultr, documented residuals).
+
+---
+
+# v6 re-evaluation (adversarial, post-native-transfer + red-team)
+
+Same posture, Round 1 rules (no penalty for absent NAS runtime; design
+fit, credibility, validation plan judged instead). New evidence since
+v5: X26 closed (locked rescore 10/10, original 9/10 preserved) via an
+EN/FR constraint normalizer (41 probes, m01-m12 12/12 on 14B);
+red-team found and fixed 4 false-clear-class defects (negation
+exclusions, plural chains, NFKC "!=" fold, gap->FOUND mislabel),
+purple-verified with no regressions (contract now 122 checks, 86/86
+acceptance, 16/16 mutation); Proof Graph + Passport graduated from
+design to tested implementation (37 checks, rendered before/after
+artifacts); reservation ledger + harness F11-F26; Skill reliability
+rules transferred with a native-transfer report (9 mappings, 10
+numbered unverified assumptions, 10 mapped finalist tests);
+checker static-pass on the new content. Still missing: any NAS trace,
+any Vultr run (BLOCKED-CREDENTIALS, $0), any user-study participant,
+9B tb6 residual OPEN.
+
+## User Value: 8 -> 8 (hold)
+
+Evidence: rendered Passport/Delta artifacts make the Closure loop
+concrete and auditable; scenario-A before/after is now generated, not
+described. Against: zero observed users, unchanged; frequency/scope
+friction unchanged.
+Strongest remaining objection: value is measured on synthetic tasks,
+not human outcomes.
+Higher needs: user-study runs + NAS UX traces.
+
+## Innovation & Differentiation: 7 -> 7 (hold)
+
+Evidence: the normalizer (deterministic EN/FR constraint semantics
+with fail-closed proofs) is the first defensible reasoning asset in
+the repo; exclusion/chain/unicode handling has no prompt-tweak
+equivalent. Against: still orchestration + procedures, no NAS-only
+mechanism demonstrated; no new capability class since Closure.
+Strongest remaining objection: a strong engineering program around a
+v4-shaped product, not a second breakthrough.
+Higher needs: NAS-execution ablation proving the loop collapses
+without tool access.
+
+## Technical Quality: 9 -> 9 (hold)
+
+Evidence: red/purple cycle with before/after proof on real defects
+(including one regression the purple pass caught in the red fix
+itself); 122 + 86 + 37 + 31 + 35 offline checks green; rendered
+artifacts byte-reproducible; checker static-pass.
+Strongest remaining objection: the Skill core (delegation, approval,
+native-model behavior) is still unexecuted prose on the target.
+Higher needs: finalist-day traces. 10/10 explicitly not claimed.
+
+## AI NAS Fit & Validation: 6 -> 7
+
+Evidence: the native-transfer report is exactly what Round 1 can
+judge — each local reliability rule mapped to a Skill instruction,
+an expert/capability, an expected behavior, and a numbered
+assumption, with 10 finalist tests closing the loop; the Skill now
+encodes citation/disagree/truncation/allowlist/retry/delta rules
+instead of describing them in prose docs.
+Strongest remaining objection: fit is still designed; every T-row is
+a prediction until the NAS runs.
+Higher needs: NAS traces (tests T1-T9 are staged and ready).
+
+Reassessed v6 average: 7.75/10 (medium confidence), up from 7.5.
+The +0.25 comes from one justified move (Fit 6->7: transfer made
+auditable) plus held scores on a strictly stronger evidence base.
+Three holds are deliberate: without NAS traces, users, or a second
+product breakthrough, higher would be grade inflation.
