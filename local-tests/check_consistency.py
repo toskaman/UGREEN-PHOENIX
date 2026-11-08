@@ -39,6 +39,15 @@ def run_suite(path, want):
 
 
 def expect(doc, needle, why):
+    # A SOUMETTRE/ is gitignored (local release workspace): skip its
+    # checks on CI instead of failing on a missing file. Tracked docs
+    # must exist — their absence is a failure.
+    if not (ROOT / doc).exists():
+        if doc.startswith("A SOUMETTRE/"):
+            print(f"  [SKIP] {doc} absent (gitignored release workspace)")
+            return
+        fail(f"{doc} missing entirely")
+        return
     text = (ROOT / doc).read_text(encoding="utf-8")
     ok = needle in text
     print(f"  {'[ok]' if ok else '[MISS]'} {doc} :: {needle!r} ({why})")
