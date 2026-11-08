@@ -29,8 +29,8 @@ zero NAS execution traces — that is precisely why the product bet is
 evidence discipline (labels, abstention, citations, access handling) rather
 than rescue promises, and why NAS traces are the scheduled finalist proof.
 Report-only by default; saving requires a separate request plus platform
-approval. Static checker: pass, 0 diagnostics. Local workflow logic: 59/59
-checks, 14/14 mutation kills. A Markdown-only Skill delegating to
+approval. Static checker: pass, 0 diagnostics. Local workflow logic: 86/86
+checks, 16/16 mutation kills. A Markdown-only Skill delegating to
 registered file-agent, document-agent, and knowledge-agent experts; no
 external APIs, no custom runtime code.
 

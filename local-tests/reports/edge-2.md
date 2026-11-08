@@ -13,7 +13,7 @@ Completion: COMPLETED.
 
 ## 4. Evidence table
 - runtime: CONFLICTING (required by docs/guide-v1.md:4) — Observed config/runtime.yaml:2 (2.4.1) contradicts required >= 3.0.
-- runtime: FOUND (required by docs/guide-v2.md:4) — Version fact satisfies requirement.
+- runtime: FOUND (required by docs/guide-v2.md:4) — Version fact satisfies requirement (observed config/runtime.yaml:2 (2.4.1)).
 
 ## 5. Priority blockers
 - runtime: CONFLICTING — Observed config/runtime.yaml:2 (2.4.1) contradicts required >= 3.0. impact: no single observed version satisfies the requirement.

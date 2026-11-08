@@ -19,7 +19,7 @@ Completion: COMPLETED.
 ## 4. Evidence table
 - app/main.py: FOUND (required by docs/deployment-guide.md:4) — 'app/main.py' verified present in scope.
 - config/app.yaml: FOUND (required by docs/deployment-guide.md:5) — 'config/app.yaml' verified present in scope.
-- runtime: FOUND (required by docs/deployment-guide.md:6) — Version fact satisfies requirement.
+- runtime: FOUND (required by docs/deployment-guide.md:6) — Version fact satisfies requirement (observed config/app.yaml:2 (3.1.0)).
 
 ## 5. Priority blockers
 - none
