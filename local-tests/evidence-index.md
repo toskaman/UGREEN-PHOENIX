@@ -1,33 +1,34 @@
 # Evidence index (content hashes + provenance)
 
-Working tree verified 2026-11-08 on `main` (v6; content hashes below
-are commit-independent — verify with `sha256sum`). CI run for the v6
+Working tree verified 2026-11-08 on `main` (v7; content hashes below
+are commit-independent — verify with `sha256sum`). CI run for the v7
 sync commit is confirmed post-push in `A SOUMETTRE/PROVENANCE.txt`.
 All hashes SHA-256 of the verified bytes (lowercase hex). Checker
 file hashes agree with the tree hashes below. Previous release values
-live in git history of this file (v5: ZIP 9135 B, PDF 4468 B,
+live in git history of this file (v6: ZIP 9960 B, PDF 4482 B,
+476 words, built from `e127a0f`; v5: ZIP 9135 B, PDF 4468 B,
 475 words, built from `6985a6a`).
 
 ## Submission package bytes (in the ZIP)
 
 | File | SHA-256 |
 |---|---|
-| SKILL.md | `4672998f7e0d119592c193d9232c9c70c8d83adb734e56df97585be417b41e9d` |
-| references/decision-protocol.md | `1428e58acb0aa0261b34d70285f42bff86f31c1633194768b5f746b1958e925d` |
+| SKILL.md | `588ec279f0e89db280f94482c4ce70d5b5815fecf8d89b0c22a437891218cd63` |
+| references/decision-protocol.md | `656014f42a6ab80e1a33e1beeced74b77ea08959ebf5db60871ce219548252ae` |
 | references/validation-plan.md | `e0d825d4991866508a69fa54a44585814b8cd2326bbafd8c0f988d34f6b423ca` |
 | references/disclosures.md | `31e97f60205cef92e7773ee6aef847ae76f8d0704f8a61f419f9b33839308804` |
 
 Checker: `static-pass`, 0 errors, 0 warnings, catalog 2.0.0
 (`local-tests/evidence-check-result.json`,
-`1b59a7973386837fbff4d525cc58f3e313605414bc9190fb5af946a80afa50af`,
+`3b0576a9ae37f4835b031cfe633e5e6b55f32b4146b2a9fb511ba615a91af44d`,
 regenerated UTF-8 from the current tree 2026-11-08).
 
-## Release artifacts (`A SOUMETTRE/`, gitignored, v6)
+## Release artifacts (`A SOUMETTRE/`, gitignored, v7)
 
 | Artifact | SHA-256 | Size | Notes |
 |---|---|---|---|
-| phoenix-recovery-intelligence.zip | `005249f016f6b0ec4587a7937feefaee39483c0fde03e848891620d6d828826f` | 9960 B (< 10 MB) | 4 files, per-file verified, official checker static-pass on exact bytes |
-| PHOENIX_UGREEN_Round1_Proposal.pdf | `173e378b562716bae29c065e014d03a6b62b150c5e4dc2569b3e28805cfe66fb` | 4482 B (< 1 MB) | 2 pages, 476 answer words (≤ 500), hash varies by build timestamp only |
+| phoenix-recovery-intelligence.zip | `b2b56ba12cb3317f292929da388bd12f3187cb2b99a45e9f9a68a0c602761c68` | 10592 B (< 10 MB) | 4 files, per-file verified, official checker static-pass on exact bytes |
+| PHOENIX_UGREEN_Round1_Proposal.pdf | `b6b96abf1374c6b551d50c440dfb8251742d94e7993e9981e733698378e44bd8` | 4541 B (< 1 MB) | 2 pages, 483 answer words (≤ 500), hash varies by build timestamp only |
 | SHA256SUMS.txt | (manifest of the above) | — | Previous releases preserved in `previous/` + notes |
 
 Rebuild: `python "A SOUMETTRE/build_zip.py"` then

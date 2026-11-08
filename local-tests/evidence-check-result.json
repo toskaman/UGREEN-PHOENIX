@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "references/decision-protocol.md",
-      "sha256": "1428e58acb0aa0261b34d70285f42bff86f31c1633194768b5f746b1958e925d"
+      "sha256": "656014f42a6ab80e1a33e1beeced74b77ea08959ebf5db60871ce219548252ae"
     },
     {
       "path": "references/disclosures.md",
@@ -22,7 +22,7 @@
     },
     {
       "path": "SKILL.md",
-      "sha256": "4672998f7e0d119592c193d9232c9c70c8d83adb734e56df97585be417b41e9d"
+      "sha256": "588ec279f0e89db280f94482c4ce70d5b5815fecf8d89b0c22a437891218cd63"
     }
   ],
   "summary": {
